@@ -7,8 +7,8 @@ Applicaytion mobile de comparateur de prix
 
 # Dépendances à installer
 npm install -g @ionic/cli
-ionic start receipt-scanner tabs --type=angular
-cd receipt-scanner
+ionic start PriceScan-mobile tabs --type=angular
+cd PriceScan-mobile
 
 ## Capacitor pour les fonctionnalités natives
 npm install @capacitor/core @capacitor/cli
