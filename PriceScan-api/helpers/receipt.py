@@ -7,9 +7,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from config.db import db
 from model.price_comparison import ps_users, user_activity_log, receipts, receipt_items
 from helpers.mailer import send_mailer_custom
+# from helpers.mailer import *
 
 
-@jwt_required()
+# @jwt_required()
 def upload_receipt():
     """
     Upload et enregistrement d’un reçu scanné par un utilisateur
@@ -24,10 +25,15 @@ def upload_receipt():
         new_receipt.total_amount = request.json.get("total_amount", 0.0)
         new_receipt.purchase_date = request.json.get("purchase_date", datetime.now())
         new_receipt.image_url = request.json.get("image_url", "")
+        new_receipt.status = "pending"  # pending, processing, completed, failed
         new_receipt.created_at = datetime.now()
 
         db.session.add(new_receipt)
         db.session.commit()
+
+
+        # Traitement asynchrone (idéalement avec Celery ou un worker)
+        process_receipt_image(new_receipt.receipt_id, image_data)
 
         # Log activity
         log_user_activity(current_user_id, "receipt_uploaded", {"receipt_id": new_receipt.receipt_id})
@@ -45,7 +51,7 @@ def upload_receipt():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def add_receipt_items():
     """
     Ajouter les articles extraits d’un reçu
@@ -88,7 +94,7 @@ def add_receipt_items():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def get_user_receipts():
     """
     Récupérer tous les reçus d’un utilisateur

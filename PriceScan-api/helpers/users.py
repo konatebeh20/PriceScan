@@ -1,3 +1,7 @@
+import cv2
+import numpy as np
+# import matplotlib.pyplot as plt
+
 import csv
 import json
 import smtplib
@@ -22,9 +26,15 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from config.constant import *
+# from config.constant import OCR_API_KEY, OCR_API_URL
 from config.db import db
+
+
+
+from model.PriceScan_db import ps_users, user_activity_log, ps_receipts, ps_receipt_items, ps_ps_user_preferences, ps_user_activity_log, ps_price_submissions
+from helpers.mailer import send_mailer_custom
+
 from helpers.mailer import *
-from model.price_comparison import ps_users, user_preferences, user_activity_log, price_submissions
 
 
 def create_user():
@@ -191,7 +201,7 @@ def authenticate_user():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def get_user_profile():
     """
     Récupérer le profil complet de l'utilisateur connecté
@@ -265,7 +275,7 @@ def get_user_profile():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def update_user_profile():
     """
     Mettre à jour le profil utilisateur
@@ -314,7 +324,7 @@ def update_user_profile():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def change_password():
     """
     Changer le mot de passe utilisateur
@@ -419,7 +429,7 @@ def verify_email():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def delete_account():
     """
     Supprimer le compte utilisateur (soft delete)
@@ -457,7 +467,7 @@ def delete_account():
     return response
 
 
-@jwt_required()
+# @jwt_required()
 def update_loyalty_points():
     """
     Mettre à jour les points de fidélité d'un utilisateur
