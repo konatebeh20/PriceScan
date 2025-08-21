@@ -1,15 +1,10 @@
 import datetime
 import enum
-# from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from cProfile import label
-from email.policy import default
-from pickle import TRUE
 
 from sqlalchemy.sql import expression
-from sqlalchemy.sql import text
 
-from config.db import db # ton instance SQLAlchemy
+from config.db import db # Instance SQLAlchemy
 
 
 
@@ -54,7 +49,7 @@ class ps_contact_us(db.Model):
     ct_body = db.Column(db.Text)
 
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
-    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     
     # def as_dict(self):
     #    return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
@@ -69,7 +64,7 @@ class ps_device_tokens(db.Model):
     device_type = db.Column(db.String(50))  # e.g., "ios" or "android"
     is_active = db.Column(db.Boolean, default=True)  # Whether the token is active
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow) # When the token was created
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow) # When it was last updated
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow) # When it was last updated
 
 class ps_users(db.Model):
     __tablename__ = 'ps_users'
@@ -116,7 +111,7 @@ class ps_favorite(db.Model):
     u_uid = db.Column(db.String(128), db.ForeignKey('ps_users.u_uid'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
-    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     
     # def as_dict(self):
     #     return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
@@ -132,6 +127,7 @@ class ps_notification(db.Model):
     destined_for = db.Column(db.String(128))
     status = db.Column(db.String(128))
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     # def as_dict(self):
     #    return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
