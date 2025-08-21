@@ -11,7 +11,7 @@ import datetime
 from config.constant import *
 from config.db import db
 from helpers.mailer import *
-from model.price_comparison import *
+from model.PriceScan_db import *
 
 
 def ReadActivePromoDeals():

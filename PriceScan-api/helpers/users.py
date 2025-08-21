@@ -30,11 +30,12 @@ from config.constant import *
 from config.db import db
 
 
-
-from model.PriceScan_db import ps_users, user_activity_log, ps_receipts, ps_receipt_items, ps_ps_user_preferences, ps_user_activity_log, ps_price_submissions
+from model.PriceScan_db import *
 from helpers.mailer import send_mailer_custom
 
 from helpers.mailer import *
+
+
 
 
 def create_user():
@@ -536,7 +537,7 @@ def log_user_activity(user_id, activity_type, metadata=None):
     Enregistrer l'activité utilisateur
     """
     try:
-        activity = user_activity_log()
+        activity = ps_user_activity_log()
         activity.user_id = user_id
         activity.activity_type = activity_type
         activity.metadata = json.dumps(metadata) if metadata else None

@@ -3,7 +3,7 @@ from flask import jsonify, request
 from werkzeug.utils import secure_filename
 from config.db import db
 from config.constant import *
-from model.goparadize import go_notification
+from model.PriceScan_db import go_notification
 import boto3
 
 
