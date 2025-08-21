@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from config.constant import *
 from config.db import db
 from helpers.mailer import *
-from model.goparadize import *
+from model.PriceScan_db import *
 import json
 
 
@@ -15,7 +15,7 @@ def CreateFavorite():
     response = {}
     try:
 
-        new_fav = go_favorite()
+        new_fav = ps_favorite()
 
         new_fav.u_uid = request.json.get('u_uid')
         new_fav.htl_uid = request.json.get('htl_uid')
@@ -24,35 +24,35 @@ def CreateFavorite():
         db.session.add(new_fav)
         db.session.commit()
 
-        hotel_info = {}
+        receipt_info = {}
         try:
-            item = go_hotels.query.filter_by(htl_uid=new_fav.htl_uid).first()
+            item = ps_receipts.query.filter_by(htl_uid=new_fav.htl_uid).first()
             
             if item:
-                hotel_info['htl_uid'] = item.htl_uid
-                hotel_info['htl_title'] = item.htl_title
-                hotel_info['htl_status'] = item.htl_status
-                hotel_info['htl_stars'] = item.htl_stars
-                hotel_info['htl_address'] = item.htl_address
-                hotel_info['htl_description'] = item.htl_description
-                hotel_info['htl_amenities'] = item.htl_amenities
-                hotel_info['htl_longitude'] = item.htl_longitude
-                hotel_info['htl_latitude'] = item.htl_latitude
-                hotel_info['htl_tel_number'] = item.htl_tel_number
-                hotel_info['htl_room_quantity'] = item.htl_room_quantity
-                hotel_info['htl_category'] = item.htl_category
-                hotel_info['htl_feature_image'] = str(IMGHOSTNAME) + str(item.htl_feature_image)
-                hotel_info['creation_date'] = str(item.creation_date)
-                hotel_info['updated_on'] = str(item.updated_on)
+                receipt_info['htl_uid'] = item.htl_uid
+                receipt_info['htl_title'] = item.htl_title
+                receipt_info['htl_status'] = item.htl_status
+                receipt_info['htl_stars'] = item.htl_stars
+                receipt_info['htl_address'] = item.htl_address
+                receipt_info['htl_description'] = item.htl_description
+                receipt_info['htl_amenities'] = item.htl_amenities
+                receipt_info['htl_longitude'] = item.htl_longitude
+                receipt_info['htl_latitude'] = item.htl_latitude
+                receipt_info['htl_tel_number'] = item.htl_tel_number
+                receipt_info['htl_room_quantity'] = item.htl_room_quantity
+                receipt_info['htl_category'] = item.htl_category
+                receipt_info['htl_feature_image'] = str(IMGHOSTNAME) + str(item.htl_feature_image)
+                receipt_info['creation_date'] = str(item.creation_date)
+                receipt_info['updated_on'] = str(item.updated_on)
             else:
-                raise NoResultFound("Hotel not found")
+                raise NoResultFound("receipt not found")
         
         except NoResultFound:
-            hotel_info['error'] = 'Hotel not found'
+            receipt_info['error'] = 'receipt not found'
 
         response['fav_uid'] = new_fav.fav_uid
         response['response'] = 'success'
-        response['result'] = hotel_info  
+        response['result'] = receipt_info  
     
     except SQLAlchemyError as e:
         response['response'] = 'error'
@@ -69,7 +69,7 @@ def CreateFavorite():
 def ReadFavorite():
     result = []
     
-    getFavorite = go_favorite.query.filter_by().all()
+    getFavorite = ps_favorite.query.filter_by().all()
     
     for item in getFavorite:
         rs = {}
@@ -81,31 +81,31 @@ def ReadFavorite():
         rs['creation_date'] = str(item.creation_date)
         rs['updated_on'] = str(item.updated_on)
 
-        hotel_info = {}
+        receipt_info = {}
         try:
-            hotel = go_hotels.query.filter_by(htl_uid=item.htl_uid).first()
-            if hotel:
-                hotel_info['htl_uid'] = hotel.htl_uid
-                hotel_info['htl_title'] = hotel.htl_title
-                hotel_info['htl_status'] = hotel.htl_status
-                hotel_info['htl_stars'] = hotel.htl_stars
-                hotel_info['htl_address'] = hotel.htl_address
-                hotel_info['htl_description'] = hotel.htl_description
-                hotel_info['htl_amenities'] = hotel.htl_amenities
-                hotel_info['htl_longitude'] = hotel.htl_longitude
-                hotel_info['htl_latitude'] = hotel.htl_latitude
-                hotel_info['htl_tel_number'] = hotel.htl_tel_number
-                hotel_info['htl_room_quantity'] = hotel.htl_room_quantity
-                hotel_info['htl_category'] = hotel.htl_category
-                hotel_info['htl_feature_image'] = str(IMGHOSTNAME) + str(hotel.htl_feature_image)
-                hotel_info['creation_date'] = str(hotel.creation_date)
-                hotel_info['updated_on'] = str(hotel.updated_on)
+            receipt = ps_receipts.query.filter_by(htl_uid=item.htl_uid).first()
+            if receipt:
+                receipt_info['htl_uid'] = receipt.htl_uid
+                receipt_info['htl_title'] = receipt.htl_title
+                receipt_info['htl_status'] = receipt.htl_status
+                receipt_info['htl_stars'] = receipt.htl_stars
+                receipt_info['htl_address'] = receipt.htl_address
+                receipt_info['htl_description'] = receipt.htl_description
+                receipt_info['htl_amenities'] = receipt.htl_amenities
+                receipt_info['htl_longitude'] = receipt.htl_longitude
+                receipt_info['htl_latitude'] = receipt.htl_latitude
+                receipt_info['htl_tel_number'] = receipt.htl_tel_number
+                receipt_info['htl_room_quantity'] = receipt.htl_room_quantity
+                receipt_info['htl_category'] = receipt.htl_category
+                receipt_info['htl_feature_image'] = str(IMGHOSTNAME) + str(receipt.htl_feature_image)
+                receipt_info['creation_date'] = str(receipt.creation_date)
+                receipt_info['updated_on'] = str(receipt.updated_on)
             else:
-                hotel_info['error'] = 'Hotel not found'
+                receipt_info['error'] = 'receipt not found'
         except Exception as e:
-            hotel_info['error'] = f'Error retrieving hotel info: {str(e)}'
+            receipt_info['error'] = f'Error retrieving receipt info: {str(e)}'
         
-        rs['hotel_info'] = hotel_info
+        rs['receipt_info'] = receipt_info
         
         result.append(rs)
     
@@ -118,7 +118,7 @@ def ReadFavoriteByUser():
         result = []
 
         u_uid = request.json.get('u_uid')
-        all_favorite = go_favorite.query.filter_by(u_uid=u_uid).all()
+        all_favorite = ps_favorite.query.filter_by(u_uid=u_uid).all()
 
         for item in all_favorite:
             rs = {}
@@ -129,31 +129,31 @@ def ReadFavoriteByUser():
             rs['creation_date'] = str(item.creation_date)
             rs['updated_on'] = str(item.updated_on)
 
-            hotel_info = {}
+            receipt_info = {}
             try:
-                hotel = go_hotels.query.filter_by(htl_uid=item.htl_uid).first()
-                if hotel:
-                    hotel_info['htl_uid'] = hotel.htl_uid
-                    hotel_info['htl_title'] = hotel.htl_title
-                    hotel_info['htl_status'] = hotel.htl_status
-                    hotel_info['htl_stars'] = hotel.htl_stars
-                    hotel_info['htl_address'] = hotel.htl_address
-                    hotel_info['htl_description'] = hotel.htl_description
-                    hotel_info['htl_amenities'] = hotel.htl_amenities
-                    hotel_info['htl_longitude'] = hotel.htl_longitude
-                    hotel_info['htl_latitude'] = hotel.htl_latitude
-                    hotel_info['htl_tel_number'] = hotel.htl_tel_number
-                    hotel_info['htl_room_quantity'] = hotel.htl_room_quantity
-                    hotel_info['htl_category'] = hotel.htl_category
-                    hotel_info['htl_feature_image'] = str(IMGHOSTNAME) + str(hotel.htl_feature_image)
-                    hotel_info['creation_date'] = str(hotel.creation_date)
-                    hotel_info['updated_on'] = str(hotel.updated_on)
+                receipt = ps_receipts.query.filter_by(htl_uid=item.htl_uid).first()
+                if receipt:
+                    receipt_info['htl_uid'] = receipt.htl_uid
+                    receipt_info['htl_title'] = receipt.htl_title
+                    receipt_info['htl_status'] = receipt.htl_status
+                    receipt_info['htl_stars'] = receipt.htl_stars
+                    receipt_info['htl_address'] = receipt.htl_address
+                    receipt_info['htl_description'] = receipt.htl_description
+                    receipt_info['htl_amenities'] = receipt.htl_amenities
+                    receipt_info['htl_longitude'] = receipt.htl_longitude
+                    receipt_info['htl_latitude'] = receipt.htl_latitude
+                    receipt_info['htl_tel_number'] = receipt.htl_tel_number
+                    receipt_info['htl_room_quantity'] = receipt.htl_room_quantity
+                    receipt_info['htl_category'] = receipt.htl_category
+                    receipt_info['htl_feature_image'] = str(IMGHOSTNAME) + str(receipt.htl_feature_image)
+                    receipt_info['creation_date'] = str(receipt.creation_date)
+                    receipt_info['updated_on'] = str(receipt.updated_on)
                 else:
-                    hotel_info['error'] = 'Hotel not found'
+                    receipt_info['error'] = 'receipt not found'
             except Exception as e:
-                hotel_info['error'] = f'Error retrieving hotel info: {str(e)}'
+                receipt_info['error'] = f'Error retrieving receipt info: {str(e)}'
 
-            rs['hotel_info'] = hotel_info
+            rs['receipt_info'] = receipt_info
 
             result.append(rs)
 
@@ -174,7 +174,7 @@ def ReadSingleFavorite():
         result = []
 
         fav_uid = request.json.get('fav_uid')
-        single_favorite = go_favorite.query.filter_by(fav_uid=fav_uid).all()
+        single_favorite = ps_favorite.query.filter_by(fav_uid=fav_uid).all()
 
         for item in single_favorite:
             rs = {}
@@ -203,7 +203,7 @@ def DeleteFavorite():
     response = {}
     try:
         fav_uid = request.json.get('fav_uid')
-        favorite_to_delete = go_favorite.query.filter_by(fav_uid=fav_uid).first()
+        favorite_to_delete = ps_favorite.query.filter_by(fav_uid=fav_uid).first()
         if favorite_to_delete:
             db.session.delete(favorite_to_delete)
             db.session.commit()
@@ -225,7 +225,7 @@ def DeleteFavorite():
 #     try:
 #         rs = {}
 #         u_uid = request.json.get('u_uid')
-#         getFavorite = go_favorite.query.filter_by(u_uid=u_uid).first()
+#         getFavorite = ps_favorite.query.filter_by(u_uid=u_uid).first()
 #         # print(getUsers.u_status)
 #         if int(getUsers.u_status) == 0:
 #             getUsers.u_status = 1

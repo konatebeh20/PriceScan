@@ -11,7 +11,7 @@ from sqlalchemy.sql.expression import null
 from config.constant import *
 from config.db import db
 from helpers.auth import *
-from helpers.categories import *
+# from helpers.categories import *
 
 
 class AuthApi(Resource):

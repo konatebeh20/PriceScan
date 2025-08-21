@@ -22,7 +22,7 @@ from werkzeug.exceptions import BadRequest
 from config.constant import *
 from config.db import db
 from helpers.mailer import *
-from model.price_comparison import price_submissions, users, stores, products, user_activity_log
+from model.PriceScan_db import *
 from apns2.client import APNsClient
 from apns2.payload import Payload
 
@@ -112,10 +112,10 @@ def monthly_price_data():
         ).count()
         
         # Comparaisons effectuées ce mois (utilisateurs ayant cherché des prix)
-        monthly_searches = user_activity_log.query.filter(
-            user_activity_log.activity_type == 'price_search',
-            extract('year', user_activity_log.created_at) == current_year,
-            extract('month', user_activity_log.created_at) == current_month
+        monthly_searches = ps_user_activity_log.query.filter(
+            ps_user_activity_log.activity_type == 'price_search',
+            extract('year', ps_user_activity_log.created_at) == current_year,
+            extract('month', ps_user_activity_log.created_at) == current_month
         ).count()
         
         # Économies potentielles générées (estimation basée sur les écarts de prix)
@@ -198,9 +198,9 @@ def daily_price_data():
         ).count()
         
         # Recherches de prix effectuées aujourd'hui
-        daily_searches = user_activity_log.query.filter(
-            user_activity_log.activity_type == 'price_search',
-            func.date(user_activity_log.created_at) == today
+        daily_searches = ps_user_activity_log.query.filter(
+            ps_user_activity_log.activity_type == 'price_search',
+            func.date(ps_user_activity_log.created_at) == today
         ).count()
         
         # Magasins les plus actifs aujourd'hui
@@ -408,7 +408,7 @@ def send_ios_push_notification(device_token, message, notification_type="price_a
             badge=1,
             custom_data={
                 "type": "price_alert",
-                "action": "open_price_comparison"
+                "action": "open_PriceScan_db"
             }
         )
     elif notification_type == "promo":

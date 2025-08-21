@@ -24,7 +24,7 @@ from werkzeug.exceptions import BadRequest
 from config.constant import *
 from config.db import db
 from helpers.mailer import *
-from model.goparadize import go_users
+from model.PriceScan_db import ps_users
 
 
 def login():
@@ -34,7 +34,7 @@ def login():
     try:
         rs = {}
 
-        user = go_users.query.filter((go_users.u_username == identifier) | (go_users.u_email == identifier),go_users.u_password == password,go_users.u_status == 1,go_users.is_active == True ).first()
+        user = ps_users.query.filter((ps_users.u_username == identifier) | (ps_users.u_email == identifier),ps_users.u_password == password,ps_users.u_status == 1,ps_users.is_active == True ).first()
 
         if not user:
             raise ValueError("Invalid credentials or inactive user")
@@ -77,7 +77,7 @@ def loginSocial():
     try:
         rs = {}
         
-        user = go_users.query.filter_by(u_email=username).first()
+        user = ps_users.query.filter_by(u_email=username).first()
         
         rs['u_uid'] = user.u_uid
         rs['u_name'] = user.u_name
@@ -108,7 +108,7 @@ def loginSocial():
 def CreateUsersSocial():
     response = {}
     try:
-        newUser = go_users()
+        newUser = ps_users()
         
         newUser.u_name = request.form.get('name')
         newUser.u_firstname = request.form.get('family_name')
@@ -154,7 +154,7 @@ def delete_account():
 
     try:
         u_uid = request.json.get('u_uid')
-        user = go_users.query.filter_by(u_uid=u_uid, is_active=True).first()
+        user = ps_users.query.filter_by(u_uid=u_uid, is_active=True).first()
 
         if not user:
             response['response'] = 'error'

@@ -38,16 +38,19 @@
 ```bash
 pip install -r requirements.txt
 
-
 ### 2. Méthode alternative (package par package)
 ```bash
 cat requirements.txt | xargs -n 1 pip install
 
 
+
+pip freeze > requirements.txt
+
+
 ------------------------------------------------------------
 
 
-## Sur Windows
+## Sur Linux/MacOS
 
 ### 1. Méthode standard (recommandée)
 ```bash
@@ -57,6 +60,40 @@ pip install -r requirements.txt
 ### 2. Méthode alternative (package par package)
 ```bash
 cat requirements.txt | xargs -n 1 pip3 install
+
+
+pip freeze > requirements.txt
+pip3 freeze > requirements.txt
+
+
+------------------------------------------------------------
+
+# Lancer l'application 
+### 1. Méthode standard (recommandée)
+```bash
+python app.py
+
+### 2. Méthode alternative (package par package)
+```bash
+python3 app.py
+
+
+------------------------------------------------------------
+
+# Migrate data into databasee
+#### 1. Méthode standard (package par package recommandée)
+    ```` bash
+    flask db init
+    flask db migrate -m "Message de migration"
+    flask db upgrade
+
+
+#### 2. Méthode alternative (exécuter commande par commande si besoin)
+    ```` bash
+    python -m flask db init
+    python -m flask db migrate -m "Message de migration"
+    python -m flask db upgrade
+
 
 
 ------------------------------------------------------------
