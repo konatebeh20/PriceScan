@@ -98,9 +98,33 @@ api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='de
 def hello():
     return render_template("index.html")
 
-@app.route(BASE_URL + '/health')
-def health_check():
-    return {'status': 'healthy', 'message': 'PriceScan API is running'}, 200
+@app.route(BASE_URL + '/pricescan')
+def pricescan_main():
+    """Endpoint principal de l'API PriceScan"""
+    return {
+        'status': 'success',
+        'message': 'Bienvenue sur l\'API PriceScan !',
+        'version': '1.0.0',
+        'description': 'API de comparaison de prix et de gestion des produits',
+        'endpoints': {
+            'main': '/pricescan',
+            'api_base': '/api',
+            'categories': '/api/categories',
+            'users': '/api/users',
+            'auth': '/api/auth',
+            'stores': '/api/stores',
+            'products': '/api/products',
+            'prices': '/api/prices',
+            'receipts': '/api/receipts',
+            'favorites': '/api/favorite',
+            'device_tokens': '/api/device_tokens',
+            'compare': '/api/compare/<product_id>',
+            'search': '/api/search',
+            'stats': '/api/stats/user/<user_uid>'
+        },
+        'database': 'PostgreSQL',
+        'status_code': 200
+    }, 200
 
 @app.route(BASE_URL + '/api/compare/<string:product_id>')
 def compare_prices_endpoint(product_id):
