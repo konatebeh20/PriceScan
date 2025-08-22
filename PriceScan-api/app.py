@@ -19,13 +19,14 @@ from config.db import db
 from helpers.mailer import *
 from model.PriceScan_db import *
 from resources.auth import AuthApi
-# from resources.categories import CategoriesApi
+from resources.categories import CategoriesApi
 from resources.favorite import FavoriteApi
-# from resources.contact_us import ContactUsApi
-# from resources.hotels import HotelsApi
-# from resources.reports import ReportsApi
 from resources.users import UsersApi
 from resources.device_tokens import DeviceTokens
+from resources.stores import StoresApi
+from resources.products import ProductsApi
+from resources.prices import PricesApi
+from resources.receipts import ReceiptsApi
 
 sentry_sdk.init(
     dsn="https://e55540efdb25abee9b6509335cfb5bae@o295794.ingest.sentry.io/4506298354499584",
@@ -57,63 +58,83 @@ migrate = Migrate(app, db)
 
 CORS(app)
 
-#categoryApi
+# Categories API
 api.add_resource(CategoriesApi, '/api/categories/<string:route>', endpoint='cat_all', methods=["GET","POST"])
 api.add_resource(CategoriesApi, '/api/categories/<string:route>', endpoint='cat_all_patch', methods=["PATCH","DELETE"])
 
-#userApi
+# Users API
 api.add_resource(UsersApi, '/api/users/<string:route>', endpoint='users_all', methods=["GET","POST"])
 api.add_resource(UsersApi, '/api/users/<string:route>', endpoint='users_all_patch', methods=["PATCH","DELETE"])
 
-#authApi
+# Auth API
 api.add_resource(AuthApi, '/api/auth/<string:route>', endpoint='auth_all', methods=["GET","POST"])
 api.add_resource(AuthApi, '/api/auth/<string:route>', endpoint='auth_all_patch', methods=["PATCH","DELETE"])
 
+# Stores API
+api.add_resource(StoresApi, '/api/stores/<string:route>', endpoint='stores_all', methods=["GET","POST"])
+api.add_resource(StoresApi, '/api/stores/<string:route>', endpoint='stores_all_patch', methods=["PATCH","DELETE"])
 
-#contactUsApi
-api.add_resource(ContactUsApi, '/api/contact/<string:route>', endpoint='contact_all', methods=["GET","POST"])
-api.add_resource(ContactUsApi, '/api/contact/<string:route>', endpoint='contact_all_patch', methods=["PATCH","DELETE"])
+# Products API
+api.add_resource(ProductsApi, '/api/products/<string:route>', endpoint='products_all', methods=["GET","POST"])
+api.add_resource(ProductsApi, '/api/products/<string:route>', endpoint='products_all_patch', methods=["PATCH","DELETE"])
 
-#ReportsApi
-api.add_resource(ReportsApi, '/api/reports/<string:route>', endpoint='reports_all', methods=["GET","POST"])
-api.add_resource(ReportsApi, '/api/reports/<string:route>', endpoint='reports_all_patch', methods=["PATCH","DELETE"])
+# Prices API
+api.add_resource(PricesApi, '/api/prices/<string:route>', endpoint='prices_all', methods=["GET","POST"])
+api.add_resource(PricesApi, '/api/prices/<string:route>', endpoint='prices_all_patch', methods=["PATCH","DELETE"])
 
-#FavoriteApi
+# Receipts API
+api.add_resource(ReceiptsApi, '/api/receipts/<string:route>', endpoint='receipts_all', methods=["GET","POST"])
+api.add_resource(ReceiptsApi, '/api/receipts/<string:route>', endpoint='receipts_all_patch', methods=["PATCH","DELETE"])
+
+# Favorite API
 api.add_resource(FavoriteApi, '/api/favorite/<string:route>', endpoint='favorite_all', methods=["GET","POST"])
 api.add_resource(FavoriteApi, '/api/favorite/<string:route>', endpoint='favorite_all_patch', methods=["PATCH","DELETE"])
 
-#DeviceTokens
+# Device Tokens
 api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='device_tokens_all', methods=["GET","POST"])
-
 api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='device_tokens_all_patch', methods=["PATCH","DELETE"])
-
-#ScraperAPI
-# api.add_resource(ScraperAPI, '/api/scrape/<string:route>', endpoint='scraper_all', methods=["GET","POST"])
-# api.add_resource(ScraperAPI, '/api/scrape/<string:route>', endpoint='scraper_all_patch', methods=["PATCH","DELETE"])
-
-#PriceTrendAPI
-# api.add_resource(PriceTrendAPI, '/api/price_trends/<string:route>', , endpoint='price_trend_all', methods=["GET","POST"])
-# api.add_resource(PriceTrendAPI, '/api/price_trends/<string:route>', endpoint='price_trend_all_patch', methods=["PATCH","DELETE"])
 
 @app.route(BASE_URL + '/')
 def hello():
-    return render_template("home.html")
+    return render_template("index.html")
 
-# @app.route("/receipt")
-# def receipt():
-#     order_details = ps_orders.query.filter_by(order_reference='GO2023249627').first()
-#     user = str(order_details.order_lastname) + ' ' + str(order_details.order_firstname)
-#     # Data to be encoded
-#     data = order_details.order_reference
-#     # Encoding data using make() function
-#     img = qrcode.make(data)
-#     # Saving as an image file
-#     img.save('static/order_qr_code.png')
-    
-#     print(img)
-#     send_receipt(user, order_details.id, order_details)
-#     return render_template("receipt.html", order_details=order_details)
+@app.route(BASE_URL + '/health')
+def health_check():
+    return {'status': 'healthy', 'message': 'PriceScan API is running'}, 200
 
+@app.route(BASE_URL + '/api/compare/<string:product_id>')
+def compare_prices_endpoint(product_id):
+    """Endpoint pour comparer les prix d'un produit entre différents magasins"""
+    try:
+        from resources.prices import PricesApi
+        prices_api = PricesApi()
+        return prices_api.compare_prices(product_id)
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+@app.route(BASE_URL + '/api/search')
+def search_products_endpoint():
+    """Endpoint pour rechercher des produits"""
+    try:
+        query = request.args.get('q')
+        if not query:
+            return {'error': 'Paramètre de recherche requis'}, 400
+        
+        from resources.products import ProductsApi
+        products_api = ProductsApi()
+        return products_api.search_products(query)
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+@app.route(BASE_URL + '/api/stats/user/<string:user_uid>')
+def user_stats_endpoint(user_uid):
+    """Endpoint pour obtenir les statistiques d'un utilisateur"""
+    try:
+        from resources.receipts import ReceiptsApi
+        receipts_api = ReceiptsApi()
+        return receipts_api.get_receipt_stats(user_uid)
+    except Exception as e:
+        return {'error': str(e)}, 500
 
 @app.route("/authenticate/")
 def authenticate():
