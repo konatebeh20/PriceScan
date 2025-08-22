@@ -108,6 +108,11 @@ def create_app():
         api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='device_tokens_all', methods=["GET","POST"])
         api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='device_tokens_all_patch', methods=["PATCH","DELETE"])
         
+        # Scraper Control API
+        from resources.scraper_control import ScraperControlAPI, ScrapingStatsAPI
+        api.add_resource(ScraperControlAPI, '/api/scraper/<string:route>', endpoint='scraper_control', methods=["GET","POST","PATCH"])
+        api.add_resource(ScrapingStatsAPI, '/api/scraping_stats/<string:route>', endpoint='scraping_stats', methods=["GET"])
+        
         print("   ✅ Toutes les ressources ajoutées")
         
         # Routes spéciales
@@ -154,6 +159,21 @@ def create_app():
                 return {'error': str(e)}, 500
         
         print("   ✅ Routes spéciales ajoutées")
+        
+        # Démarrer le scraping automatique
+        try:
+            print("   🤖 Initialisation du scraping automatique...")
+            from helpers.auto_scraper import start_auto_scraper
+            
+            # Démarrer le scraping automatique en arrière-plan
+            import threading
+            scraper_thread = threading.Thread(target=start_auto_scraper, daemon=True)
+            scraper_thread.start()
+            print("   ✅ Scraping automatique démarré")
+            
+        except Exception as e:
+            print(f"   ⚠️  Erreur lors du démarrage du scraping: {e}")
+            print("   ℹ️  Le scraping peut être démarré manuellement via l'API")
         
         print("\n🎉 API PriceScan créée avec succès !")
         return app

@@ -1,349 +1,309 @@
-========================================
-    PRICESCAN API - INSTRUCTIONS
-========================================
+# ========================================
+# INSTRUCTIONS FLASK DB MIGRATE
+# ========================================
+# Compatible avec Windows, Linux et macOS
+# ========================================
 
-Ce fichier contient les instructions détaillées pour utiliser l'API PriceScan.
+## 🚀 PRÉREQUIS OBLIGATOIRES
 
-## 1. INSTALLATION ET CONFIGURATION
+### 1. Python et pip installés
+- Python 3.8+ requis
+- pip doit être accessible depuis le terminal
 
-### 1.1 Prérequis
-- Python 3.8 ou supérieur
-- pip (gestionnaire de paquets Python)
-- Git
-
-### 1.2 Installation rapide
-- **Windows**: Double-cliquez sur `start.bat`
-- **Linux/Mac**: Exécutez `./start.sh`
-
-### 1.3 Installation manuelle
+### 2. Environnement virtuel activé
 ```bash
-# 1. Cloner le projet
-git clone <repository-url>
-cd PriceScan-api
-
-# 2. Créer l'environnement virtuel
-python3 -m venv venv
-
-# 3. Activer l'environnement
-# Windows
+# Windows (PowerShell/CMD)
 venv\Scripts\activate
-# Linux/Mac
+
+# Linux/macOS
 source venv/bin/activate
+```
 
-# 4. Installer les dépendances
+### 3. Dépendances installées
+```bash
 pip install -r requirements.txt
-
-
-pip freeze > requirements.txt
-
-
-
-# 5. Configurer l'environnement
-cp env.example .env
-# Éditer .env avec vos paramètres
-
-# 6. Lancer l'API
-python3 app.py
 ```
 
-## 2. STRUCTURE DE L'APPLICATION
+## 🔧 CONFIGURATION DE LA BASE DE DONNÉES
 
-### 2.1 Modèles de base de données
-- **ps_users**: Utilisateurs de l'application
-- **ps_stores**: Magasins et leurs informations
-- **ps_products**: Produits disponibles
-- **ps_prices**: Prix des produits par magasin
-- **ps_categories**: Catégories de produits
-- **ps_receipts**: Reçus scannés par les utilisateurs
-- **ps_favorites**: Produits favoris des utilisateurs
-- **ps_notifications**: Notifications système
-- **ps_price_alerts**: Alertes de prix personnalisées
-- **ps_comparison_history**: Historique des comparaisons
+### Variables d'environnement requises
+Créer un fichier `.env` à la racine du projet :
 
-### 2.2 Resources API
-- **AuthApi**: Authentification et gestion des utilisateurs
-- **CategoriesApi**: Gestion des catégories de produits
-- **StoresApi**: Gestion des magasins
-- **ProductsApi**: Gestion des produits
-- **PricesApi**: Gestion des prix et comparaisons
-- **ReceiptsApi**: Gestion des reçus scannés
-- **FavoriteApi**: Gestion des favoris
-- **UsersApi**: Gestion des profils utilisateurs
-- **DeviceTokens**: Gestion des tokens de notification
+```env
+# Configuration de base de données
+DB_TYPE=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=PriceScan_db
 
-## 3. ENDPOINTS DE L'API
+# Ou pour SQLite (développement)
+DB_TYPE=sqlite
+DB_PATH=./PriceScan.db
 
-### 3.1 Authentification
-```
-POST /api/auth/register - Inscription d'un nouvel utilisateur
-POST /api/auth/login - Connexion d'un utilisateur
-PATCH /api/auth/delete_account - Suppression de compte
+# Ou pour PostgreSQL
+DB_TYPE=postgresql
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_NAME=PriceScan_db
 ```
 
-### 3.2 Catégories
-```
-GET /api/categories/all - Récupérer toutes les catégories
-GET /api/categories/active - Récupérer les catégories actives
-GET /api/categories/featured - Récupérer les catégories mises en avant
-POST /api/categories/create - Créer une nouvelle catégorie
-PATCH /api/categories/update - Mettre à jour une catégorie
-PATCH /api/categories/activate - Activer une catégorie
-PATCH /api/categories/deactivate - Désactiver une catégorie
-DELETE /api/categories/delete - Supprimer une catégorie
-```
+## 📋 INSTRUCTIONS PAR SYSTÈME D'EXPLOITATION
 
-### 3.3 Magasins
-```
-GET /api/stores/all - Récupérer tous les magasins
-GET /api/stores/active - Récupérer les magasins actifs
-GET /api/stores/by_city?city=Abidjan - Magasins par ville
-POST /api/stores/create - Créer un nouveau magasin
-PATCH /api/stores/update - Mettre à jour un magasin
-PATCH /api/stores/activate - Activer un magasin
-PATCH /api/stores/deactivate - Désactiver un magasin
-DELETE /api/stores/delete - Supprimer un magasin
-```
+### 🪟 WINDOWS
 
-### 3.4 Produits
-```
-GET /api/products/all - Récupérer tous les produits
-GET /api/products/active - Récupérer les produits actifs
-GET /api/products/by_category?category_id=1 - Produits par catégorie
-GET /api/products/search?q=riz - Rechercher des produits
-POST /api/products/create - Créer un nouveau produit
-PATCH /api/products/update - Mettre à jour un produit
-PATCH /api/products/activate - Activer un produit
-PATCH /api/products/deactivate - Désactiver un produit
-DELETE /api/products/delete - Supprimer un produit
-```
+#### Option 1: PowerShell
+```powershell
+# 1. Ouvrir PowerShell en tant qu'administrateur
+# 2. Naviguer vers le dossier du projet
+cd "C:\Users\konat\OneDrive\Bureau\project\accademique\M2\Dev web Mobile\PriceScan\PriceScan-api"
 
-### 3.5 Prix
-```
-GET /api/prices/all - Récupérer tous les prix
-GET /api/prices/by_product?product_id=1 - Prix d'un produit
-GET /api/prices/by_store?store_id=1 - Prix d'un magasin
-GET /api/prices/compare?product_id=1 - Comparer les prix
-GET /api/prices/latest - Prix les plus récents
-POST /api/prices/create - Créer un nouveau prix
-PATCH /api/prices/update - Mettre à jour un prix
-DELETE /api/prices/delete - Supprimer un prix
-```
+# 3. Activer l'environnement virtuel
+.\venv\Scripts\Activate.ps1
 
-### 3.6 Reçus
-```
-GET /api/receipts/all - Récupérer tous les reçus
-GET /api/receipts/by_user?user_uid=xxx - Reçus d'un utilisateur
-GET /api/receipts/by_store?store_name=Carrefour - Reçus par magasin
-GET /api/receipts/stats?user_uid=xxx - Statistiques d'un utilisateur
-POST /api/receipts/create - Créer un nouveau reçu
-POST /api/receipts/scan - Scanner un reçu
-PATCH /api/receipts/update - Mettre à jour un reçu
-PATCH /api/receipts/verify - Vérifier un reçu
-PATCH /api/receipts/reject - Rejeter un reçu
-DELETE /api/receipts/delete - Supprimer un reçu
-```
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
 
-### 3.7 Endpoints spéciaux
-```
-GET /health - Vérification de l'état de l'API
-GET /api/compare/{product_id} - Comparaison de prix (GET)
-GET /api/search?q=query - Recherche de produits (GET)
-GET /api/stats/user/{user_uid} - Statistiques utilisateur (GET)
-```
-
-## 4. EXEMPLES D'UTILISATION
-
-### 4.1 Créer un utilisateur
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "john_doe",
-    "password": "password123",
-    "email": "john@example.com",
-    "u_firstname": "John",
-    "u_lastname": "Doe"
-  }'
-```
-
-### 4.2 Créer une catégorie
-```bash
-curl -X POST http://localhost:5000/api/categories/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "cat_label": "Alimentation",
-    "cat_description": "Produits alimentaires de base"
-  }'
-```
-
-### 4.3 Créer un magasin
-```bash
-curl -X POST http://localhost:5000/api/stores/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "store_name": "Carrefour",
-    "store_city": "Abidjan",
-    "store_address": "123 Avenue de la Paix",
-    "store_country": "Côte d'\''Ivoire"
-  }'
-```
-
-### 4.4 Créer un produit
-```bash
-curl -X POST http://localhost:5000/api/products/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "product_name": "Riz Basmati",
-    "product_brand": "Uncle Ben'\''s",
-    "product_description": "Riz basmati de qualité premium",
-    "category_id": 1
-  }'
-```
-
-### 4.5 Ajouter un prix
-```bash
-curl -X POST http://localhost:5000/api/prices/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "product_id": 1,
-    "store_id": 1,
-    "price_amount": 2500,
-    "price_currency": "CFA"
-  }'
-```
-
-### 4.6 Comparer les prix
-```bash
-curl "http://localhost:5000/api/prices/compare?product_id=1"
-```
-
-## 5. GESTION DES ERREURS
-
-### 5.1 Codes de statut HTTP
-- **200**: Succès
-- **201**: Créé avec succès
-- **400**: Requête invalide
-- **401**: Non autorisé
-- **404**: Ressource non trouvée
-- **409**: Conflit (ex: doublon)
-- **500**: Erreur serveur interne
-
-### 5.2 Format des réponses d'erreur
-```json
-{
-  "error": "Description de l'erreur"
-}
-```
-
-### 5.3 Validation des données
-- Tous les champs requis doivent être présents
-- Les types de données doivent être corrects
-- Les relations entre entités doivent être valides
-
-## 6. SÉCURITÉ
-
-### 6.1 Authentification JWT
-- Les tokens JWT sont utilisés pour l'authentification
-- Les tokens expirent après 1 heure (configurable)
-- Les refresh tokens expirent après 7 jours
-
-### 6.2 Validation des données
-- Toutes les entrées sont validées côté serveur
-- Protection contre les injections SQL
-- Limitation du taux de requêtes
-
-### 6.3 CORS
-- Configuration CORS pour les domaines autorisés
-- Support des credentials pour l'authentification
-
-## 7. PERFORMANCE
-
-### 7.1 Base de données
-- Utilisation de SQLAlchemy ORM
-- Requêtes optimisées avec des index appropriés
-- Pagination pour les grandes listes
-
-### 7.2 Cache
-- Support Redis pour le cache
-- Mise en cache des requêtes fréquentes
-- Invalidation intelligente du cache
-
-## 8. DÉPLOIEMENT
-
-### 8.1 Docker
-```bash
-# Construire l'image
-docker build -t pricescan-api .
-
-# Lancer avec docker-compose
-docker-compose up -d
-```
-
-### 8.2 Production
-- Utiliser Gunicorn comme serveur WSGI
-- Configurer Nginx comme proxy inverse
-- Utiliser MySQL ou PostgreSQL en production
-- Configurer les logs et monitoring
-
-## 9. MONITORING ET LOGS
-
-### 9.1 Logs
-- Logs structurés dans `logs/app.log`
-- Rotation automatique des logs
-- Niveaux de log configurables
-
-### 9.2 Métriques
-- Endpoint de santé `/health`
-- Métriques de performance
-- Monitoring des erreurs
-
-## 10. DÉVELOPPEMENT
-
-### 10.1 Tests
-```bash
-# Tests unitaires
-pytest
-
-# Avec couverture
-pytest --cov=app tests/
-
-# Tests spécifiques
-pytest tests/test_api.py -v
-```
-
-### 10.2 Formatage du code
-```bash
-# Formatage avec Black
-black .
-
-# Vérification avec Flake8
-flake8 .
-```
-
-### 10.3 Migrations de base de données
-```bash
-# Initialiser les migrations
+# 5. Initialiser les migrations (première fois seulement)
 flask db init
 
-# Créer une migration
-flask db migrate -m "Description de la migration"
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
 
-# Appliquer les migrations
+# 7. Appliquer la migration
 flask db upgrade
 ```
 
-## 11. SUPPORT ET CONTACT
+#### Option 2: Command Prompt (CMD)
+```cmd
+# 1. Ouvrir CMD en tant qu'administrateur
+# 2. Naviguer vers le dossier du projet
+cd "C:\Users\konat\OneDrive\Bureau\project\accademique\M2\Dev web Mobile\PriceScan\PriceScan-api"
 
-- **Documentation**: Ce fichier et le README.md
-- **Issues**: Système de tickets GitHub
-- **Email**: support@pricescan.com
+# 3. Activer l'environnement virtuel
+venv\Scripts\activate.bat
 
-## 12. VERSION
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
 
-- **Version actuelle**: 1.0.0
-- **Dernière mise à jour**: Décembre 2024
-- **Compatibilité**: Python 3.8+, Flask 2.3+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
 
-========================================
-Fin des instructions
-========================================
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+### 🐧 LINUX
+
+#### Ubuntu/Debian
+```bash
+# 1. Ouvrir un terminal
+# 2. Naviguer vers le dossier du projet
+cd /path/to/PriceScan-api
+
+# 3. Activer l'environnement virtuel
+source venv/bin/activate
+
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
+
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+#### CentOS/RHEL/Fedora
+```bash
+# 1. Ouvrir un terminal
+# 2. Naviguer vers le dossier du projet
+cd /path/to/PriceScan-api
+
+# 3. Activer l'environnement virtuel
+source venv/bin/activate
+
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
+
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+### 🍎 macOS
+
+#### Terminal natif
+```bash
+# 1. Ouvrir Terminal
+# 2. Naviguer vers le dossier du projet
+cd /path/to/PriceScan-api
+
+# 3. Activer l'environnement virtuel
+source venv/bin/activate
+
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
+
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+## 🛠️ RÉSOLUTION DES PROBLÈMES COURANTS
+
+### Erreur: "flask command not found"
+**Solution:**
+```bash
+# Installer Flask-Migrate
+pip install flask-migrate
+
+# Ou utiliser python -m flask
+python -m flask db migrate -m "Initial migration"
+```
+
+### Erreur: "No module named 'flask_migrate'"
+**Solution:**
+```bash
+# Installer Flask-Migrate
+pip install flask-migrate
+
+# Vérifier l'installation
+pip list | grep flask
+```
+
+### Erreur: "No module named 'config'"
+**Solution:**
+```bash
+# S'assurer d'être dans le bon répertoire
+pwd  # Linux/macOS
+cd   # Windows
+
+# Vérifier la structure des dossiers
+ls -la  # Linux/macOS
+dir     # Windows
+```
+
+### Erreur: "Database connection failed"
+**Solution:**
+1. Vérifier que la base de données est en cours d'exécution
+2. Vérifier les paramètres de connexion dans `.env`
+3. Tester la connexion manuellement
+
+## 📁 STRUCTURE DES MIGRATIONS
+
+Après `flask db init`, la structure suivante sera créée :
+
+```
+PriceScan-api/
+├── migrations/
+│   ├── versions/          # Fichiers de migration
+│   ├── alembic.ini       # Configuration Alembic
+│   ├── env.py            # Environnement de migration
+│   ├── README            # Documentation
+│   └── script.py.mako    # Template pour les migrations
+├── .env                  # Variables d'environnement
+├── config/
+│   ├── constant.py       # Configuration de la base
+│   └── db.py            # Initialisation de la base
+└── model/
+    └── PriceScan_db.py   # Modèles SQLAlchemy
+```
+
+## 🔄 COMMANDES MIGRATION COMPLÈTES
+
+### Initialisation (première fois)
+```bash
+# Initialiser le système de migration
+flask db init
+
+# Créer la première migration
+flask db migrate -m "Initial database schema"
+
+# Appliquer la migration
+flask db upgrade
+```
+
+### Migrations suivantes
+```bash
+# Créer une nouvelle migration
+flask db migrate -m "Description des changements"
+
+# Appliquer la migration
+flask db upgrade
+
+# Annuler la dernière migration
+flask db downgrade
+```
+
+### Gestion des migrations
+```bash
+# Voir l'historique des migrations
+flask db history
+
+# Voir le statut actuel
+flask db current
+
+# Voir les migrations disponibles
+flask db show
+```
+
+## 🚨 POINTS D'ATTENTION
+
+### 1. Sauvegarde
+- Toujours sauvegarder la base avant une migration
+- Tester les migrations sur un environnement de développement
+
+### 2. Ordre des opérations
+- Toujours faire `migrate` avant `upgrade`
+- Vérifier le contenu des migrations générées
+
+### 3. Environnement
+- S'assurer que l'environnement virtuel est activé
+- Vérifier que toutes les dépendances sont installées
+
+### 4. Base de données
+- Vérifier que la base est accessible
+- Tester la connexion avant de migrer
+
+## 📞 SUPPORT
+
+En cas de problème :
+1. Vérifier les logs d'erreur
+2. Consulter la documentation Flask-Migrate
+3. Vérifier la configuration de la base de données
+4. S'assurer que tous les prérequis sont satisfaits
+
+## 🔗 LIENS UTILES
+
+- [Documentation Flask-Migrate](https://flask-migrate.readthedocs.io/)
+- [Documentation Alembic](https://alembic.sqlalchemy.org/)
+- [Documentation SQLAlchemy](https://docs.sqlalchemy.org/)
+- [Documentation Flask](https://flask.palletsprojects.com/)
+
+## 📝 NOTES IMPORTANTES
+
+- Les migrations sont spécifiques à l'environnement
+- Ne jamais modifier manuellement les fichiers de migration
+- Toujours tester sur un environnement de développement
+- Garder une trace des migrations appliquées
+- Documenter les changements de schéma
