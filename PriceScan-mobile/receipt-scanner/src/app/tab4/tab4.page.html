@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="settings-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Theme Settings</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="theme-toggle">
+          <div>
+            <h5>Dark Mode</h5>
+            <p>Enable dark theme</p>
+          </div>
+          <ion-toggle [(ngModel)]="darkMode" (ionChange)="toggleDarkMode($event)"></ion-toggle>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>About PriceFinder</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Find the best prices for products across multiple retailers. Set price alerts and never overpay again.</p>
+        <p class="version">Version 1.0.0</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Data Management</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" fill="outline" color="danger" (click)="clearAllData()">
+          <ion-icon name="trash" slot="start"></ion-icon>
+          Clear All Data
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

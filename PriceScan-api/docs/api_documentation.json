@@ -1,0 +1,264 @@
+{
+  "title": "PriceScan API - Documentation Complète",
+  "version": "1.0.0",
+  "description": "API de comparaison de prix intelligente",
+  "base_url": "/api",
+  "total_endpoints": 38,
+  "apis": {
+    "auth": {
+      "base_url": "/api/auth",
+      "endpoints": {
+        "login": {
+          "method": "POST",
+          "route": "login",
+          "description": "Connexion utilisateur"
+        },
+        "loginSocial": {
+          "method": "POST",
+          "route": "loginSocial",
+          "description": "Connexion sociale"
+        },
+        "delete_account": {
+          "method": "DELETE",
+          "route": "delete_account",
+          "description": "Suppression de compte"
+        }
+      }
+    },
+    "users": {
+      "base_url": "/api/users",
+      "endpoints": {
+        "create": {
+          "method": "POST",
+          "route": "CreateUsers",
+          "description": "Créer un utilisateur"
+        },
+        "read_single": {
+          "method": "POST",
+          "route": "ReadSingleUsers",
+          "description": "Lire un utilisateur"
+        },
+        "read_all": {
+          "method": "GET",
+          "route": "ReadUsers",
+          "description": "Lire tous les utilisateurs"
+        },
+        "update": {
+          "method": "PATCH",
+          "route": "UpdateUsers",
+          "description": "Mettre à jour un utilisateur"
+        },
+        "update_password": {
+          "method": "PATCH",
+          "route": "updatepassword",
+          "description": "Mettre à jour le mot de passe"
+        },
+        "verify": {
+          "method": "POST",
+          "route": "VerifyUser",
+          "description": "Vérifier un utilisateur"
+        },
+        "delete": {
+          "method": "DELETE",
+          "route": "DeleteUsers",
+          "description": "Supprimer un utilisateur"
+        }
+      }
+    },
+    "categories": {
+      "base_url": "/api/categories",
+      "endpoints": {
+        "crud": {
+          "method": "ALL",
+          "route": "<route>",
+          "description": "CRUD complet des catégories"
+        }
+      }
+    },
+    "stores": {
+      "base_url": "/api/stores",
+      "endpoints": {
+        "crud": {
+          "method": "ALL",
+          "route": "<route>",
+          "description": "CRUD complet des magasins"
+        }
+      }
+    },
+    "products": {
+      "base_url": "/api/products",
+      "endpoints": {
+        "crud": {
+          "method": "ALL",
+          "route": "<route>",
+          "description": "CRUD complet des produits"
+        }
+      }
+    },
+    "prices": {
+      "base_url": "/api/prices",
+      "endpoints": {
+        "crud": {
+          "method": "ALL",
+          "route": "<route>",
+          "description": "CRUD complet des prix"
+        }
+      }
+    },
+    "receipts": {
+      "base_url": "/api/receipts",
+      "endpoints": {
+        "crud": {
+          "method": "ALL",
+          "route": "<route>",
+          "description": "CRUD complet des reçus"
+        }
+      }
+    },
+    "favorites": {
+      "base_url": "/api/favorite",
+      "endpoints": {
+        "create": {
+          "method": "POST",
+          "route": "createFavorite",
+          "description": "Créer un favori"
+        },
+        "read_single": {
+          "method": "POST",
+          "route": "readSingleFavorite",
+          "description": "Lire un favori"
+        },
+        "read_by_user": {
+          "method": "POST",
+          "route": "readFavoriteUsers",
+          "description": "Lire les favoris d'un utilisateur"
+        },
+        "read_all": {
+          "method": "GET",
+          "route": "readAllFavorite",
+          "description": "Lire tous les favoris"
+        },
+        "update": {
+          "method": "PATCH",
+          "route": "updateFavorite",
+          "description": "Mettre à jour un favori"
+        },
+        "delete": {
+          "method": "DELETE",
+          "route": "deleteFavorite",
+          "description": "Supprimer un favori"
+        }
+      }
+    },
+    "notifications": {
+      "base_url": "/api/notifications",
+      "endpoints": {
+        "read_all": {
+          "method": "GET",
+          "route": "readallnotification",
+          "description": "Lire toutes les notifications"
+        },
+        "create": {
+          "method": "POST",
+          "route": "createnotification",
+          "description": "Créer une notification"
+        },
+        "read_single": {
+          "method": "POST",
+          "route": "readsinglenotification",
+          "description": "Lire une notification"
+        },
+        "delete": {
+          "method": "DELETE",
+          "route": "deletenotification",
+          "description": "Supprimer une notification"
+        }
+      }
+    },
+    "device_tokens": {
+      "base_url": "/api/device_tokens",
+      "endpoints": {
+        "crud": {
+          "method": "ALL",
+          "route": "<route>",
+          "description": "CRUD complet des tokens d'appareil"
+        }
+      }
+    },
+    "scraper_control": {
+      "base_url": "/api/scraper",
+      "endpoints": {
+        "status": {
+          "method": "GET",
+          "route": "status",
+          "description": "Statut du scraping"
+        },
+        "stores": {
+          "method": "GET",
+          "route": "stores",
+          "description": "Statut des magasins"
+        },
+        "start": {
+          "method": "POST",
+          "route": "start",
+          "description": "Démarrer le scraping"
+        },
+        "stop": {
+          "method": "POST",
+          "route": "stop",
+          "description": "Arrêter le scraping"
+        },
+        "manual": {
+          "method": "POST",
+          "route": "manual",
+          "description": "Scraping manuel"
+        },
+        "scrape_product": {
+          "method": "POST",
+          "route": "scrape_product",
+          "description": "Scraper un produit"
+        }
+      }
+    },
+    "scraping_stats": {
+      "base_url": "/api/scraping_stats",
+      "endpoints": {
+        "general": {
+          "method": "GET",
+          "route": "general",
+          "description": "Statistiques générales"
+        },
+        "recent": {
+          "method": "GET",
+          "route": "recent",
+          "description": "Statistiques récentes"
+        }
+      }
+    }
+  },
+  "special_endpoints": {
+    "health": {
+      "url": "/health",
+      "method": "GET",
+      "description": "Vérification de santé de l'API"
+    },
+    "compare_prices": {
+      "url": "/api/compare/<product_id>",
+      "method": "GET",
+      "description": "Comparer les prix d'un produit entre magasins"
+    },
+    "search_products": {
+      "url": "/api/search",
+      "method": "GET",
+      "description": "Rechercher des produits",
+      "params": [
+        "q"
+      ]
+    },
+    "user_stats": {
+      "url": "/api/stats/user/<user_uid>",
+      "method": "GET",
+      "description": "Statistiques d'un utilisateur"
+    }
+  }
+}

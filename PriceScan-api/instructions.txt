@@ -1,109 +1,309 @@
-# Création et activation d’un environnement virtuel (venv)
-# Sur Windows
+# ========================================
+# INSTRUCTIONS FLASK DB MIGRATE
+# ========================================
+# Compatible avec Windows, Linux et macOS
+# ========================================
 
-    python -m venv venv
+## 🚀 PRÉREQUIS OBLIGATOIRES
 
-# Activer l’environnement
+### 1. Python et pip installés
+- Python 3.8+ requis
+- pip doit être accessible depuis le terminal
 
-    venv\Scripts\activate
+### 2. Environnement virtuel activé
+```bash
+# Windows (PowerShell/CMD)
+venv\Scripts\activate
 
-# Vérifier que tu es dans le venv
+# Linux/macOS
+source venv/bin/activate
+```
 
-    where python
-
-
-------------------------------------------------------------
-
-
-# Sur Linux / MacOS
-# Création et activation d’un environnement virtuel (venv)
-
-    python3 -m venv venv
-
- # Activer l’environnement
-
-    source venv/bin/activate
-
-# Vérifier que tu es dans le venv
-    which python
-
-
-------------------------------------------------------------
-
-
-# Installation des dépendances une fois le venv activé :
-## Sur Windows
-
-### 1. Méthode standard (recommandée)
+### 3. Dépendances installées
 ```bash
 pip install -r requirements.txt
+```
 
-### 2. Méthode alternative (package par package)
+## 🔧 CONFIGURATION DE LA BASE DE DONNÉES
+
+### Variables d'environnement requises
+Créer un fichier `.env` à la racine du projet :
+
+```env
+# Configuration de base de données
+DB_TYPE=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=PriceScan_db
+
+# Ou pour SQLite (développement)
+DB_TYPE=sqlite
+DB_PATH=./PriceScan.db
+
+# Ou pour PostgreSQL
+DB_TYPE=postgresql
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_NAME=PriceScan_db
+```
+
+## 📋 INSTRUCTIONS PAR SYSTÈME D'EXPLOITATION
+
+### 🪟 WINDOWS
+
+#### Option 1: PowerShell
+```powershell
+# 1. Ouvrir PowerShell en tant qu'administrateur
+# 2. Naviguer vers le dossier du projet
+cd "C:\Users\konat\OneDrive\Bureau\project\accademique\M2\Dev web Mobile\PriceScan\PriceScan-api"
+
+# 3. Activer l'environnement virtuel
+.\venv\Scripts\Activate.ps1
+
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
+
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+#### Option 2: Command Prompt (CMD)
+```cmd
+# 1. Ouvrir CMD en tant qu'administrateur
+# 2. Naviguer vers le dossier du projet
+cd "C:\Users\konat\OneDrive\Bureau\project\accademique\M2\Dev web Mobile\PriceScan\PriceScan-api"
+
+# 3. Activer l'environnement virtuel
+venv\Scripts\activate.bat
+
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
+
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+### 🐧 LINUX
+
+#### Ubuntu/Debian
 ```bash
-cat requirements.txt | xargs -n 1 pip install
+# 1. Ouvrir un terminal
+# 2. Naviguer vers le dossier du projet
+cd /path/to/PriceScan-api
 
+# 3. Activer l'environnement virtuel
+source venv/bin/activate
 
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
 
-pip freeze > requirements.txt
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
 
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
 
-------------------------------------------------------------
+# 7. Appliquer la migration
+flask db upgrade
+```
 
-
-## Sur Linux/MacOS
-
-### 1. Méthode standard (recommandée)
+#### CentOS/RHEL/Fedora
 ```bash
-pip install -r requirements.txt
+# 1. Ouvrir un terminal
+# 2. Naviguer vers le dossier du projet
+cd /path/to/PriceScan-api
 
+# 3. Activer l'environnement virtuel
+source venv/bin/activate
 
-### 2. Méthode alternative (package par package)
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
+
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
+
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
+
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+### 🍎 macOS
+
+#### Terminal natif
 ```bash
-cat requirements.txt | xargs -n 1 pip3 install
+# 1. Ouvrir Terminal
+# 2. Naviguer vers le dossier du projet
+cd /path/to/PriceScan-api
 
+# 3. Activer l'environnement virtuel
+source venv/bin/activate
 
-pip freeze > requirements.txt
-pip3 freeze > requirements.txt
+# 4. Vérifier que Flask-Migrate est installé
+pip show flask-migrate
 
+# 5. Initialiser les migrations (première fois seulement)
+flask db init
 
-------------------------------------------------------------
+# 6. Créer une migration
+flask db migrate -m "Initial migration"
 
-# Lancer l'application 
-### 1. Méthode standard (recommandée)
+# 7. Appliquer la migration
+flask db upgrade
+```
+
+## 🛠️ RÉSOLUTION DES PROBLÈMES COURANTS
+
+### Erreur: "flask command not found"
+**Solution:**
 ```bash
-python app.py
+# Installer Flask-Migrate
+pip install flask-migrate
 
-### 2. Méthode alternative (package par package)
+# Ou utiliser python -m flask
+python -m flask db migrate -m "Initial migration"
+```
+
+### Erreur: "No module named 'flask_migrate'"
+**Solution:**
 ```bash
-python3 app.py
+# Installer Flask-Migrate
+pip install flask-migrate
 
+# Vérifier l'installation
+pip list | grep flask
+```
 
-------------------------------------------------------------
-
-# Migrate data into databasee
-#### 1. Méthode standard (package par package recommandée)
-    ```` bash
-    flask db init
-    flask db migrate -m "Message de migration"
-    flask db upgrade
-
-
-#### 2. Méthode alternative (exécuter commande par commande si besoin)
-    ```` bash
-    python -m flask db init
-    python -m flask db migrate -m "Message de migration"
-    python -m flask db upgrade
-
-
-
-------------------------------------------------------------
-
-
-# Désactivation du venv :
-## Sur Windows
+### Erreur: "No module named 'config'"
+**Solution:**
 ```bash
-deactivate
+# S'assurer d'être dans le bon répertoire
+pwd  # Linux/macOS
+cd   # Windows
 
-## Sur Linux / MacOS
+# Vérifier la structure des dossiers
+ls -la  # Linux/macOS
+dir     # Windows
+```
+
+### Erreur: "Database connection failed"
+**Solution:**
+1. Vérifier que la base de données est en cours d'exécution
+2. Vérifier les paramètres de connexion dans `.env`
+3. Tester la connexion manuellement
+
+## 📁 STRUCTURE DES MIGRATIONS
+
+Après `flask db init`, la structure suivante sera créée :
+
+```
+PriceScan-api/
+├── migrations/
+│   ├── versions/          # Fichiers de migration
+│   ├── alembic.ini       # Configuration Alembic
+│   ├── env.py            # Environnement de migration
+│   ├── README            # Documentation
+│   └── script.py.mako    # Template pour les migrations
+├── .env                  # Variables d'environnement
+├── config/
+│   ├── constant.py       # Configuration de la base
+│   └── db.py            # Initialisation de la base
+└── model/
+    └── PriceScan_db.py   # Modèles SQLAlchemy
+```
+
+## 🔄 COMMANDES MIGRATION COMPLÈTES
+
+### Initialisation (première fois)
 ```bash
-deactivate
+# Initialiser le système de migration
+flask db init
+
+# Créer la première migration
+flask db migrate -m "Initial database schema"
+
+# Appliquer la migration
+flask db upgrade
+```
+
+### Migrations suivantes
+```bash
+# Créer une nouvelle migration
+flask db migrate -m "Description des changements"
+
+# Appliquer la migration
+flask db upgrade
+
+# Annuler la dernière migration
+flask db downgrade
+```
+
+### Gestion des migrations
+```bash
+# Voir l'historique des migrations
+flask db history
+
+# Voir le statut actuel
+flask db current
+
+# Voir les migrations disponibles
+flask db show
+```
+
+## 🚨 POINTS D'ATTENTION
+
+### 1. Sauvegarde
+- Toujours sauvegarder la base avant une migration
+- Tester les migrations sur un environnement de développement
+
+### 2. Ordre des opérations
+- Toujours faire `migrate` avant `upgrade`
+- Vérifier le contenu des migrations générées
+
+### 3. Environnement
+- S'assurer que l'environnement virtuel est activé
+- Vérifier que toutes les dépendances sont installées
+
+### 4. Base de données
+- Vérifier que la base est accessible
+- Tester la connexion avant de migrer
+
+## 📞 SUPPORT
+
+En cas de problème :
+1. Vérifier les logs d'erreur
+2. Consulter la documentation Flask-Migrate
+3. Vérifier la configuration de la base de données
+4. S'assurer que tous les prérequis sont satisfaits
+
+## 🔗 LIENS UTILES
+
+- [Documentation Flask-Migrate](https://flask-migrate.readthedocs.io/)
+- [Documentation Alembic](https://alembic.sqlalchemy.org/)
+- [Documentation SQLAlchemy](https://docs.sqlalchemy.org/)
+- [Documentation Flask](https://flask.palletsprojects.com/)
+
+## 📝 NOTES IMPORTANTES
+
+- Les migrations sont spécifiques à l'environnement
+- Ne jamais modifier manuellement les fichiers de migration
+- Toujours tester sur un environnement de développement
+- Garder une trace des migrations appliquées
+- Documenter les changements de schéma

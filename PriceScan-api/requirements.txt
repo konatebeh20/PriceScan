@@ -1,7 +1,74 @@
-blinker==1.9.0
-click==8.2.1
-Flask==3.1.0
-itsdangerous==2.2.0
-Jinja2==3.1.6
-MarkupSafe==3.0.2
-Werkzeug==3.1.3
+# ============================
+# PRICESCAN-API - DEPENDANCES
+# ============================
+
+# === FLASK ET EXTENSIONS ===
+Flask==2.3.3
+Flask-RESTful==0.3.10
+Flask-SQLAlchemy==3.0.5
+Flask-Migrate==4.0.5
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.5.3
+Werkzeug==2.3.7
+
+# === BASE DE DONNEES ===
+SQLAlchemy==2.0.23
+PyMySQL==1.1.0
+psycopg2-binary==2.9.9
+pymongo==4.6.0
+alembic==1.12.1
+
+# === AUTHENTIFICATION ET SECURITE ===
+PyJWT==2.8.0
+bcrypt==4.1.2
+cryptography==41.0.7
+python-multipart==0.0.6
+email-validator==2.1.0
+
+# === TRAITEMENT D'IMAGES ET OCR ===
+opencv-python==4.8.1.78
+Pillow==10.1.0
+pytesseract==0.3.10
+numpy==1.24.3
+
+# === WEB SCRAPING ET PARSING ===
+requests==2.31.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+urllib3==2.0.7
+xmltodict==0.13.0
+
+# === GENERATION DE DOCUMENTS ===
+pdfkit==1.0.0
+qrcode==7.4.2
+
+# === MONITORING ET LOGGING ===
+sentry-sdk==1.38.0
+gunicorn==21.2.0
+eventlet==0.33.3
+
+# === CACHE ET TASKS ASYNCHRONES ===
+redis==5.0.1
+celery==5.3.4
+
+# === TESTS ET QUALITE ===
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.11.0
+flake8==6.1.0
+
+# === SERIALISATION ET VALIDATION ===
+marshmallow==3.20.1
+marshmallow-sqlalchemy==0.29.0
+
+# === UTILITAIRES ===
+python-dotenv==1.1.0
+
+# === NOTIFICATIONS PUSH ===
+apns2==0.7.2
+
+# === OPTIONNEL - COMMENTEZ ===
+# matplotlib==3.7.2  # Pour les graphiques (commenté dans users.py)
+# pandas==2.0.3      # Pour l'analyse de données
+# scikit-learn==1.3.0  # Pour le machine learning
+# tensorflow==2.13.0    # Pour l'IA avancée

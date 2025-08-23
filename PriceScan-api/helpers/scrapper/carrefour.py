@@ -18,3 +18,23 @@ def clean_price(price_str):
         return float(price_str.replace("F", "").replace("CFA", "").replace(",", "").strip())
     except:
         return None
+
+def scrape_carrefour(product_name=None, max_results=10):
+    """
+    Fonction de scraping pour Carrefour
+    """
+    try:
+        # Placeholder pour le scraping Carrefour
+        return {
+            "store": "Carrefour",
+            "products": [],
+            "status": "success",
+            "message": "Scraping Carrefour en cours de développement"
+        }
+    except Exception as e:
+        return {
+            "store": "Carrefour",
+            "products": [],
+            "status": "error",
+            "message": str(e)
+        }

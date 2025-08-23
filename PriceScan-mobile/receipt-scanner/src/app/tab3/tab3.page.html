@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>My Favorites</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="favorites-container">
+    <div *ngIf="favorites.length === 0" class="empty-state">
+      <ion-icon name="heart" size="large"></ion-icon>
+      <h4>No favorites yet</h4>
+      <p>Start adding products to your favorites list</p>
+    </div>
+    
+    <div *ngIf="favorites.length > 0" class="favorites-list">
+      <div class="favorite-item" *ngFor="let favorite of favorites" (click)="showProductDetail(favorite)">
+        <div class="favorite-image">
+          <ion-icon [name]="getProductIcon(favorite.image)" size="large"></ion-icon>
+        </div>
+        <div class="favorite-info">
+          <h5 class="favorite-title">{{ favorite.name }}</h5>
+          <p class="favorite-price">${{ favorite.price.toFixed(2) }}</p>
+          <p class="favorite-seller">{{ favorite.seller }}</p>
+        </div>
+        <div class="favorite-actions">
+          <ion-button fill="clear" size="small" (click)="removeFavorite($event, favorite.id)">
+            <ion-icon name="trash" color="danger"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

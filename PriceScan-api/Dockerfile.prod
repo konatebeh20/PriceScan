@@ -1,0 +1,70 @@
+# ========================================
+# DOCKERFILE PRODUCTION PRICESCAN API
+# ========================================
+# Image optimisée pour la production
+# ========================================
+
+# Image de base Python officielle
+FROM python:3.11-slim
+
+# Métadonnées
+LABEL maintainer="PriceScan Team <dev@pricescan.com>"
+LABEL version="1.0.0"
+LABEL description="PriceScan API - Application de comparaison de prix"
+
+# Variables d'environnement
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV FLASK_ENV=production
+ENV FLASK_DEBUG=0
+ENV PYTHONPATH=/app
+
+# Créer l'utilisateur non-root
+RUN groupadd -r pricescan && useradd -r -g pricescan pricescan
+
+# Installer les dépendances système
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libpq-dev \
+    libmariadb-dev \
+    pkg-config \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Créer le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers de dépendances
+COPY requirements.txt .
+COPY requirements-prod.txt .
+
+# Installer les dépendances Python
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r requirements-prod.txt
+
+# Créer les dossiers nécessaires
+RUN mkdir -p /app/logs /app/uploads /app/temp && \
+    chown -R pricescan:pricescan /app
+
+# Copier le code source
+COPY --chown=pricescan:pricescan . .
+
+# Créer le dossier de logs et le rendre accessible
+RUN mkdir -p /app/logs && \
+    chown -R pricescan:pricescan /app/logs && \
+    chmod 755 /app/logs
+
+# Exposer le port
+EXPOSE 8000
+
+# Changer vers l'utilisateur non-root
+USER pricescan
+
+# Vérification de santé
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Point d'entrée
+ENTRYPOINT ["gunicorn", "--config", "config/gunicorn_config.py", "wsgi:app"]
