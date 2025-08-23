@@ -1,0 +1,134 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Authentification</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="skipAuth()" fill="clear">
+        <ion-icon name="play" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="auth-container">
+    
+    <!-- Logo et titre -->
+    <div class="header-section">
+      <div class="logo">
+        <ion-icon name="scan-outline" size="large" color="primary"></ion-icon>
+      </div>
+      <h1>PriceScan</h1>
+      <p>{{ isLogin ? 'Connectez-vous à votre compte' : 'Créez votre compte' }}</p>
+    </div>
+
+    <!-- Formulaire de connexion -->
+    <form *ngIf="isLogin" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
+      <ion-item>
+        <ion-label position="stacked">Email *</ion-label>
+        <ion-input 
+          formControlName="email" 
+          type="email" 
+          placeholder="votre@email.com"
+          [class.ion-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        Email invalide
+      </ion-note>
+
+      <ion-item>
+        <ion-label position="stacked">Mot de passe *</ion-label>
+        <ion-input 
+          formControlName="password" 
+          type="password" 
+          placeholder="Votre mot de passe"
+          [class.ion-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        Mot de passe requis (min 6 caractères)
+      </ion-note>
+
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="loginForm.invalid"
+        class="submit-btn">
+        <ion-icon name="log-in" slot="start"></ion-icon>
+        Se connecter
+      </ion-button>
+    </form>
+
+    <!-- Formulaire d'inscription -->
+    <form *ngIf="!isLogin" [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
+      <ion-item>
+        <ion-label position="stacked">Nom complet *</ion-label>
+        <ion-input 
+          formControlName="name" 
+          type="text" 
+          placeholder="Votre nom complet"
+          [class.ion-invalid]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+        Nom requis (min 2 caractères)
+      </ion-note>
+
+      <ion-item>
+        <ion-label position="stacked">Email *</ion-label>
+        <ion-input 
+          formControlName="email" 
+          type="email" 
+          placeholder="votre@email.com"
+          [class.ion-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        Email invalide
+      </ion-note>
+
+      <ion-item>
+        <ion-label position="stacked">Mot de passe *</ion-label>
+        <ion-input 
+          formControlName="password" 
+          type="password" 
+          placeholder="Votre mot de passe"
+          [class.ion-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        Mot de passe requis (min 6 caractères)
+      </ion-note>
+
+      <ion-item>
+        <ion-label position="stacked">Confirmer le mot de passe *</ion-label>
+        <ion-input 
+          formControlName="confirmPassword" 
+          type="password" 
+          placeholder="Confirmez votre mot de passe"
+          [class.ion-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched">
+        Les mots de passe ne correspondent pas
+      </ion-note>
+
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="registerForm.invalid"
+        class="submit-btn">
+        <ion-icon name="person-add" slot="start"></ion-icon>
+        S'inscrire
+      </ion-button>
+    </form>
+
+    <!-- Basculer entre connexion et inscription -->
+    <div class="toggle-section">
+      <ion-button fill="clear" (click)="toggleMode()">
+        {{ isLogin ? 'Pas encore de compte ? S\'inscrire' : 'Déjà un compte ? Se connecter' }}
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,280 @@
+.receipts-container {
+  padding: 16px;
+}
+
+.stats-card {
+  margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.receipts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.receipt-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.receipt-info {
+  flex: 1;
+}
+
+.store-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin: 0 0 4px 0;
+}
+
+.receipt-date {
+  font-size: 14px;
+  color: var(--ion-color-medium);
+  margin: 0;
+}
+
+.receipt-amount {
+  text-align: right;
+}
+
+.amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+}
+
+.receipt-items {
+  margin-bottom: 16px;
+}
+
+.item-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ion-color-light);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.item-name {
+  font-size: 14px;
+  color: var(--ion-color-dark);
+  flex: 1;
+}
+
+.item-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+.more-items {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  text-align: center;
+  padding: 8px 0;
+  font-style: italic;
+}
+
+.receipt-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--ion-color-light);
+  padding-top: 16px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--ion-color-medium);
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ion-color-medium);
+  
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: var(--ion-color-light);
+  }
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: var(--ion-color-dark);
+  }
+  
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 24px 0;
+    max-width: 300px;
+  }
+}
+
+// Responsive design
+@media (max-width: 576px) {
+  .receipts-container {
+    padding: 12px;
+  }
+  
+  .stats-grid {
+    gap: 12px;
+  }
+  
+  .stat-value {
+    font-size: 20px;
+  }
+  
+  .store-name {
+    font-size: 16px;
+  }
+  
+  .amount {
+    font-size: 18px;
+  }
+  
+  .receipt-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .store-name {
+    color: var(--ion-color-light);
+  }
+  
+  .item-name {
+    color: var(--ion-color-light);
+  }
+  
+  .empty-state h3 {
+    color: var(--ion-color-light);
+  }
+}
+
+// Animations
+.receipt-card {
+  animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Styles pour les boutons
+ion-button[fill="clear"] {
+  --color: var(--ion-color-medium);
+  font-size: 14px;
+  
+  &:hover {
+    --color: var(--ion-color-primary);
+  }
+}
+
+ion-button[color="danger"] {
+  --color: var(--ion-color-danger);
+  
+  &:hover {
+    --color: var(--ion-color-danger-shade);
+  }
+}
+
+// Styles pour les cartes Ionic
+ion-card {
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+ion-card-content {
+  padding: 20px;
+}
+
+// Styles pour le bouton flottant
+ion-fab-button {
+  --background: var(--ion-color-primary);
+  --color: white;
+  --border-radius: 50%;
+  --box-shadow: 0 4px 12px rgba(42, 107, 201, 0.3);
+  
+  &:hover {
+    --box-shadow: 0 6px 16px rgba(42, 107, 201, 0.4);
+  }
+}

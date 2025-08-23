@@ -1,0 +1,146 @@
+.modal-content {
+  padding: 16px;
+}
+
+.view-mode, .edit-mode {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.total-amount {
+  text-align: center;
+  margin: 20px 0;
+  
+  h2 {
+    color: var(--ion-color-primary);
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.category {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  font-style: italic;
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-form {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ion-color-light);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// Styles pour les formulaires
+ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-bottom: 8px;
+}
+
+ion-label[position="stacked"] {
+  font-weight: 500;
+  color: var(--ion-color-dark);
+}
+
+ion-input {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --background: var(--ion-color-light);
+  --border-radius: 8px;
+  --border: 1px solid var(--ion-color-medium);
+}
+
+ion-input:focus-within {
+  --border-color: var(--ion-color-primary);
+  --background: var(--ion-color-light-shade);
+}
+
+// Styles pour les boutons
+ion-button[fill="clear"] {
+  --color: var(--ion-color-medium);
+  font-size: 14px;
+  
+  &:hover {
+    --color: var(--ion-color-primary);
+  }
+}
+
+ion-button[color="danger"] {
+  --color: var(--ion-color-danger);
+  
+  &:hover {
+    --color: var(--ion-color-danger-shade);
+  }
+}
+
+// Responsive design
+@media (max-width: 576px) {
+  .modal-content {
+    padding: 12px;
+  }
+  
+  .total-amount h2 {
+    font-size: 20px;
+  }
+  
+  .item-form {
+    padding: 12px 0;
+  }
+  
+  ion-row {
+    margin: 0 -8px;
+  }
+  
+  ion-col {
+    padding: 0 8px;
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  ion-input {
+    --background: var(--ion-color-dark);
+    --border-color: var(--ion-color-medium);
+    --color: var(--ion-color-light);
+  }
+  
+  ion-input:focus-within {
+    --background: var(--ion-color-dark-shade);
+    --border-color: var(--ion-color-primary);
+  }
+  
+  .category {
+    color: var(--ion-color-medium);
+  }
+}
+
+// Animations
+.item-form {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: var(--ion-color-light);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px -16px;
+  }
+}
+
+.action-buttons ion-button {
+  transition: transform 0.2s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}

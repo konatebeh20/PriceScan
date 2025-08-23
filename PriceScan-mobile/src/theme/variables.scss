@@ -1,0 +1,209 @@
+// Variables de thème PriceScan Mobile
+// ======================================
+
+// Couleurs principales
+$primary-color: #667eea;
+$primary-dark: #5a6fd8;
+$primary-light: #8b9ff0;
+
+$secondary-color: #764ba2;
+$secondary-dark: #6a4190;
+$secondary-light: #9a6bb8;
+
+$accent-color: #f093fb;
+$accent-dark: #e67ee6;
+$accent-light: #f4b5f8;
+
+// Couleurs de succès/erreur
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+
+// Couleurs neutres
+$white: #ffffff;
+$light-gray: #f8f9fa;
+$gray: #6c757d;
+$dark-gray: #495057;
+$black: #000000;
+
+// Couleurs de fond
+$background-light: #f8f9fa;
+$background-dark: #1a1a1a;
+$surface-light: #ffffff;
+$surface-dark: #2d2d2d;
+
+// Couleurs de texte
+$text-primary: #333333;
+$text-secondary: #6c757d;
+$text-light: #ffffff;
+$text-muted: #9ca3af;
+
+// Couleurs de bordure
+$border-light: #e9ecef;
+$border-dark: #404040;
+
+// Ombres
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+$shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+// Rayons de bordure
+$border-radius-sm: 8px;
+$border-radius-md: 15px;
+$border-radius-lg: 25px;
+$border-radius-xl: 35px;
+
+// Espacements
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+
+// Tailles de police
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-xxl: 1.5rem;
+$font-size-xxxl: 2rem;
+
+// Poids de police
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Transitions
+$transition-fast: 0.15s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// Mixins utiles
+@mixin gradient-primary {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+}
+
+@mixin gradient-accent {
+  background: linear-gradient(135deg, $accent-color 0%, $primary-color 100%);
+}
+
+@mixin card-shadow {
+  box-shadow: $shadow-md;
+  transition: box-shadow $transition-normal;
+  
+  &:hover {
+    box-shadow: $shadow-lg;
+  }
+}
+
+@mixin button-primary {
+  background: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: $border-radius-lg;
+  padding: $spacing-md $spacing-lg;
+  font-weight: $font-weight-medium;
+  transition: all $transition-normal;
+  
+  &:hover {
+    background: $primary-dark;
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+@mixin button-outline {
+  background: transparent;
+  color: $primary-color;
+  border: 2px solid $primary-color;
+  border-radius: $border-radius-lg;
+  padding: $spacing-md $spacing-lg;
+  font-weight: $font-weight-medium;
+  transition: all $transition-normal;
+  
+  &:hover {
+    background: $primary-color;
+    color: $white;
+  }
+}
+
+@mixin responsive($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) { @content; }
+  } @else if $breakpoint == xxl {
+    @media (min-width: $breakpoint-xxl) { @content; }
+  }
+}
+
+// Variables Ionic (pour la compatibilité)
+:root {
+  --ion-color-primary: #{$primary-color};
+  --ion-color-primary-rgb: 102, 126, 234;
+  --ion-color-primary-contrast: #{$white};
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #{$primary-dark};
+  --ion-color-primary-tint: #{$primary-light};
+  
+  --ion-color-secondary: #{$secondary-color};
+  --ion-color-secondary-rgb: 118, 75, 162;
+  --ion-color-secondary-contrast: #{$white};
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #{$secondary-dark};
+  --ion-color-secondary-tint: #{$secondary-light};
+  
+  --ion-color-success: #{$success-color};
+  --ion-color-warning: #{$warning-color};
+  --ion-color-danger: #{$danger-color};
+  --ion-color-info: #{$info-color};
+  
+  --ion-background-color: #{$background-light};
+  --ion-background-color-rgb: 248, 249, 250;
+  --ion-text-color: #{$text-primary};
+  --ion-text-color-rgb: 51, 51, 51;
+  
+  --ion-border-color: #{$border-light};
+  --ion-item-background: #{$surface-light};
+  --ion-card-background: #{$surface-light};
+}
+
+// Thème sombre
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #{$background-dark};
+    --ion-background-color-rgb: 26, 26, 26;
+    --ion-text-color: #{$text-light};
+    --ion-text-color-rgb: 255, 255, 255;
+    
+    --ion-border-color: #{$border-dark};
+    --ion-item-background: #{$surface-dark};
+    --ion-card-background: #{$surface-dark};
+  }
+}

@@ -1,0 +1,122 @@
+.scanner-container {
+  padding: 20px;
+  text-align: center;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.scan-interface {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.scan-icon {
+  margin-bottom: 20px;
+  
+  ion-icon {
+    font-size: 80px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.scan-interface h2 {
+  margin-bottom: 10px;
+  color: var(--ion-color-dark);
+  font-weight: 600;
+}
+
+.scan-interface p {
+  margin-bottom: 30px;
+  color: var(--ion-color-medium);
+  line-height: 1.5;
+}
+
+.scan-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.captured-image-container {
+  position: relative;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.captured-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  display: block;
+}
+
+.scanning-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.action-buttons {
+  margin-top: 20px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Responsive design
+@media (max-width: 576px) {
+  .scanner-container {
+    padding: 15px;
+  }
+  
+  .scan-icon ion-icon {
+    font-size: 60px;
+  }
+  
+  .scan-interface h2 {
+    font-size: 20px;
+  }
+  
+  .scan-interface p {
+    font-size: 14px;
+  }
+  
+  .captured-image {
+    max-width: 100%;
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .scan-interface h2 {
+    color: var(--ion-color-light);
+  }
+  
+  .scan-interface p {
+    color: var(--ion-color-medium);
+  }
+}

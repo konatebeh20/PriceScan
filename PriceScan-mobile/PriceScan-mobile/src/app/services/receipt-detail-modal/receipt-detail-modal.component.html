@@ -1,0 +1,169 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ isNewReceipt ? 'Nouveau Reçu' : 'Détails du Reçu' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="modal-content">
+    
+    <!-- Mode affichage -->
+    <div *ngIf="!isEditing" class="view-mode">
+      
+      <!-- Informations générales -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ receipt.storeName }}</ion-card-title>
+          <ion-card-subtitle>{{ formatDate(receipt.date) }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="total-amount">
+            <h2>Total: {{ formatPrice(receipt.totalAmount) }}</h2>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Liste des articles -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Articles</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item *ngFor="let item of receipt.items; let i = index">
+              <ion-label>
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.quantity }} x {{ formatPrice(item.unitPrice) }}</p>
+                <p *ngIf="item.category" class="category">{{ item.category }}</p>
+              </ion-label>
+              <ion-note slot="end" color="primary">
+                {{ formatPrice(item.totalPrice) }}
+              </ion-note>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Boutons d'action -->
+      <div class="action-buttons">
+        <ion-button expand="block" (click)="toggleEditing()" color="primary">
+          <ion-icon name="create" slot="start"></ion-icon>
+          Modifier
+        </ion-button>
+        
+        <ion-button expand="block" (click)="saveReceipt()" color="success">
+          <ion-icon name="checkmark" slot="start"></ion-icon>
+          Sauvegarder
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Mode édition -->
+    <form *ngIf="isEditing" [formGroup]="receiptForm" class="edit-mode">
+      
+      <!-- Informations générales -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Informations Générales</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="stacked">Nom du Magasin *</ion-label>
+            <ion-input formControlName="storeName" placeholder="Ex: Carrefour"></ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="stacked">Date *</ion-label>
+            <ion-input formControlName="date" type="date"></ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="stacked">Montant Total *</ion-label>
+            <ion-input formControlName="totalAmount" type="number" step="0.01" readonly></ion-input>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Articles -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Articles</ion-card-title>
+          <ion-button fill="clear" size="small" (click)="addItem()">
+            <ion-icon name="add" slot="start"></ion-icon>
+            Ajouter un Article
+          </ion-button>
+        </ion-card-header>
+        <ion-card-content>
+          <div formArrayName="items">
+            <div *ngFor="let item of itemsFormArray.controls; let i = index" [formGroupName]="i" class="item-form">
+              <ion-item>
+                <ion-label position="stacked">Nom de l'article *</ion-label>
+                <ion-input formControlName="name" placeholder="Nom du produit"></ion-input>
+              </ion-item>
+              
+              <ion-row>
+                <ion-col size="6">
+                  <ion-item>
+                    <ion-label position="stacked">Quantité *</ion-label>
+                    <ion-input formControlName="quantity" type="number" min="1"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-item>
+                    <ion-label position="stacked">Prix unitaire *</ion-label>
+                    <ion-input formControlName="unitPrice" type="number" step="0.01" min="0"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              
+              <ion-row>
+                <ion-col size="8">
+                  <ion-item>
+                    <ion-label position="stacked">Catégorie</ion-label>
+                    <ion-input formControlName="category" placeholder="Ex: Alimentation"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-item>
+                    <ion-label position="stacked">Total</ion-label>
+                    <ion-input formControlName="totalPrice" type="number" step="0.01" readonly></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              
+              <ion-button 
+                fill="clear" 
+                color="danger" 
+                size="small" 
+                (click)="removeItem(i)"
+                *ngIf="itemsFormArray.length > 1">
+                <ion-icon name="trash" slot="start"></ion-icon>
+                Supprimer
+              </ion-button>
+              
+              <ion-item-divider *ngIf="i < itemsFormArray.length - 1"></ion-item-divider>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Boutons d'action -->
+      <div class="action-buttons">
+        <ion-button expand="block" (click)="toggleEditing()" color="medium" fill="outline">
+          <ion-icon name="close" slot="start"></ion-icon>
+          Annuler
+        </ion-button>
+        
+        <ion-button expand="block" (click)="saveReceipt()" color="success" [disabled]="!receiptForm.valid">
+          <ion-icon name="checkmark" slot="start"></ion-icon>
+          Sauvegarder
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

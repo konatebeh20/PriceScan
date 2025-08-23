@@ -1,0 +1,52 @@
+<ion-content class="ion-padding">
+  <div class="intro-container">
+    
+    <!-- Logo et titre -->
+    <div class="logo-section">
+      <div class="logo">
+        <ion-icon name="scan-outline" size="large"></ion-icon>
+      </div>
+      <h1 class="app-title">PriceScan</h1>
+      <p class="app-subtitle">Comparateur de prix intelligent</p>
+    </div>
+
+    <!-- Description des fonctionnalités -->
+    <div class="features-section">
+      <div class="feature-item">
+        <ion-icon name="camera-outline" color="primary"></ion-icon>
+        <h3>Scan de reçus</h3>
+        <p>Scannez vos reçus pour enregistrer vos achats</p>
+      </div>
+      
+      <div class="feature-item">
+        <ion-icon name="trending-down-outline" color="success"></ion-icon>
+        <h3>Comparaison de prix</h3>
+        <p>Trouvez les meilleurs prix pour vos produits</p>
+      </div>
+      
+      <div class="feature-item">
+        <ion-icon name="analytics-outline" color="warning"></ion-icon>
+        <h3>Suivi des dépenses</h3>
+        <p>Analysez vos habitudes d'achat</p>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+      <ion-button expand="block" size="large" (click)="goToAuth()" class="primary-btn">
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        Commencer
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" size="large" (click)="skipIntro()" class="secondary-btn">
+        <ion-icon name="play" slot="end"></ion-icon>
+        Tester l'app
+      </ion-button>
+    </div>
+
+    <!-- Version -->
+    <div class="version-info">
+      <p>Version 1.0.0</p>
+    </div>
+  </div>
+</ion-content>

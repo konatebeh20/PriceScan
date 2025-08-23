@@ -1,0 +1,276 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>PriceScan</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="app-container" [class.dark-theme]="darkMode">
+    
+    <!-- Home Page -->
+    <div id="home-page" class="page" [class.active]="currentPage === 'home-page'">
+      <div class="page-header">
+        <h1 class="page-title">PriceFinder</h1>
+      </div>
+      
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          (keypress)="$event.key === 'Enter' && performSearch(searchQuery)"
+          class="form-control search-input" 
+          placeholder="Search for products...">
+      </div>
+      
+      <div class="d-grid mb-3">
+        <ion-button expand="block" size="large" (click)="goToScanner()" class="btn btn-primary btn-lg">
+          <ion-icon name="camera" slot="start"></ion-icon>
+          Scanner un Reçu
+        </ion-button>
+      </div>
+      
+      <div class="d-grid mb-3">
+        <ion-button expand="block" size="large" (click)="goToReceipts()" class="btn btn-outline-primary btn-lg">
+          <ion-icon name="receipt" slot="start"></ion-icon>
+          Mes Reçus
+        </ion-button>
+      </div>
+      
+      <h5 class="mt-4 mb-3">Popular Products</h5>
+      <div class="product-grid" id="popular-products">
+        <div 
+          *ngFor="let product of popularProducts" 
+          class="product-card"
+          [attr.data-product-id]="product.id"
+          (click)="showProductDetail(product)">
+          <div class="position-relative">
+            <div class="product-image">
+              <i class="fas fa-box fa-3x"></i>
+            </div>
+            <div 
+              class="product-favorite" 
+              [class.active]="favorites.includes(product.id!)"
+              (click)="toggleFavorite($event, product.id!)">
+              <i class="fas fa-heart"></i>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-title">{{ product.name }}</div>
+            <div class="product-price">{{ product.averagePrice | currency:'EUR' }}</div>
+            <div class="product-seller">{{ product.brand || 'N/A' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Results Page -->
+    <div id="search-page" class="page" [class.active]="currentPage === 'search-page'">
+      <div class="page-header">
+        <ion-button fill="clear" (click)="goBack()" class="back-button">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
+        <h2 class="page-title">Search Results</h2>
+      </div>
+      
+      <div id="search-results-container">
+        <div 
+          *ngFor="let product of searchResults" 
+          class="card mb-3 product-card"
+          [attr.data-product-id]="product.id"
+          (click)="showProductDetail(product)">
+          <div class="row g-0">
+            <div class="col-4 position-relative">
+              <div class="product-image h-100">
+                <i class="fas fa-box fa-2x"></i>
+              </div>
+              <div 
+                class="product-favorite" 
+                [class.active]="favorites.includes(product.id!)"
+                (click)="toggleFavorite($event, product.id!)">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text product-price">{{ product.averagePrice | currency:'EUR' }}</p>
+                <p class="card-text"><small class="text-muted">{{ product.brand || 'N/A' }}</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="searchResults.length === 0" class="empty-state">
+          <i class="fas fa-search"></i>
+          <h4>No products found</h4>
+          <p>Try different keywords</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Detail Page -->
+    <div id="detail-page" class="page" [class.active]="currentPage === 'detail-page'">
+      <div class="page-header">
+        <ion-button fill="clear" (click)="goBack()" class="back-button">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
+        <h2 class="page-title">Product Details</h2>
+      </div>
+      
+      <div id="product-detail-container" *ngIf="currentProduct">
+        <div class="detail-image">
+          <i class="fas fa-box fa-5x"></i>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3>{{ currentProduct.name }}</h3>
+          <div 
+            class="product-favorite" 
+            [class.active]="favorites.includes(currentProduct.id!)"
+            (click)="toggleFavorite($event, currentProduct.id!)">
+            <i class="fas fa-heart fa-lg"></i>
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="text-primary">{{ currentProduct.averagePrice | currency:'EUR' }}</h2>
+            <del *ngIf="currentProduct.highestPrice && currentProduct.highestPrice > currentProduct.averagePrice" 
+                 class="text-muted">{{ currentProduct.highestPrice | currency:'EUR' }}</del>
+          </div>
+          <span class="badge bg-info">{{ currentProduct.brand || 'N/A' }}</span>
+        </div>
+        
+        <div class="mb-4">
+          <h5>Description</h5>
+          <p>{{ currentProduct.description || 'No description available' }}</p>
+        </div>
+        
+        <div class="mb-4">
+          <h5>Category</h5>
+          <p>{{ currentProduct.category }}</p>
+        </div>
+        
+        <div class="mb-4">
+          <h5>Set Price Alert</h5>
+          <div class="price-alert-form">
+            <ion-button expand="block" (click)="setPriceAlert(currentProduct.id!)" class="btn btn-primary">
+              Set Price Alert
+            </ion-button>
+          </div>
+        </div>
+        
+        <div class="d-grid">
+          <ion-button expand="block" fill="outline" (click)="navigateTo('home-page')" class="btn btn-outline-primary">
+            <ion-icon name="home" slot="start"></ion-icon>
+            Retour à l'accueil
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorites Page -->
+    <div id="favorites-page" class="page" [class.active]="currentPage === 'favorites-page'">
+      <div class="page-header">
+        <h1 class="page-title">My Favorites</h1>
+      </div>
+      
+      <div id="favorites-container">
+        <div 
+          *ngFor="let product of products" 
+          class="card mb-3 product-card"
+          [attr.data-product-id]="product.id"
+          (click)="showProductDetail(product)">
+          <div class="row g-0">
+            <div class="col-4 position-relative">
+              <div class="product-image h-100">
+                <i class="fas fa-box fa-2x"></i>
+              </div>
+              <div 
+                class="product-favorite active" 
+                (click)="toggleFavorite($event, product.id!)">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text product-price">{{ product.averagePrice | currency:'EUR' }}</p>
+                <p class="card-text"><small class="text-muted">{{ product.brand || 'N/A' }}</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="products.length === 0" class="empty-state">
+          <i class="fas fa-heart"></i>
+          <h4>No favorites yet</h4>
+          <p>Start adding products to your favorites list</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings-page" class="page" [class.active]="currentPage === 'settings-page'">
+      <div class="page-header">
+        <h1 class="page-title">Settings</h1>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="theme-toggle">
+            <div>
+              <h5 class="mb-1">Dark Mode</h5>
+              <p class="mb-0 text-muted">Enable dark theme</p>
+            </div>
+            <div class="form-check form-switch">
+              <ion-checkbox 
+                [checked]="darkMode"
+                (ionChange)="toggleDarkMode($event.detail.checked)">
+              </ion-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <h5>About PriceScan</h5>
+          <p class="text-muted">Find the best prices for products across multiple retailers. Set price alerts and never overpay again.</p>
+          <p class="text-muted mb-0">Version 1.0.0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav-bottom">
+      <div 
+        class="nav-item" 
+        [class.active]="currentPage === 'home-page'"
+        (click)="navigateTo('home-page')">
+        <ion-icon name="home"></ion-icon>
+        <span>Home</span>
+      </div>
+      <div 
+        class="nav-item" 
+        [class.active]="currentPage === 'favorites-page'"
+        (click)="navigateTo('favorites-page')">
+        <ion-icon name="heart"></ion-icon>
+        <span>Favorites</span>
+      </div>
+      <div 
+        class="nav-item" 
+        [class.active]="currentPage === 'settings-page'"
+        (click)="navigateTo('settings-page')">
+        <ion-icon name="settings"></ion-icon>
+        <span>Settings</span>
+      </div>
+    </div>
+  </div>
+</ion-content>

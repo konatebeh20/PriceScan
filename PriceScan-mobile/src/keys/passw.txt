@@ -1,0 +1,8 @@
+# Mot de passe pour la clé de signature Android
+# ATTENTION: Ce fichier est sensible et ne doit pas être partagé
+# 
+# Mot de passe de la clé: PriceScan2024!
+# Mot de passe de l'alias: PriceScan2024!
+# 
+# Ces informations sont utilisées pour signer l'APK Android
+# lors du build de production
