@@ -2,20 +2,30 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# --- Fonction de Scraping (inchangée, elle est correcte) ---
-def scraper_jumia(url):
+# --- Fonction de Scraping (modifiée pour fonctionner avec des termes de recherche) ---
+def scraper_jumia(query):
     """
-    Scrape les produits d'une page Jumia, corrige les URL des images,
-    et retourne un DataFrame pandas.
+    Scrape les produits Jumia pour un terme de recherche donné.
+    
+    Args:
+        query (str): Terme de recherche (ex: "smartphone", "laptop")
+        
+    Returns:
+        list: Liste des produits trouvés
     """
-    print(f"Accès à la page : {url}")
+    print(f"Recherche Jumia pour : {query}")
     
     try:
+        # Construire l'URL de recherche
+        search_url = f"https://www.jumia.ci/catalog/?q={query}"
+        
         # Ajout d'un User-Agent pour simuler un navigateur et éviter un blocage
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        response = requests.get(url, headers=headers, timeout=15)
+        
+        print(f"Accès à l'URL : {search_url}")
+        response = requests.get(search_url, headers=headers, timeout=15)
         response.raise_for_status()  # Vérifie les erreurs HTTP (ex: 404, 503)
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -25,7 +35,7 @@ def scraper_jumia(url):
         
         if not items:
             print("Aucun produit trouvé avec le sélecteur actuel. Le site a peut-être changé ou le contenu est chargé dynamiquement.")
-            return pd.DataFrame()
+            return []
 
         print(f"{len(items)} produits trouvés. Extraction des données...")
 
@@ -45,7 +55,7 @@ def scraper_jumia(url):
                 if image_url_relative and not image_url_relative.startswith("http"):
                     # On ne concatène pas, on utilise urljoin pour plus de robustesse
                     from urllib.parse import urljoin
-                    image_url_complete = urljoin(url, image_url_relative)
+                    image_url_complete = urljoin(search_url, image_url_relative)
                 else:
                     image_url_complete = image_url_relative
 
@@ -55,11 +65,14 @@ def scraper_jumia(url):
                     "image_url": image_url_complete
                 })
 
-        return pd.DataFrame(produits)
+        return produits
 
     except requests.exceptions.RequestException as e:
-        print(f"Erreur de connexion pour {url} : {e}")
-        return pd.DataFrame()
+        print(f"Erreur de connexion pour {query} : {e}")
+        return []
+    except Exception as e:
+        print(f"Erreur générale pour {query} : {e}")
+        return []
 
 
 # --- Exécution du script (PARTIE CORRIGÉE) ---

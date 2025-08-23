@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Barcode Scanner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="scanner-container">
+    <div class="barcode-scanner">
+      <div class="scanner-laser"></div>
+      <ion-icon name="scan" size="large" class="scanner-icon"></ion-icon>
+      <p class="scanner-text">Point your camera at a barcode to scan</p>
+      <ion-button fill="outline" (click)="simulateBarcodeScan()">
+        Simulate Scan
+      </ion-button>
+    </div>
+    
+    <div class="scan-history" *ngIf="scanHistory.length > 0">
+      <h5>Recent Scans</h5>
+      <div class="scan-item" *ngFor="let scan of scanHistory">
+        <ion-icon [name]="getProductIcon(scan.product.image)" size="small"></ion-icon>
+        <span class="scan-product-name">{{ scan.product.name }}</span>
+        <span class="scan-price">${{ scan.product.price.toFixed(2) }}</span>
+      </div>
+    </div>
+  </div>
+</ion-content>

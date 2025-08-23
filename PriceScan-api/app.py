@@ -28,6 +28,9 @@ from resources.products import ProductsApi
 from resources.prices import PricesApi
 from resources.receipts import ReceiptsApi
 
+# Import du scraping automatique
+from helpers.auto_scraper import AutoScraper
+
 sentry_sdk.init(
     dsn="https://e55540efdb25abee9b6509335cfb5bae@o295794.ingest.sentry.io/4506298354499584",
     integrations=[
@@ -169,4 +172,21 @@ def trigger_error():
     division_by_zero = 1 / 0
 
 if __name__ == '__main__':
+    # Démarrer le scraping automatique
+    try:
+        print("🚀 Démarrage du scraping automatique...")
+        auto_scraper = AutoScraper()
+        auto_scraper.start()
+        print("✅ Scraping automatique démarré avec succès !")
+        print("📊 Configuration des intervalles:")
+        for store_id, store_info in auto_scraper.stores.items():
+            if store_info['enabled']:
+                interval_hours = store_info['interval'] / 3600
+                print(f"   🏪 {store_info['name']}: {interval_hours:.1f} heures")
+    except Exception as e:
+        print(f"❌ Erreur lors du démarrage du scraping automatique: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    # Démarrer l'API Flask
     app.run(debug=True, host="0.0.0.0")

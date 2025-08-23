@@ -19,10 +19,12 @@ from .scrapper.carrefour import scrape_carrefour
 from .scrapper.abidjanmall import scrape_abidjanmall
 from .scrapper.prosuma import scrape_prosuma
 from .scrapper.playce import scrape_playce
+from .scrapper.jumia import scraper_jumia
 
 # Import de la base de données
 from config.db import db
 from model.PriceScan_db import ps_products, ps_prices, ps_stores
+from config.scraping_config import SCRAPING_INTERVALS, STORE_CONFIG
 
 # Configuration du logging
 logging.basicConfig(
@@ -48,29 +50,36 @@ class AutoScraper:
             'carrefour': {
                 'scraper': scrape_carrefour,
                 'name': 'Carrefour',
-                'enabled': True,
-                'interval': 3600,  # 1 heure
+                'enabled': STORE_CONFIG['carrefour']['enabled'],
+                'interval': SCRAPING_INTERVALS['carrefour'],
                 'last_run': None
             },
             'abidjanmall': {
                 'scraper': scrape_abidjanmall,
                 'name': 'Abidjan Mall',
-                'enabled': True,
-                'interval': 3600,  # 1 heure
+                'enabled': STORE_CONFIG['abidjanmall']['enabled'],
+                'interval': SCRAPING_INTERVALS['abidjanmall'],
                 'last_run': None
             },
             'prosuma': {
                 'scraper': scrape_prosuma,
                 'name': 'Prosuma',
-                'enabled': True,
-                'interval': 7200,  # 2 heures
+                'enabled': STORE_CONFIG['prosuma']['enabled'],
+                'interval': SCRAPING_INTERVALS['prosuma'],
                 'last_run': None
             },
             'playce': {
                 'scraper': scrape_playce,
                 'name': 'Playce',
-                'enabled': True,
-                'interval': 7200,  # 2 heures
+                'enabled': STORE_CONFIG['playce']['enabled'],
+                'interval': SCRAPING_INTERVALS['playce'],
+                'last_run': None
+            },
+            'jumia': {
+                'scraper': scraper_jumia,
+                'name': 'Jumia',
+                'enabled': STORE_CONFIG['jumia']['enabled'],
+                'interval': SCRAPING_INTERVALS['jumia'],
                 'last_run': None
             }
         }

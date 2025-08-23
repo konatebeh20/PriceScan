@@ -14,12 +14,24 @@ SCRAPING_ENABLED = os.getenv('SCRAPING_ENABLED', 'true').lower() == 'true'
 SCRAPING_DEBUG = os.getenv('SCRAPING_DEBUG', 'false').lower() == 'true'
 
 # Configuration des intervalles (en secondes)
-SCRAPING_INTERVALS = {
-    'carrefour': int(os.getenv('SCRAPING_CARREFOUR_INTERVAL', 3600)),      # 1 heure
-    'abidjanmall': int(os.getenv('SCRAPING_ABIDJANMALL_INTERVAL', 3600)),  # 1 heure
-    'prosuma': int(os.getenv('SCRAPING_PROSUMA_INTERVAL', 7200)),          # 2 heures
-    'playce': int(os.getenv('SCRAPING_PLACE_INTERVAL', 7200))              # 2 heures
-}
+# En production: 5 jours (432000 secondes)
+# En développement: 1-2 heures
+if os.getenv('ENVIRONMENT', 'development').lower() == 'production':
+    SCRAPING_INTERVALS = {
+        'carrefour': int(os.getenv('SCRAPING_CARREFOUR_INTERVAL', 432000)),      # 5 jours
+        'abidjanmall': int(os.getenv('SCRAPING_ABIDJANMALL_INTERVAL', 432000)),  # 5 jours
+        'prosuma': int(os.getenv('SCRAPING_PROSUMA_INTERVAL', 432000)),          # 5 jours
+        'playce': int(os.getenv('SCRAPING_PLACE_INTERVAL', 432000)),             # 5 jours
+        'jumia': int(os.getenv('SCRAPING_JUMIA_INTERVAL', 432000))               # 5 jours
+    }
+else:
+    SCRAPING_INTERVALS = {
+        'carrefour': int(os.getenv('SCRAPING_CARREFOUR_INTERVAL', 3600)),        # 1 heure
+        'abidjanmall': int(os.getenv('SCRAPING_ABIDJANMALL_INTERVAL', 3600)),    # 1 heure
+        'prosuma': int(os.getenv('SCRAPING_PROSUMA_INTERVAL', 7200)),            # 2 heures
+        'playce': int(os.getenv('SCRAPING_PLACE_INTERVAL', 7200)),               # 2 heures
+        'jumia': int(os.getenv('SCRAPING_JUMIA_INTERVAL', 3600))                 # 1 heure
+    }
 
 # Configuration des produits populaires
 POPULAR_PRODUCTS = [
@@ -115,6 +127,18 @@ STORE_CONFIG = {
             'product_name': '.product-item-link',
             'product_price': '.price',
             'product_image': '.product-image img'
+        }
+    },
+    'jumia': {
+        'enabled': os.getenv('SCRAPING_JUMIA_ENABLED', 'true').lower() == 'true',
+        'name': 'Jumia',
+        'url_base': 'https://www.jumia.ci',
+        'search_url': 'https://www.jumia.ci/catalog/?q={query}',
+        'selectors': {
+            'product_container': '.sku',
+            'product_name': '.name',
+            'product_price': '.price',
+            'product_image': '.img'
         }
     }
 }
