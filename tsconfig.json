@@ -28,5 +28,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/price-tracker/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/price-tracker/tsconfig.spec.json"
+    }
+  ]
 }
