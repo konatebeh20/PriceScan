@@ -262,3 +262,122 @@ class ps_comparison_history(db.Model):
     user = db.relationship("ps_users", backref="comparison_history")
     product = db.relationship("ps_products", backref="comparison_history")
     best_store = db.relationship("ps_stores", backref="comparison_history")
+
+
+class ps_promotions(db.Model):
+    __tablename__ = "ps_promotions"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    promotion_uid = db.Column(db.String(128), unique=True, default=lambda: str(uuid.uuid4()))
+    
+    # Informations sur la promotion
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    discount_type = db.Column(db.String(50), default="percentage")  # percentage, fixed_amount
+    discount_value = db.Column(db.Float, nullable=False)  # valeur de la réduction
+    min_purchase = db.Column(db.Float, default=0)  # montant minimum d'achat
+    max_discount = db.Column(db.Float)  # réduction maximale
+    
+    # Dates de validité
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    
+    # Liens avec les entités
+    store_id = db.Column(db.Integer, db.ForeignKey("ps_stores.id"), nullable=True)
+    product_id = db.Column(db.Integer, db.ForeignKey("ps_products.id"), nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey("ps_categories.id"), nullable=True)
+    
+    # Statut
+    is_active = db.Column(db.Boolean, default=True)
+    is_featured = db.Column(db.Boolean, default=False)
+    
+    creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    
+    store = db.relationship("ps_stores", backref="promotions")
+    product = db.relationship("ps_products", backref="promotions")
+    category = db.relationship("ps_categories", backref="promotions")
+
+
+class ps_user_profiles(db.Model):
+    __tablename__ = "ps_user_profiles"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    profile_uid = db.Column(db.String(128), unique=True, default=lambda: str(uuid.uuid4()))
+    user_uid = db.Column(db.String(128), db.ForeignKey("ps_users.u_uid"), nullable=False, unique=True)
+    
+    # Informations personnelles étendues
+    birth_date = db.Column(db.Date)
+    gender = db.Column(db.String(20))  # male, female, other
+    phone_verified = db.Column(db.Boolean, default=False)
+    email_verified = db.Column(db.Boolean, default=False)
+    
+    # Préférences
+    preferred_currency = db.Column(db.String(10), default="CFA")
+    preferred_language = db.Column(db.String(10), default="fr")
+    notification_preferences = db.Column(db.Text)  # JSON des préférences
+    
+    # Statistiques
+    total_receipts = db.Column(db.Integer, default=0)
+    total_spent = db.Column(db.Float, default=0.0)
+    favorite_categories = db.Column(db.Text)  # JSON des catégories préférées
+    
+    creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    
+    user = db.relationship("ps_users", backref="profile", uselist=False)
+
+
+class ps_dashboard_stats(db.Model):
+    __tablename__ = "ps_dashboard_stats"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    stats_uid = db.Column(db.String(128), unique=True, default=lambda: str(uuid.uuid4()))
+    user_uid = db.Column(db.String(128), db.ForeignKey("ps_users.u_uid"), nullable=False)
+    
+    # Statistiques du mois
+    month = db.Column(db.Integer, nullable=False)  # 1-12
+    year = db.Column(db.Integer, nullable=False)
+    
+    # Données agrégées
+    total_receipts = db.Column(db.Integer, default=0)
+    total_spent = db.Column(db.Float, default=0.0)
+    avg_receipt_amount = db.Column(db.Float, default=0.0)
+    top_categories = db.Column(db.Text)  # JSON des catégories les plus achetées
+    top_stores = db.Column(db.Text)  # JSON des magasins les plus fréquentés
+    
+    # Économies réalisées
+    total_savings = db.Column(db.Float, default=0.0)
+    savings_from_promos = db.Column(db.Float, default=0.0)
+    savings_from_comparison = db.Column(db.Float, default=0.0)
+    
+    creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    
+    user = db.relationship("ps_users", backref="dashboard_stats")
+
+
+class ps_scan_history(db.Model):
+    __tablename__ = "ps_scan_history"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    scan_uid = db.Column(db.String(128), unique=True, default=lambda: str(uuid.uuid4()))
+    user_uid = db.Column(db.String(128), db.ForeignKey("ps_users.u_uid"), nullable=False)
+    
+    # Informations sur le scan
+    scan_type = db.Column(db.String(50), nullable=False)  # barcode, receipt, manual
+    scan_result = db.Column(db.Text)  # JSON du résultat du scan
+    scan_image = db.Column(db.String(255))  # image du scan si applicable
+    
+    # Métadonnées
+    device_info = db.Column(db.String(255))  # informations sur l'appareil
+    location = db.Column(db.String(255))  # localisation du scan
+    scan_duration = db.Column(db.Float)  # durée du scan en secondes
+    
+    # Statut
+    is_successful = db.Column(db.Boolean, default=True)
+    error_message = db.Column(db.Text)  # message d'erreur si échec
+    
+    creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    
+    user = db.relationship("ps_users", backref="scan_history")

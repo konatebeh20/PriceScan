@@ -1,0 +1,41 @@
+<!-- Sidebar -->
+<aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">TicketScan</div>
+        <button class="sidebar-toggle" (click)="toggleSidebar()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <button class="nav-item" 
+                [class.active]="currentPage === 'dashboard'"
+                (click)="showPage('dashboard')">
+            <i class="fas fa-home"></i>
+            Dashboard
+        </button>
+        <button class="nav-item" 
+                [class.active]="currentPage === 'receipts'"
+                (click)="showPage('receipts')">
+            <i class="fas fa-receipt"></i>
+            Reçus
+        </button>
+        <button class="nav-item" 
+                [class.active]="currentPage === 'products'"
+                (click)="showPage('products')">
+            <i class="fas fa-shopping-cart"></i>
+            Produits
+        </button>
+        <button class="nav-item" 
+                [class.active]="currentPage === 'stores'"
+                (click)="showPage('stores')">
+            <i class="fas fa-store"></i>
+            Magasins
+        </button>
+        <button class="nav-item" 
+                [class.active]="currentPage === 'settings'"
+                (click)="showPage('settings')">
+            <i class="fas fa-cog"></i>
+            Paramètres
+        </button>
+    </nav>
+</aside>

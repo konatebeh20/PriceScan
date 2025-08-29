@@ -1,0 +1,337 @@
+<!-- Receipts List Component -->
+<div class="receipts-list-page">
+    <h1 class="page-title">Mes Reçus</h1>
+    
+    <!-- Receipt Tabs -->
+    <div class="receipt-tabs-container">
+        <div class="receipt-tabs">
+            <button class="receipt-tab active" (click)="setActiveTab('scanned')" [class.active]="activeTab === 'scanned'">
+                <i class="fas fa-camera"></i> Reçus Scannés
+            </button>
+            <button class="receipt-tab" (click)="setActiveTab('manual')" [class.active]="activeTab === 'manual'">
+                <i class="fas fa-edit"></i> Saisie Manuelle
+            </button>
+            <button class="receipt-tab" (click)="setActiveTab('archived')" [class.active]="activeTab === 'archived'">
+                <i class="fas fa-archive"></i> Archivés
+            </button>
+        </div>
+    </div>
+
+    <!-- Scanned Receipts Tab -->
+    <div class="receipt-tab-content" [class.active]="activeTab === 'scanned'">
+        <!-- Receipt Filters -->
+        <div class="receipt-filters">
+            <div class="filter-group">
+                <label class="filter-label">Magasin</label>
+                <select class="form-select" [(ngModel)]="selectedStore" (change)="filterReceipts()">
+                    <option value="">Tous les magasins</option>
+                    <option value="carrefour">Carrefour Market</option>
+                    <option value="prosuma">Prosuma</option>
+                    <option value="casino">Casino</option>
+                    <option value="citydia">Citydia</option>
+                    <option value="pharmacie">Pharmacie</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Période</label>
+                <select class="form-select" [(ngModel)]="selectedPeriod" (change)="filterReceipts()">
+                    <option value="">Toutes les périodes</option>
+                    <option value="today">Aujourd'hui</option>
+                    <option value="week">Cette semaine</option>
+                    <option value="month">Ce mois</option>
+                    <option value="year">Cette année</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Montant</label>
+                <select class="form-select" [(ngModel)]="selectedAmount" (change)="filterReceipts()">
+                    <option value="">Tous les montants</option>
+                    <option value="low">Moins de 10 000 F CFA</option>
+                    <option value="medium">10 000 - 30 000 F CFA</option>
+                    <option value="high">Plus de 30 000 F CFA</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Statut</label>
+                <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterReceipts()">
+                    <option value="">Tous les statuts</option>
+                    <option value="analyzed">Analysé</option>
+                    <option value="processing">En cours</option>
+                    <option value="failed">Échoué</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Receipts Grid -->
+        <div class="receipts-grid" *ngIf="filteredReceipts.length > 0">
+            <div class="receipt-ticket-card" *ngFor="let receipt of filteredReceipts">
+                <div class="receipt-ticket-header">
+                    <div class="receipt-ticket-number">{{ receipt.ticketNumber }}</div>
+                    <div class="receipt-store-name">{{ receipt.store }}</div>
+                    <div class="receipt-store-address">{{ receipt.address }}</div>
+                </div>
+                
+                <div class="receipt-ticket-body">
+                    <div class="receipt-date-time">
+                        <span>{{ receipt.date }}</span>
+                        <span>{{ receipt.time }}</span>
+                    </div>
+                    
+                    <div class="receipt-items-list">
+                        <div class="receipt-item-row" *ngFor="let item of receipt.items">
+                            <div class="receipt-item-name">{{ item.name }}</div>
+                            <div class="receipt-item-qty">x{{ item.qty }}</div>
+                            <div class="receipt-item-price">{{ item.price }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-total-section">
+                        <div class="receipt-subtotal">
+                            <span>TOTAL</span>
+                            <span>{{ receipt.total }}</span>
+                        </div>
+                        <div class="receipt-total-amount">{{ receipt.total }}</div>
+                    </div>
+                </div>
+                
+                <div class="receipt-ticket-footer">
+                    <div class="receipt-status-badge" [class]="'status-' + receipt.status">
+                        {{ getStatusLabel(receipt.status) }}
+                    </div>
+                    
+                    <div class="receipt-actions-row">
+                        <button class="btn-receipt-action btn-view-receipt" (click)="viewReceipt(receipt)">
+                            <i class="fas fa-eye"></i> Voir
+                        </button>
+                        <button class="btn-receipt-action btn-print-receipt" (click)="printReceipt(receipt)">
+                            <i class="fas fa-print"></i> Imprimer
+                        </button>
+                        <button class="btn-receipt-action btn-archive-receipt" (click)="archiveReceipt(receipt)">
+                            <i class="fas fa-archive"></i> Archiver
+                        </button>
+                        <button class="btn-receipt-action btn-favorite" (click)="toggleFavorite(receipt)" [class.favorited]="receipt.isFavorite">
+                            <i class="fas" [class.fa-heart]="receipt.isFavorite" [class.fa-heart-o]="!receipt.isFavorite"></i>
+                            {{ receipt.isFavorite ? 'Favori' : 'Favori' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="filteredReceipts.length === 0">
+            <div class="empty-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <h3>Aucun reçu trouvé</h3>
+            <p>Aucun reçu ne correspond à vos critères de recherche.</p>
+            <button class="btn-primary" (click)="setActiveTab('manual')">
+                <i class="fas fa-plus"></i> Créer un reçu
+            </button>
+        </div>
+    </div>
+
+    <!-- Manual Receipt Entry Tab -->
+    <div class="receipt-tab-content" [class.active]="activeTab === 'manual'">
+        <div class="content-section">
+            <h2 class="section-title">Créer un nouveau reçu</h2>
+            <div class="manual-receipt-layout">
+                <!-- Left Side: Form -->
+                <div class="manual-form-section">
+                    <form (ngSubmit)="saveManualReceipt()" #manualReceiptForm="ngForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nom du magasin *</label>
+                                <select class="form-select" [(ngModel)]="manualReceipt.storeId" name="storeId" required (change)="onStoreChange()">
+                                    <option value="">Sélectionner un magasin</option>
+                                    <option *ngFor="let store of stores" [value]="store.id">{{ store.name }}</option>
+                                </select>
+                                <small class="form-help">
+                                    <i class="fas fa-check-circle"></i>
+                                    * Récupéré automatiquement depuis votre profil si vous êtes un commerce
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Adresse du magasin</label>
+                                <input type="text" class="form-input" [(ngModel)]="manualReceipt.storeAddress" name="storeAddress" placeholder="Adresse complète" readonly>
+                                <small class="form-help">
+                                    <i class="fas fa-info-circle"></i>
+                                    * Construite automatiquement : Adresse complète + Localisation GPS
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Date *</label>
+                                <input type="date" class="form-input" [(ngModel)]="manualReceipt.date" name="date" required>
+                                <small class="form-help">
+                                    <i class="fas fa-calendar-check"></i>
+                                    * Remplie automatiquement avec la date actuelle
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Heure</label>
+                                <input type="time" class="form-input" [(ngModel)]="manualReceipt.time" name="time" readonly>
+                                <small class="form-help">
+                                    <i class="fas fa-clock"></i>
+                                    * Mise à jour automatiquement en temps réel : {{ currentTime }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Products Section -->
+                        <div class="manual-products-section">
+                            <div class="products-header-row">
+                                <h3>Produits</h3>
+                                <button type="button" class="btn-secondary" (click)="addProductRow()">
+                                    <i class="fas fa-plus"></i> Ajouter un produit
+                                </button>
+                            </div>
+                            
+                            <div class="manual-products-list">
+                                <div class="product-row" *ngFor="let product of manualReceipt.items; let i = index">
+                                    <div class="product-suggestion">
+                                        <input type="text" class="form-input" placeholder="Nom du produit" 
+                                               [(ngModel)]="product.name" name="productName{{i}}" required>
+                                    </div>
+                                    <input type="number" class="form-input" placeholder="Quantité" min="1" 
+                                           [(ngModel)]="product.qty" name="productQty{{i}}" (change)="updateManualReceiptTotal()" required>
+                                    <input type="number" class="form-input" placeholder="Prix unitaire" min="0" step="1" 
+                                           [(ngModel)]="product.price" name="productPrice{{i}}" (change)="updateManualReceiptTotal()" required>
+                                    <input type="number" class="form-input" placeholder="Total" readonly 
+                                           [value]="product.qty * product.price">
+                                    <button type="button" class="btn-remove-product" (click)="removeProductRow(i)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="manual-receipt-total">
+                            <div class="total-display">
+                                <span>Total: </span>
+                                <span>{{ manualReceipt.total }} F CFA</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" (click)="resetManualForm()">Annuler</button>
+                            <button type="submit" class="btn-primary">Enregistrer le reçu</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Side: Barcode Scanner -->
+                <div class="barcode-scanner-section">
+                    <div class="scanner-card">
+                        <h3><i class="fas fa-barcode"></i> Scanner de Code-Barres</h3>
+                        <p>Scannez les codes-barres pour pré-remplir automatiquement les produits</p>
+                        
+                        <div class="scanner-controls">
+                            <button type="button" class="btn-primary" (click)="startBarcodeScanner()" *ngIf="!isScannerActive">
+                                <i class="fas fa-camera"></i> Démarrer le scanner
+                            </button>
+                            <button type="button" class="btn-secondary" (click)="stopBarcodeScanner()" *ngIf="isScannerActive">
+                                <i class="fas fa-stop"></i> Arrêter le scanner
+                            </button>
+                        </div>
+
+                        <!-- Scanner Status and Messages -->
+                        <div class="scanner-status" *ngIf="isScannerActive">
+                            <div class="status-indicator active">
+                                <i class="fas fa-circle"></i> Scanner actif
+                            </div>
+                            <div class="scanner-message" *ngIf="scannerMessage">
+                                {{ scannerMessage }}
+                            </div>
+                        </div>
+
+                        <!-- Last Scanned Barcode -->
+                        <div class="scanned-barcode" *ngIf="scannedBarcode">
+                            <h4>Dernier code scanné :</h4>
+                            <div class="barcode-display">{{ scannedBarcode }}</div>
+                        </div>
+
+                        <div class="scanner-tips">
+                            <h4>Conseils :</h4>
+                            <ul>
+                                <li>Tenez le code-barres bien droit</li>
+                                <li>Assurez-vous d'avoir un bon éclairage</li>
+                                <li>Gardez une distance de 10-15 cm</li>
+                                <li>Le scanner s'arrête automatiquement après chaque scan</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archived Receipts Tab -->
+    <div class="receipt-tab-content" [class.active]="activeTab === 'archived'">
+        <div class="content-section">
+            <h2 class="section-title">Reçus Archivés</h2>
+            <div class="archived-receipts-container">
+                <div class="receipts-grid" *ngIf="archivedReceipts.length > 0">
+                    <div class="receipt-ticket-card archived" *ngFor="let receipt of archivedReceipts">
+                        <div class="receipt-ticket-header archived">
+                            <div class="receipt-ticket-number">{{ receipt.ticketNumber }}</div>
+                            <div class="receipt-store-name">{{ receipt.store }}</div>
+                            <div class="receipt-store-address">{{ receipt.address }}</div>
+                        </div>
+                        
+                        <div class="receipt-ticket-body">
+                            <div class="receipt-date-time">
+                                <span>{{ receipt.date }}</span>
+                                <span>{{ receipt.time }}</span>
+                            </div>
+                            
+                            <div class="receipt-items-list">
+                                <div class="receipt-item-row" *ngFor="let item of receipt.items">
+                                    <div class="receipt-item-name">{{ item.name }}</div>
+                                    <div class="receipt-item-qty">x{{ item.qty }}</div>
+                                    <div class="receipt-item-price">{{ item.price }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="receipt-total-section">
+                                <div class="receipt-subtotal">
+                                    <span>TOTAL</span>
+                                    <span>{{ receipt.total }}</span>
+                                </div>
+                                <div class="receipt-total-amount">{{ receipt.total }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="receipt-ticket-footer">
+                            <div class="receipt-status-badge status-archived">Archivé</div>
+                            <div class="receipt-actions-row">
+                                <button class="btn-receipt-action btn-view-receipt" (click)="viewReceipt(receipt)">
+                                    <i class="fas fa-eye"></i> Voir
+                                </button>
+                                <button class="btn-receipt-action btn-restore" (click)="restoreReceipt(receipt)">
+                                    <i class="fas fa-undo"></i> Restaurer
+                                </button>
+                                <button class="btn-receipt-action btn-delete" (click)="deleteReceipt(receipt)">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="empty-state" *ngIf="archivedReceipts.length === 0">
+                    <div class="empty-icon">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <h3>Aucun reçu archivé</h3>
+                    <p>Les reçus archivés apparaîtront ici.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Dashboard Page -->
+    <app-dashboard-page 
+        *ngIf="currentPage === 'dashboard'"
+        (pageChange)="pageChange.emit($any($event))">
+    </app-dashboard-page>
+
+    <!-- Receipts Page -->
+    <app-receipts-list 
+        *ngIf="currentPage === 'receipts'"
+        (pageChange)="pageChange.emit($any($event))">
+    </app-receipts-list>
+
+    <!-- Products Page -->
+    <app-products-list 
+        *ngIf="currentPage === 'products'"
+        (pageChange)="pageChange.emit($any($event))">
+    </app-products-list>
+
+    <!-- Stores Page -->
+    <app-stores-list 
+        *ngIf="currentPage === 'stores'"
+        (pageChange)="pageChange.emit($any($event))">
+    </app-stores-list>
+
+    <!-- Settings Page -->
+    <app-settings-page 
+        *ngIf="currentPage === 'settings'"
+        (pageChange)="pageChange.emit($any($event))">
+    </app-settings-page>
+
+    <!-- Demo Page -->
+    <app-demo-page 
+        *ngIf="currentPage === 'demo'">
+    </app-demo-page>
+
+    <!-- Profile Page -->
+    <app-profile 
+        *ngIf="currentPage === 'profile'">
+    </app-profile>
+</main>

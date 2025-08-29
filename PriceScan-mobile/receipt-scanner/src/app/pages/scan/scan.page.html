@@ -1,0 +1,201 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Scanner un Produit</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Scan Area -->
+  <ion-card *ngIf="!scannedProduct">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="scan" color="primary"></ion-icon>
+        Scanner un Produit
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="scan-area">
+      <ion-icon name="camera" size="large" color="medium"></ion-icon>
+      <p>Appuyez sur le bouton pour scanner un code-barres</p>
+      <ion-button expand="block" (click)="startScan()" [disabled]="isScanning">
+        <ion-icon name="scan" slot="start"></ion-icon>
+        {{ isScanning ? 'Scan en cours...' : 'Scanner' }}
+      </ion-button>
+      
+      <div *ngIf="isScanning" class="scanning">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Scan en cours...</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Manual Search -->
+  <ion-card *ngIf="!scannedProduct">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="search" color="secondary"></ion-icon>
+        Recherche Manuelle
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Code-barres ou nom du produit</ion-label>
+        <ion-input 
+          [(ngModel)]="manualInput" 
+          placeholder="Entrez le code-barres ou le nom du produit">
+        </ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="manualSearch()" [disabled]="!manualInput.trim()">
+        <ion-icon name="search" slot="start"></ion-icon>
+        RECHERCHER
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Product Details -->
+  <div *ngIf="scannedProduct">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ scannedProduct.name }}</ion-card-title>
+        <ion-card-subtitle>{{ scannedProduct.brand }} - {{ scannedProduct.category }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <img [src]="scannedProduct.image" [alt]="scannedProduct.name" class="product-image">
+        <p class="description">{{ scannedProduct.description }}</p>
+        
+        <!-- Specifications -->
+        <div class="specifications">
+          <h4>Spécifications</h4>
+          <div *ngFor="let spec of scannedProduct.specifications | keyvalue" class="spec-item">
+            <strong>{{ spec.key }}:</strong> {{ spec.value }}
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Store Prices -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="storefront" color="success"></ion-icon>
+          Prix dans les Magasins
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngFor="let store of scannedProduct.stores" class="store-item">
+          <div class="store-header">
+            <h4>{{ store.name }}</h4>
+            <ion-badge [color]="store.inStock ? 'success' : 'danger'">
+              {{ store.inStock ? 'En stock' : 'Rupture' }}
+            </ion-badge>
+          </div>
+          <div class="store-details">
+            <p><strong>Prix:</strong> {{ formatPrice(store.price) }}</p>
+            <p><strong>Localisation:</strong> {{ store.location }}</p>
+            <p><strong>Adresse:</strong> {{ store.address }}</p>
+            <p><strong>Téléphone:</strong> {{ store.phone }}</p>
+            <div class="rating">
+              <ion-icon name="star" color="warning"></ion-icon>
+              <span>{{ store.rating }}/5</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="best-price">
+          <ion-chip color="success">
+            <ion-icon name="trending-down"></ion-icon>
+            <ion-label>Meilleur prix: {{ formatPrice(getBestPrice(scannedProduct.stores)) }}</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Products Found by Image -->
+  <div *ngIf="scannedProducts.length > 0">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="camera" color="primary"></ion-icon>
+          Produits Trouvés par Image
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-md="6" *ngFor="let product of scannedProducts">
+              <ion-card class="product-card">
+                <img [src]="product.image" [alt]="product.name" class="product-image">
+                <ion-card-header>
+                  <ion-card-title>{{ product.name }}</ion-card-title>
+                  <ion-card-subtitle>{{ product.brand }} - {{ product.category }}</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                  <p class="description">{{ product.description }}</p>
+                  <div class="price-info">
+                    <span class="best-price">Meilleur prix: {{ formatPrice(getBestPrice(product.stores)) }}</span>
+                  </div>
+                  <ion-button 
+                    expand="block" 
+                    fill="outline" 
+                    size="small"
+                    (click)="viewProductDetails(product)">
+                    <ion-icon name="eye" slot="start"></ion-icon>
+                    Voir les Détails
+                  </ion-button>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Scan History -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="time" color="primary"></ion-icon>
+        Historique des Scans
+        <ion-button 
+          size="small" 
+          fill="clear" 
+          color="danger" 
+          (click)="clearHistory()"
+          *ngIf="scanHistory.length > 0">
+          <ion-icon name="trash"></ion-icon>
+          Effacer tout
+        </ion-button>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="scanHistory.length > 0; else noHistory">
+        <ion-item *ngFor="let scan of scanHistory; let i = index">
+          <ion-label>
+            <h3>{{ scan.product }}</h3>
+            <p>{{ scan.barcode }}</p>
+            <p>{{ scan.timestamp | date:'short' }}</p>
+          </ion-label>
+          <ion-badge slot="end" color="primary">{{ formatPrice(scan.price) }}</ion-badge>
+          <ion-button 
+            slot="end" 
+            fill="clear" 
+            color="danger" 
+            size="small"
+            (click)="removeFromHistory(i)">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+      <ng-template #noHistory>
+        <div class="empty-state">
+          <ion-icon name="time" size="large" color="medium"></ion-icon>
+          <p>Aucun scan enregistré</p>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,135 @@
+<!-- Profile Component -->
+<div class="profile-container">
+    <h1 class="page-title">Mon Profil</h1>
+    
+    <!-- Profile Header -->
+    <div class="content-section">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i [class]="getAccountTypeIcon(userProfile.accountType)"></i>
+            </div>
+            <div class="profile-info">
+                <h2 class="profile-name">{{ userProfile.username }}</h2>
+                <p class="profile-type">
+                    <i [class]="getAccountTypeIcon(userProfile.accountType)"></i>
+                    {{ getAccountTypeLabel(userProfile.accountType) }}
+                </p>
+                <p class="profile-email">{{ userProfile.email }}</p>
+            </div>
+            <div class="profile-actions">
+                <button *ngIf="!isEditing" class="btn-primary" (click)="isEditing = true">
+                    <i class="fas fa-edit"></i> Modifier
+                </button>
+                <div *ngIf="isEditing" class="edit-actions">
+                    <button class="btn-success" (click)="saveProfile()">
+                        <i class="fas fa-save"></i> Sauvegarder
+                    </button>
+                    <button class="btn-secondary" (click)="cancelEdit()">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="content-section">
+        <h3 class="section-title">Informations du compte</h3>
+        
+        <div class="profile-form" [class.editing]="isEditing">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" 
+                           [(ngModel)]="userProfile.username" 
+                           [disabled]="!isEditing"
+                           class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" 
+                           [(ngModel)]="userProfile.email" 
+                           [disabled]="!isEditing"
+                           class="form-control">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Type de compte</label>
+                    <select [(ngModel)]="userProfile.accountType" 
+                            [disabled]="!isEditing"
+                            class="form-control">
+                        <option *ngFor="let type of accountTypes" 
+                                [value]="type.value">
+                            {{ type.label }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" 
+                           [(ngModel)]="userProfile.phone" 
+                           [disabled]="!isEditing"
+                           class="form-control">
+                </div>
+            </div>
+
+            <div class="form-row" *ngIf="userProfile.accountType === 'autres'">
+                <div class="form-group">
+                    <label>Nom de l'entreprise</label>
+                    <input type="text" 
+                           [(ngModel)]="userProfile.businessName" 
+                           [disabled]="!isEditing"
+                           class="form-control"
+                           placeholder="Nom de votre entreprise">
+                </div>
+                <div class="form-group">
+                    <label>Activité</label>
+                    <input type="text" 
+                           [(ngModel)]="userProfile.businessActivity" 
+                           [disabled]="!isEditing"
+                           class="form-control"
+                           placeholder="Description de votre activité">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>Adresse</label>
+                    <textarea [(ngModel)]="userProfile.address" 
+                              [disabled]="!isEditing"
+                              class="form-control"
+                              rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Details -->
+    <div class="content-section">
+        <h3 class="section-title">Détails du compte</h3>
+        <div class="account-details">
+            <div class="detail-item">
+                <span class="detail-label">Date de création</span>
+                <span class="detail-value">{{ formatDate(userProfile.createdAt) }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Dernière connexion</span>
+                <span class="detail-value">{{ formatDateTime(userProfile.lastLogin) }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Type Warning -->
+    <div class="content-section" *ngIf="userProfile.accountType === 'autres'">
+        <div class="warning-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <h4>Compte de démonstration</h4>
+                <p>Votre type de compte "Autres" vous donne accès à une version limitée de TicketScan. 
+                   Pour accéder à toutes les fonctionnalités, contactez-nous pour un compte professionnel.</p>
+            </div>
+        </div>
+    </div>
+</div>

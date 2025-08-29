@@ -1,0 +1,379 @@
+<!-- Charts Component -->
+<div class="charts-container">
+    <div class="charts-header">
+        <h3 class="section-title">
+            <i class="fas fa-chart-line"></i>
+            Graphiques et analyses
+        </h3>
+        <div class="charts-controls">
+            <!-- Type de graphique -->
+            <div class="control-group">
+                <label>Type de graphique</label>
+                <div class="chart-type-selector">
+                    <div class="chart-type-option" 
+                         *ngFor="let type of chartTypes"
+                         [class.selected]="chartConfig.type === type.value"
+                         (click)="onChartTypeChange(type.value)">
+                        <i [class]="type.icon"></i>
+                        <span>{{ type.label }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Période -->
+            <div class="control-group">
+                <label>Période</label>
+                <select [(ngModel)]="chartConfig.period" 
+                        (change)="onPeriodChange($event)"
+                        class="period-selector">
+                    <option *ngFor="let period of periods" 
+                            [value]="period.value">
+                        {{ period.label }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Mode de comparaison -->
+            <div class="control-group">
+                <label>Comparaison</label>
+                <div class="comparison-mode-selector">
+                    <div class="comparison-mode-option" 
+                         *ngFor="let mode of comparisonModes"
+                         [class.selected]="chartConfig.comparisonMode === mode.value"
+                         (click)="onComparisonModeChange(mode.value)">
+                        <i [class]="mode.icon"></i>
+                        <span>{{ mode.label }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sélection des magasins (si mode par magasin) -->
+            <div class="control-group" *ngIf="chartConfig.comparisonMode === 'byStore'">
+                <label>Sélectionner les magasins</label>
+                <div class="store-selection">
+                    <label class="store-checkbox" *ngFor="let store of storeData">
+                        <input type="checkbox" 
+                               [checked]="chartConfig.selectedStores.includes(store.id)"
+                               (change)="onStoreSelectionChange(store.id, $event.target.checked)">
+                        <span class="checkmark"></span>
+                        <span class="store-name">{{ store.name }}</span>
+                        <span class="store-type">{{ store.type }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Sélection des types (si mode par type) -->
+            <div class="control-group" *ngIf="chartConfig.comparisonMode === 'byType'">
+                <label>Sélectionner les types</label>
+                <div class="type-selection">
+                    <label class="type-checkbox" *ngFor="let type of ['supermarché', 'pharmacie', 'quincaillerie', 'autres']">
+                        <input type="checkbox" 
+                               [checked]="chartConfig.selectedTypes.includes(type)"
+                               (change)="onTypeSelectionChange(type, $event.target.checked)">
+                        <span class="checkmark"></span>
+                        <span class="type-name">{{ type }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="control-group">
+                <label>Options</label>
+                <div class="options-toggle">
+                    <button class="toggle-btn" 
+                            [class.active]="chartConfig.showTrends"
+                            (click)="toggleTrends()">
+                        <i class="fas fa-trending-up"></i>
+                        Tendances
+                    </button>
+                    <button class="toggle-btn" 
+                            [class.active]="chartConfig.showPredictions"
+                            (click)="togglePredictions()">
+                        <i class="fas fa-crystal-ball"></i>
+                        Prédictions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="charts-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ formatPrice(getAveragePrice()) }}</div>
+                <div class="stat-label">Prix moyen</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i [class]="getTrendIcon()"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value" [style.color]="getTrendColor()">
+                    {{ getTrendLabel() }}
+                </div>
+                <div class="stat-label">Tendance</div>
+            </div>
+        </div>
+
+        <div class="stat-card" *ngIf="chartConfig.showPredictions && predictionData.length > 0">
+            <div class="stat-icon">
+                <i class="fas fa-crystal-ball"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ formatPrice(getPredictedPrice()) }}</div>
+                <div class="stat-label">Prix prédit</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ priceData.length }}</div>
+                <div class="stat-label">Jours analysés</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zone de graphiques -->
+    <div class="charts-grid">
+        <!-- Graphique principal combiné -->
+        <div class="chart-area main-chart">
+            <div *ngIf="isLoading" class="chart-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Chargement des données...</p>
+            </div>
+
+            <div *ngIf="!isLoading && priceData.length > 0" class="chart-content">
+                <div class="chart-title">
+                    Évolution des prix sur {{ getCurrentPeriodLabel() }}
+                </div>
+                
+                <!-- Graphique Chart.js -->
+                <div class="chart-container">
+                    <canvas #priceChart width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique de comparaison -->
+        <div class="chart-area comparison-chart" *ngIf="chartConfig.comparisonMode !== 'none' && comparisonData.length > 0">
+            <div class="chart-title">
+                {{ getComparisonTitle() }}
+            </div>
+            
+            <div class="chart-simulation chart-comparison">
+                <div class="chart-container">
+                    <div class="comparison-bars">
+                        <div class="comparison-bar" 
+                             *ngFor="let data of comparisonData.slice(-20); let i = index"
+                             [style.height]="(data.price / 4000) * 100 + '%'"
+                             [title]="formatDate(data.date) + ': ' + formatPrice(data.price) + ' - ' + (data.storeName || data.storeType)">
+                            <div class="bar-label">{{ data.storeName || data.storeType }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique de prédiction -->
+        <div class="chart-area prediction-chart" *ngIf="chartConfig.showPredictions && predictionData.length > 0">
+            <div class="chart-title">
+                Prédictions et tendances
+            </div>
+            
+            <div class="chart-simulation chart-prediction">
+                <div class="chart-container">
+                    <div class="prediction-bars">
+                        <div class="prediction-bar" 
+                             *ngFor="let data of predictionData.slice(-15); let i = index"
+                             [style.height]="(data.predictedPrice / 4000) * 100 + '%'"
+                             [title]="formatDate(data.date) + ': Prédit ' + formatPrice(data.predictedPrice) + ' (Confiance: ' + (data.confidence * 100) + '%)'">
+                            <div class="bar-label">{{ formatDate(data.date) }}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Courbe de tendance -->
+                    <svg class="trend-line" *ngIf="chartConfig.showTrends">
+                        <polyline [attr.points]="getPredictionTrendPoints()" 
+                                 fill="none" 
+                                 stroke="var(--accent-success)" 
+                                 stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau de données dynamique -->
+    <div class="data-table" *ngIf="priceData.length > 0">
+        <div class="table-header">
+            <h4>Données détaillées</h4>
+            <div class="table-info">
+                Affichage {{ (currentPage - 1) * itemsPerPage + 1 }} à {{ Math.min(currentPage * itemsPerPage, totalItems) }} sur {{ totalItems }} entrées
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Prix moyen</th>
+                        <th>Prix min</th>
+                        <th>Prix max</th>
+                        <th>Reçus</th>
+                        <th *ngIf="chartConfig.comparisonMode !== 'none'">Comparaison</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of tableData">
+                        <td>{{ formatDate(data.date) }}</td>
+                        <td>{{ formatPrice(data.averagePrice) }}</td>
+                        <td>{{ formatPrice(data.minPrice) }}</td>
+                        <td>{{ formatPrice(data.maxPrice) }}</td>
+                        <td>{{ data.totalReceipts }}</td>
+                        <td *ngIf="chartConfig.comparisonMode !== 'none'">
+                            <span *ngIf="getComparisonData(data.date)" class="comparison-info">
+                                {{ getComparisonData(data.date) }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="getTotalPages() > 1">
+            <div class="pagination-info">
+                {{ getDisplayedItemsRange() }}
+            </div>
+            
+            <div class="pagination-controls">
+                <button class="page-btn prev-btn" 
+                        [disabled]="currentPage === 1"
+                        (click)="onPageChange(currentPage - 1)">
+                    <i class="fas fa-chevron-left"></i>
+                    Précédent
+                </button>
+                
+                <div class="page-numbers">
+                    <button class="page-btn" 
+                            *ngFor="let page of getPageNumbers()"
+                            [class.active]="page === currentPage"
+                            [class.separator]="page === -1"
+                            [disabled]="page === -1"
+                            (click)="page !== -1 ? onPageChange(page) : null">
+                        <span *ngIf="page === -1">...</span>
+                        <span *ngIf="page !== -1">{{ page }}</span>
+                    </button>
+                </div>
+                
+                <button class="page-btn next-btn" 
+                        [disabled]="currentPage === getTotalPages()"
+                        (click)="onPageChange(currentPage + 1)">
+                    Suivant
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal de prédiction -->
+    <div class="prediction-modal-overlay" *ngIf="showPredictionModal" (click)="closePredictionModal()">
+        <div class="prediction-modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-crystal-ball"></i>
+                    Configuration des prédictions
+                </h3>
+                <button class="close-btn" (click)="closePredictionModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-content">
+                <!-- Méthode de prédiction -->
+                <div class="form-group">
+                    <label>Méthode de prédiction</label>
+                    <select [(ngModel)]="predictionConfig.method">
+                        <option *ngFor="let method of predictionMethods" 
+                                [value]="method.value">
+                            {{ method.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Variable cible -->
+                <div class="form-group">
+                    <label>Variable à prédire</label>
+                    <select [(ngModel)]="predictionConfig.targetVariable">
+                        <option *ngFor="let target of targetVariables" 
+                                [value]="target.value">
+                            {{ target.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Période de prédiction -->
+                <div class="form-group">
+                    <label>Période de prédiction</label>
+                    <select [(ngModel)]="predictionConfig.predictionPeriod">
+                        <option *ngFor="let period of predictionPeriods" 
+                                [value]="period.value">
+                            {{ period.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Niveau de confiance -->
+                <div class="form-group">
+                    <label>Niveau de confiance</label>
+                    <select [(ngModel)]="predictionConfig.confidenceLevel">
+                        <option *ngFor="let level of confidenceLevels" 
+                                [value]="level.value">
+                            {{ level.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Options avancées -->
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" 
+                               [(ngModel)]="predictionConfig.includeSeasonality">
+                        Inclure la saisonnalité
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" 
+                               [(ngModel)]="predictionConfig.includeExternalFactors">
+                        Inclure les facteurs externes
+                    </label>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" (click)="closePredictionModal()">
+                        Annuler
+                    </button>
+                    <button class="btn btn-primary" (click)="generatePrediction()" [disabled]="isLoading">
+                        <i class="fas fa-magic" *ngIf="!isLoading"></i>
+                        <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+                        {{ isLoading ? 'Génération...' : 'Générer la prédiction' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

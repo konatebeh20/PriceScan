@@ -1,0 +1,241 @@
+<!-- Stores List Component -->
+<div class="stores-list-page">
+    <h1 class="page-title">Gestion des Magasins</h1>
+    
+    <!-- Stores Header -->
+    <div class="stores-header">
+        <div class="stores-stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ totalStores }}</div>
+                <div class="stat-label">Total Magasins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ activeStores }}</div>
+                <div class="stat-label">Actifs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ archivedStores }}</div>
+                <div class="stat-label">Archivés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ favoriteStores }}</div>
+                <div class="stat-label">Favoris</div>
+            </div>
+        </div>
+        
+        <div class="stores-actions">
+            <button class="btn-primary" (click)="showAddStoreModal()">
+                <i class="fas fa-plus"></i> Ajouter un magasin
+            </button>
+            <button class="btn-secondary" (click)="testStorageAndDatabase()" style="margin-left: 10px;">
+                <i class="fas fa-bug"></i> Test Stockage/DB
+            </button>
+        </div>
+    </div>
+
+    <!-- Store Filters -->
+    <div class="store-filters">
+        <div class="filter-group">
+            <label class="filter-label">Rechercher</label>
+            <input type="text" class="form-input" placeholder="Nom du magasin..." [(ngModel)]="searchTerm" (input)="filterStores()">
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Type de compte</label>
+            <select class="form-select" [(ngModel)]="selectedType" (change)="filterStores()">
+                <option value="">Tous les types</option>
+                <option value="particulier">Particulier</option>
+                <option value="supermarche">Supermarché</option>
+                <option value="pharmacie">Pharmacie</option>
+                <option value="quincaillerie">Quincaillerie</option>
+                <option value="autre">Autre</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Statut</label>
+            <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterStores()">
+                <option value="">Tous les statuts</option>
+                <option value="active">Actif</option>
+                <option value="archived">Archivé</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Ville</label>
+            <select class="form-select" [(ngModel)]="selectedCity" (change)="filterStores()">
+                <option value="">Toutes les villes</option>
+                <option value="abidjan">Abidjan</option>
+                <option value="bamako">Bamako</option>
+                <option value="dakar">Dakar</option>
+                <option value="ouagadougou">Ouagadougou</option>
+                <option value="lome">Lomé</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Favoris</label>
+            <select class="form-select" [(ngModel)]="selectedFavorite" (change)="filterStores()">
+                <option value="">Tous les magasins</option>
+                <option value="favorite">Favoris uniquement</option>
+                <option value="not-favorite">Non favoris</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Stores Grid -->
+    <div class="stores-grid" *ngIf="filteredStores.length > 0">
+        <div class="store-card" *ngFor="let store of filteredStores">
+            <div class="store-header">
+                <div class="store-logo" [class]="'logo-' + store.type">
+                    <i class="fas" [class]="getStoreTypeIcon(store.type)"></i>
+                </div>
+                <div class="store-info">
+                    <h3 class="store-name">{{ store.name }}</h3>
+                    <p class="store-type">{{ getStoreTypeLabel(store.type) }}</p>
+                </div>
+                <div class="store-status">
+                    <span class="status-badge" [class]="'status-' + store.status">
+                        {{ getStatusLabel(store.status) }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="store-details">
+                <div class="store-address">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ store.address }}</span>
+                </div>
+                <div class="store-city">
+                    <i class="fas fa-city"></i>
+                    <span>{{ store.city }}</span>
+                </div>
+                <div class="store-phone" *ngIf="store.phone">
+                    <i class="fas fa-phone"></i>
+                    <span>{{ store.phone }}</span>
+                </div>
+                <div class="store-email" *ngIf="store.email">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ store.email }}</span>
+                </div>
+            </div>
+            
+            <div class="store-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Reçus</span>
+                    <span class="stat-value">{{ store.receiptsCount }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total bénéfice</span>
+                    <span class="stat-value">{{ store.totalSpent | number }} F CFA</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Dernière visite</span>
+                    <span class="stat-value">{{ store.lastVisit | date:'dd/MM/yyyy' }}</span>
+                </div>
+            </div>
+            
+            <div class="store-actions">
+                <button class="btn-action btn-favorite" (click)="toggleFavorite(store)" [class.favorited]="store.isFavorite" [title]="store.isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+                    <i class="fas" [class.fa-heart]="store.isFavorite" [class.fa-heart-o]="!store.isFavorite"></i>
+                </button>
+                <button class="btn-action btn-edit" (click)="editStore(store)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-action btn-archive" (click)="archiveStore(store)" *ngIf="store.status === 'active'" title="Archiver">
+                    <i class="fas fa-archive"></i>
+                </button>
+                <button class="btn-action btn-restore" (click)="restoreStore(store)" *ngIf="store.status === 'archived'" title="Restaurer">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="btn-action btn-delete" (click)="deleteStore(store)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredStores.length === 0">
+        <div class="empty-icon">
+            <i class="fas fa-store"></i>
+        </div>
+        <h3>Aucun magasin trouvé</h3>
+        <p>Aucun magasin ne correspond à vos critères de recherche.</p>
+        <button class="btn-primary" (click)="showAddStoreModal()">
+            <i class="fas fa-plus"></i> Ajouter un magasin
+        </button>
+    </div>
+</div>
+
+<!-- Add/Edit Store Modal -->
+<div class="modal" [class.show]="showModal" *ngIf="showModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>{{ isEditing ? 'Modifier le magasin' : 'Ajouter un magasin' }}</h2>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="saveStore()" #storeForm="ngForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nom du magasin *</label>
+                        <input type="text" class="form-input" [(ngModel)]="editingStore.name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type de compte *</label>
+                        <select class="form-select" [(ngModel)]="editingStore.type" name="type" required>
+                            <option value="">Sélectionner le type</option>
+                            <option value="particulier">Particulier</option>
+                            <option value="supermarche">Supermarché</option>
+                            <option value="pharmacie">Pharmacie</option>
+                            <option value="quincaillerie">Quincaillerie</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Adresse *</label>
+                        <input type="text" class="form-input" [(ngModel)]="editingStore.address" name="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ville *</label>
+                        <select class="form-select" [(ngModel)]="editingStore.city" name="city" required>
+                            <option value="">Sélectionner une ville</option>
+                            <option value="abidjan">Abidjan</option>
+                            <option value="bamako">Bamako</option>
+                            <option value="dakar">Dakar</option>
+                            <option value="ouagadougou">Ouagadougou</option>
+                            <option value="lome">Lomé</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-input" [(ngModel)]="editingStore.phone" name="phone" placeholder="+223 XX XX XX XX">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" [(ngModel)]="editingStore.email" name="email" placeholder="contact@magasin.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input" [(ngModel)]="editingStore.description" name="description" rows="3" placeholder="Description du magasin (optionnel)"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" (click)="closeModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

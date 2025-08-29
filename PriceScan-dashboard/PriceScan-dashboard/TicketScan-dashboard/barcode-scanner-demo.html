@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration Scanner Code-Barres</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .scanner-section {
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f8f9fa;
+        }
+        .scanner-status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .scanner-status.active {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .barcode-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .product-list {
+            margin: 20px 0;
+        }
+        .product-item {
+            background: #e9ecef;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .barcode-display {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+            background: #f8f9fa;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧭 Démonstration Scanner Code-Barres</h1>
+        
+        <div class="instructions">
+            <h3>📋 Instructions d'utilisation :</h3>
+            <p>Cette démonstration simule un scanner de code-barres. Vous pouvez :</p>
+            <ul>
+                <li>Cliquer sur "Démarrer le scanner" pour activer le mode scan</li>
+                <li>Taper un code-barres dans le champ (ex: 1234567890123)</li>
+                <li>Appuyer sur Entrée pour simuler le scan</li>
+                <li>Voir le produit correspondant s'ajouter automatiquement</li>
+            </ul>
+        </div>
+
+        <div class="scanner-section">
+            <h2>🔍 Scanner de Code-Barres</h2>
+            
+            <div class="scanner-controls">
+                <button class="btn" id="startBtn" onclick="startScanner()">
+                    🚀 Démarrer le scanner
+                </button>
+                <button class="btn btn-secondary" id="stopBtn" onclick="stopScanner()" style="display: none;">
+                    ⏹️ Arrêter le scanner
+                </button>
+            </div>
+
+            <div class="scanner-status" id="scannerStatus" style="display: none;">
+                <strong>📡 Scanner actif</strong> - Scannez un code-barres...
+            </div>
+
+            <div class="scanner-status" id="scannerMessage" style="display: none;">
+                <strong>💬 Message :</strong> <span id="messageText"></span>
+            </div>
+
+            <div id="barcodeInputContainer" style="display: none;">
+                <label for="barcodeInput">Code-barres scanné :</label>
+                <input type="text" 
+                       class="barcode-input" 
+                       id="barcodeInput" 
+                       placeholder="Tapez un code-barres et appuyez sur Entrée"
+                       onkeydown="handleBarcodeInput(event)">
+            </div>
+
+            <div id="lastBarcode" style="display: none;">
+                <h4>Dernier code scanné :</h4>
+                <div class="barcode-display" id="barcodeDisplay"></div>
+            </div>
+        </div>
+
+        <div class="product-list">
+            <h2>🛒 Produits scannés</h2>
+            <div id="productsContainer">
+                <p>Aucun produit scanné pour le moment.</p>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>🔢 Codes-barres de test disponibles :</h3>
+            <ul>
+                <li><strong>1234567890123</strong> - Pain de mie (1500 F CFA)</li>
+                <li><strong>2345678901234</strong> - Lait UHT 1L (2250 F CFA)</li>
+                <li><strong>3456789012345</strong> - Yaourt nature (800 F CFA)</li>
+                <li><strong>4567890123456</strong> - Bananes 1kg (1800 F CFA)</li>
+                <li><strong>5678901234567</strong> - Riz parfumé 5kg (9700 F CFA)</li>
+                <li><strong>6789012345678</strong> - Huile végétale 5L (12000 F CFA)</li>
+                <li><strong>7890123456789</strong> - Sucre blanc 2kg (4500 F CFA)</li>
+                <li><strong>8901234567890</strong> - Farine de blé 2kg (3200 F CFA)</li>
+                <li><strong>9012345678901</strong> - Tomates fraîches 2kg (2800 F CFA)</li>
+                <li><strong>0123456789012</strong> - Poulet entier (10250 F CFA)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let isScannerActive = false;
+        let scannedProducts = [];
+        let lastScannedBarcode = '';
+
+        // Base de données des produits
+        const productDatabase = {
+            '1234567890123': { name: 'Pain de mie', price: 1500, category: 'Boulangerie' },
+            '2345678901234': { name: 'Lait UHT 1L', price: 2250, category: 'Laitier' },
+            '3456789012345': { name: 'Yaourt nature', price: 800, category: 'Laitier' },
+            '4567890123456': { name: 'Bananes 1kg', price: 1800, category: 'Fruits' },
+            '5678901234567': { name: 'Riz parfumé 5kg', price: 9700, category: 'Céréales' },
+            '6789012345678': { name: 'Huile végétale 5L', price: 12000, category: 'Huiles' },
+            '7890123456789': { name: 'Sucre blanc 2kg', price: 4500, category: 'Sucre' },
+            '8901234567890': { name: 'Farine de blé 2kg', price: 3200, category: 'Farines' },
+            '9012345678901': { name: 'Tomates fraîches 2kg', price: 2800, category: 'Légumes' },
+            '0123456789012': { name: 'Poulet entier', price: 10250, category: 'Viandes' }
+        };
+
+        function startScanner() {
+            isScannerActive = true;
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            document.getElementById('scannerStatus').style.display = 'block';
+            document.getElementById('barcodeInputContainer').style.display = 'block';
+            document.getElementById('barcodeInput').focus();
+            
+            showMessage('Scanner activé - Scannez un code-barres...', 'success');
+        }
+
+        function stopScanner() {
+            isScannerActive = false;
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('scannerStatus').style.display = 'none';
+            document.getElementById('barcodeInputContainer').style.display = 'none';
+            document.getElementById('scannerMessage').style.display = 'none';
+            
+            showMessage('Scanner arrêté', 'info');
+        }
+
+        function handleBarcodeInput(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const barcode = event.target.value.trim();
+                
+                if (barcode) {
+                    scanBarcode(barcode);
+                    event.target.value = '';
+                }
+            }
+        }
+
+        function scanBarcode(barcode) {
+            lastScannedBarcode = barcode;
+            document.getElementById('barcodeDisplay').textContent = barcode;
+            document.getElementById('lastBarcode').style.display = 'block';
+            
+            showMessage(`Code-barres scanné: ${barcode}`, 'info');
+            
+            // Rechercher le produit
+            const product = productDatabase[barcode];
+            
+            if (product) {
+                addProduct(product, barcode);
+                showMessage(`Produit ajouté: ${product.name}`, 'success');
+                
+                // Arrêter automatiquement le scanner après un scan réussi
+                setTimeout(() => {
+                    stopScanner();
+                }, 2000);
+            } else {
+                showMessage(`Produit non trouvé pour le code: ${barcode}`, 'error');
+            }
+        }
+
+        function addProduct(product, barcode) {
+            // Vérifier si le produit existe déjà
+            const existingIndex = scannedProducts.findIndex(p => p.barcode === barcode);
+            
+            if (existingIndex >= 0) {
+                // Incrémenter la quantité
+                scannedProducts[existingIndex].quantity += 1;
+                scannedProducts[existingIndex].total = scannedProducts[existingIndex].quantity * scannedProducts[existingIndex].price;
+            } else {
+                // Ajouter un nouveau produit
+                scannedProducts.push({
+                    barcode: barcode,
+                    name: product.name,
+                    price: product.price,
+                    category: product.category,
+                    quantity: 1,
+                    total: product.price
+                });
+            }
+            
+            updateProductsDisplay();
+        }
+
+        function updateProductsDisplay() {
+            const container = document.getElementById('productsContainer');
+            
+            if (scannedProducts.length === 0) {
+                container.innerHTML = '<p>Aucun produit scanné pour le moment.</p>';
+                return;
+            }
+            
+            let html = '<div style="display: grid; gap: 10px;">';
+            let total = 0;
+            
+            scannedProducts.forEach(product => {
+                html += `
+                    <div class="product-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${product.name}</strong> (${product.category})
+                                <br><small>Code: ${product.barcode}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <div>${product.quantity} × ${product.price.toLocaleString()} F CFA</div>
+                                <strong>${product.total.toLocaleString()} F CFA</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                total += product.total;
+            });
+            
+            html += `
+                <div style="background: #007bff; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 18px; font-weight: bold;">
+                    Total: ${total.toLocaleString()} F CFA
+                </div>
+            </div>`;
+            
+            container.innerHTML = html;
+        }
+
+        function showMessage(message, type = 'info') {
+            const messageContainer = document.getElementById('scannerMessage');
+            const messageText = document.getElementById('messageText');
+            
+            messageText.textContent = message;
+            messageContainer.style.display = 'block';
+            
+            // Changer la couleur selon le type
+            messageContainer.className = 'scanner-status';
+            if (type === 'success') {
+                messageContainer.style.background = '#d4edda';
+                messageContainer.style.borderColor = '#c3e6cb';
+                messageContainer.style.color = '#155724';
+            } else if (type === 'error') {
+                messageContainer.style.background = '#f8d7da';
+                messageContainer.style.borderColor = '#f5c6cb';
+                messageContainer.style.color = '#721c24';
+            } else {
+                messageContainer.style.background = '#d1ecf1';
+                messageContainer.style.borderColor = '#bee5eb';
+                messageContainer.style.color = '#0c5460';
+            }
+            
+            // Masquer le message après 3 secondes
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Scanner de code-barres initialisé');
+            console.log('Utilisez les codes-barres de test listés ci-dessous');
+        });
+    </script>
+</body>
+</html>

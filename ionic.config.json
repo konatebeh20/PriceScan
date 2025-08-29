@@ -1,7 +1,0 @@
-{
-  "name": "receipt-scanner",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}

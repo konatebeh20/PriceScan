@@ -1,0 +1,240 @@
+<!-- Products List Component -->
+<div class="products-list-page">
+    <h1 class="page-title">Gestion des Produits</h1>
+    
+    <!-- Products Header -->
+    <div class="products-header">
+        <div class="products-stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ totalProducts }}</div>
+                <div class="stat-label">Total Produits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ activeProducts }}</div>
+                <div class="stat-label">Actifs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ archivedProducts }}</div>
+                <div class="stat-label">Archivés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ favoriteProducts }}</div>
+                <div class="stat-label">Favoris</div>
+            </div>
+        </div>
+        
+        <button class="btn-primary" (click)="openAddModal()">
+            <i class="fas fa-plus"></i> Ajouter un produit
+        </button>
+    </div>
+
+    <!-- Product Filters -->
+    <div class="product-filters">
+        <div class="filter-group">
+            <label class="filter-label">Rechercher</label>
+            <input type="text" class="form-input" placeholder="Nom du produit..." [(ngModel)]="searchTerm" (input)="filterProducts()">
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Catégorie</label>
+            <select class="form-select" [(ngModel)]="selectedCategory" (change)="filterProducts()">
+                <option value="">Toutes les catégories</option>
+                <option value="alimentaire">Alimentaire</option>
+                <option value="hygiene">Hygiène</option>
+                <option value="maison">Maison</option>
+                <option value="sante">Santé</option>
+                <option value="autre">Autre</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Statut</label>
+            <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterProducts()">
+                <option value="">Tous les statuts</option>
+                <option value="active">Actif</option>
+                <option value="archived">Archivé</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Prix</label>
+            <select class="form-select" [(ngModel)]="selectedPrice" (change)="filterProducts()">
+                <option value="">Tous les prix</option>
+                <option value="0-1000">0 - 1000 F CFA</option>
+                <option value="1000-5000">1000 - 5000 F CFA</option>
+                <option value="5000+">Plus de 5000 F CFA</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">Favoris</label>
+            <select class="form-select" [(ngModel)]="selectedFavorite" (change)="filterProducts()">
+                <option value="">Tous les produits</option>
+                <option value="favorite">Favoris uniquement</option>
+                <option value="not-favorite">Non favoris</option>
+            </select>
+        </div>
+        
+        <button class="btn-secondary" (click)="resetFilters()">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
+    </div>
+
+    <!-- Products Table -->
+    <div class="products-table-container" *ngIf="filteredProducts.length > 0">
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Code-barres</th>
+                    <th>Catégorie</th>
+                    <th>Prix</th>
+                    <th>Dernière mise à jour</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of filteredProducts">
+                    <td>
+                        <div class="product-info">
+                            <div class="product-icon" [class]="'icon-' + product.category">
+                                <i class="fas" [class]="getCategoryIcon(product.category)"></i>
+                            </div>
+                            <div class="product-details">
+                                <div class="product-name">{{ product.name }}</div>
+                                <div class="product-description">{{ product.description || 'Aucune description' }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="product-barcode">{{ product.barcode || 'Non défini' }}</span>
+                    </td>
+                    <td>
+                        <span class="category-badge" [class]="'category-' + product.category">
+                            {{ getCategoryLabel(product.category) }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ product.price ? (product.price | number) + ' F CFA / ' + product.unit : 'Non défini' }}
+                    </td>
+                    <td>
+                        {{ product.updatedAt | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                        <span class="status-badge" [class]="'status-' + product.status">
+                            {{ getStatusLabel(product.status) }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-favorite" 
+                                    [class.active]="product.isFavorite"
+                                    (click)="toggleFavorite(product)" 
+                                    title="Ajouter aux favoris">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="btn-action btn-edit" (click)="openEditModal(product)" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-archive" 
+                                    *ngIf="product.status === 'active'"
+                                    (click)="archiveProduct(product)" 
+                                    title="Archiver">
+                                <i class="fas fa-archive"></i>
+                            </button>
+                            <button class="btn-action btn-restore" 
+                                    *ngIf="product.status === 'archived'"
+                                    (click)="restoreProduct(product)" 
+                                    title="Restaurer">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button class="btn-action btn-delete" (click)="deleteProduct(product)" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredProducts.length === 0">
+        <i class="fas fa-box-open"></i>
+        <h3>Aucun produit trouvé</h3>
+        <p>Essayez de modifier vos filtres ou ajoutez un nouveau produit.</p>
+        <button class="btn-primary" (click)="openAddModal()">
+            <i class="fas fa-plus"></i> Ajouter un produit
+        </button>
+    </div>
+</div>
+
+<!-- Add/Edit Product Modal -->
+<div class="modal" [class.show]="showModal" *ngIf="showModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>{{ isEditing ? 'Modifier le produit' : 'Ajouter un produit' }}</h2>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="saveProduct()" #productForm="ngForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nom du produit *</label>
+                        <input type="text" class="form-input" [(ngModel)]="editingProduct.name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Code-barres *</label>
+                        <input type="text" class="form-input" [(ngModel)]="editingProduct.barcode" name="barcode" required placeholder="1234567890123">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Catégorie *</label>
+                        <select class="form-select" [(ngModel)]="editingProduct.category" name="category" required>
+                            <option value="">Sélectionner une catégorie</option>
+                            <option value="alimentaire">Alimentaire</option>
+                            <option value="hygiene">Hygiène</option>
+                            <option value="maison">Maison</option>
+                            <option value="sante">Santé</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prix (F CFA)</label>
+                        <input type="number" class="form-input" [(ngModel)]="editingProduct.price" name="price" min="0" step="1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Prix (F CFA)</label>
+                        <input type="number" class="form-input" [(ngModel)]="editingProduct.price" name="price" min="0" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unité</label>
+                        <select class="form-select" [(ngModel)]="editingProduct.unit" name="unit">
+                            <option value="pièce">Pièce</option>
+                            <option value="kg">Kilogramme</option>
+                            <option value="g">Gramme</option>
+                            <option value="l">Litre</option>
+                            <option value="ml">Millilitre</option>
+                            <option value="paquet">Paquet</option>
+                            <option value="boîte">Boîte</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input" [(ngModel)]="editingProduct.description" name="description" rows="3" placeholder="Description du produit (optionnel)"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" (click)="closeModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

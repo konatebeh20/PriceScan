@@ -1,0 +1,29 @@
+<!-- Dashboard -->
+<div class="dashboard">
+    <!-- Sidebar -->
+    <app-sidebar 
+        [isSidebarCollapsed]="isSidebarCollapsed"
+        [currentPage]="currentPage"
+        (sidebarToggle)="toggleSidebar()"
+        (pageChange)="showPage($event)">
+    </app-sidebar>
+
+    <!-- Main Layout -->
+    <app-main-layout 
+        [isSidebarCollapsed]="isSidebarCollapsed"
+        [isDarkTheme]="isDarkTheme"
+        [isUserMenuOpen]="isUserMenuOpen"
+        [currentPage]="currentPage"
+        (sidebarToggle)="toggleSidebar()"
+        (themeToggle)="toggleTheme()"
+        (userMenuToggle)="toggleUserMenu()"
+        (logout)="logout()"
+        (showUserProfile)="showUserProfile()">
+        
+        <app-main-content 
+            [currentPage]="currentPage"
+            (pageChange)="showPage($event)">
+        </app-main-content>
+        
+    </app-main-layout>
+</div>

@@ -1,0 +1,179 @@
+<!-- Landing Page -->
+<div class="landing-container">
+    <div class="landing-left">
+        <div class="logo">TicketScan</div>
+        <h1 class="landing-title">Maîtrisez vos dépenses, un ticket à la fois.</h1>
+        <p class="landing-description">Importez vos tickets de caisse et obtenez une vision claire de votre budget. Simple, rapide et efficace.</p>
+        <div class="landing-illustration">
+            <i class="fas fa-chart-line"></i>
+        </div>
+    </div>
+    
+    <div class="landing-right">
+        <div class="auth-container">
+            <div class="tab-container">
+                <div class="tab" 
+                     [class.active]="currentTab === 'login'" 
+                     (click)="switchTab('login')">
+                    Se Connecter
+                </div>
+                <div class="tab" 
+                     [class.active]="currentTab === 'register'" 
+                     (click)="switchTab('register')">
+                    S'inscrire
+                </div>
+            </div>
+            
+            <!-- Login Tab -->
+            <div class="tab-content" [class.active]="currentTab === 'login'">
+                <form (ngSubmit)="handleLogin()" #loginFormRef="ngForm">
+                    <div class="form-group">
+                        <label class="form-label">Adresse email</label>
+                        <input type="email" 
+                               class="form-input" 
+                               [class.error]="formErrors['loginEmail']"
+                               [(ngModel)]="loginForm.email" 
+                               name="loginEmail"
+                               required>
+                        <div class="form-error" 
+                             [class.show]="formErrors['loginEmail']">
+                            {{ formErrors['loginEmail'] }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" 
+                               class="form-input" 
+                               [class.error]="formErrors['loginPassword']"
+                               [(ngModel)]="loginForm.password" 
+                               name="loginPassword"
+                               required>
+                        <div class="form-error" 
+                             [class.show]="formErrors['loginPassword']">
+                            {{ formErrors['loginPassword'] }}
+                        </div>
+                    </div>
+                    <button type="submit" 
+                            class="btn-primary" 
+                            [disabled]="isLoading"
+                            [class.btn-loading]="isLoading">
+                        <span *ngIf="!isLoading">Connexion</span>
+                        <span *ngIf="isLoading">Connexion en cours...</span>
+                    </button>
+                    <div class="forgot-password">
+                        <a href="#" (click)="showForgotPassword(); $event.preventDefault()">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Register Tab -->
+            <div class="tab-content" [class.active]="currentTab === 'register'">
+                <form (ngSubmit)="handleRegister()" #registerFormRef="ngForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   [class.error]="formErrors['registerFirstName']"
+                                   [(ngModel)]="registerForm.firstName" 
+                                   name="registerFirstName"
+                                   required>
+                            <div class="form-error" 
+                                 [class.show]="formErrors['registerFirstName']">
+                                {{ formErrors['registerFirstName'] }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nom</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   [class.error]="formErrors['registerLastName']"
+                                   [(ngModel)]="registerForm.lastName" 
+                                   name="registerLastName"
+                                   required>
+                            <div class="form-error" 
+                                 [class.show]="formErrors['registerLastName']">
+                                {{ formErrors['registerLastName'] }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Adresse email</label>
+                        <input type="email" 
+                               class="form-input" 
+                               [class.error]="formErrors['registerEmail']"
+                               [(ngModel)]="registerForm.email" 
+                               name="registerEmail"
+                               required>
+                        <div class="form-error" 
+                             [class.show]="formErrors['registerEmail']">
+                            {{ formErrors['registerEmail'] }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type de compte *</label>
+                        <select class="form-input" 
+                                [(ngModel)]="registerForm.accountType" 
+                                name="registerAccountType"
+                                required>
+                            <option value="">Sélectionner le type de compte</option>
+                            <option value="particulier">Particulier</option>
+                            <option value="supermarche">Supermarché</option>
+                            <option value="pharmacie">Pharmacie</option>
+                            <option value="quincaillerie">Quincaillerie</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                        <div class="form-error" 
+                             [class.show]="formErrors['registerAccountType']">
+                            {{ formErrors['registerAccountType'] }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" 
+                               class="form-input" 
+                               [class.error]="formErrors['registerPassword']"
+                               [(ngModel)]="registerForm.password" 
+                               name="registerPassword"
+                               (input)="checkPasswordStrength()"
+                               required>
+                        <div class="password-strength" 
+                             [class]="passwordStrength.class"
+                             *ngIf="passwordStrength.text">
+                            <div class="strength-bar">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <div class="strength-text">{{ passwordStrength.text }}</div>
+                        </div>
+                        <div class="form-error" 
+                             [class.show]="formErrors['registerPassword']">
+                            {{ formErrors['registerPassword'] }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirmer le mot de passe</label>
+                        <input type="password" 
+                               class="form-input" 
+                               [class.error]="formErrors['registerConfirmPassword']"
+                               [(ngModel)]="registerForm.confirmPassword" 
+                               name="registerConfirmPassword"
+                               required>
+                        <div class="form-error" 
+                             [class.show]="formErrors['registerConfirmPassword']">
+                            {{ formErrors['registerConfirmPassword'] }}
+                        </div>
+                    </div>
+                    <button type="submit" 
+                            class="btn-primary" 
+                            [disabled]="isLoading"
+                            [class.btn-loading]="isLoading">
+                        <span *ngIf="!isLoading">Créer mon compte</span>
+                        <span *ngIf="isLoading">Création en cours...</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

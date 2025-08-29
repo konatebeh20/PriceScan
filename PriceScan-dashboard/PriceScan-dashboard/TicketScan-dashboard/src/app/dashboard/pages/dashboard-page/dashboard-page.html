@@ -1,0 +1,112 @@
+<!-- Dashboard Page Component -->
+<div class="dashboard-page-container">
+    <h1 class="page-title">Mon Tableau de Bord</h1>
+
+    <hr>
+    
+    <!-- Welcome Section -->
+    <div class="content-section">   
+        <div class="welcome-header">
+            <div>
+                <h2 class="section-title">Bienvenue sur TicketScan !</h2>
+                <p class="welcome-message" id="dashboardWelcomeMessage">Gérez vos reçus et maîtrisez vos dépenses facilement.</p>
+            </div>
+            <div class="last-login-info">
+                <div class="last-login-label">Dernière connexion</div>
+                <div class="last-login-time" id="lastLoginTime">{{ currentDateTime }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="content-section">
+        <h3 class="section-title">Aperçu rapide</h3>
+        <div class="stats-grid">
+            <div class="stat-card receipts">
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number">{{ totalReceipts }}</div>
+                        <div class="stat-label">Total des reçus</div>
+                    </div>
+                    <i class="fas fa-receipt stat-icon"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card spending">
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number">{{ formatCurrency(totalSpent) }}</div>
+                        <div class="stat-label">Total dépensé</div>
+                    </div>
+                    <i class="fas fa-coins stat-icon"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card monthly">
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number">{{ formatCurrency(thisMonthSpent) }}</div>
+                        <div class="stat-label">Ce mois-ci</div>
+                    </div>
+                    <i class="fas fa-calendar-alt stat-icon"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card average">
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number">{{ formatCurrency(averageReceipt) }}</div>
+                        <div class="stat-label">Panier moyen</div>
+                    </div>
+                    <i class="fas fa-shopping-cart stat-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="content-section mt-3">
+        <div class="recent-activity-header">
+            <h3 class="section-title">Activité récente</h3>
+            <button class="btn-secondary" (click)="showPage('receipts')">
+                <i class="fas fa-arrow-right"></i> Voir tous les reçus
+            </button>
+        </div>
+        <div class="recent-activity-container">
+            <div *ngIf="recentReceipts.length === 0" class="no-activity">
+                <i class="fas fa-info-circle"></i>
+                <p>Aucune activité récente</p>
+            </div>
+            <div *ngFor="let receipt of recentReceipts" class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="activity-details">
+                    <div class="activity-title">{{ receipt.store }}</div>
+                    <div class="activity-subtitle">{{ receipt.type }}</div>
+                    <div class="activity-date">{{ receipt.formattedDate }}</div>
+                </div>
+                <div class="activity-amount">
+                    {{ formatCurrency(receipt.amount) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <app-quick-actions (pageChange)="showPage($event)"></app-quick-actions>
+
+    <!-- Section Graphiques -->
+    <div class="content-section">
+        <div class="charts-header">
+            <h3 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Graphiques et analyses
+            </h3>
+        </div>
+        
+        <div class="charts-content">
+            <app-charts></app-charts>
+        </div>
+    </div>
+</div>

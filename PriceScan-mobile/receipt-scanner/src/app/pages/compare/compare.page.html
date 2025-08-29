@@ -1,0 +1,133 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Comparer les Prix</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Search Section -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="search" color="primary"></ion-icon>
+        Rechercher un Produit
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-searchbar 
+        [(ngModel)]="searchQuery" 
+        placeholder="Entrez le nom du produit à comparer"
+        show-clear-button="focus">
+      </ion-searchbar>
+      <ion-button expand="block" (click)="searchProducts()" [disabled]="!searchQuery.trim()">
+        <ion-icon name="git-compare" slot="start"></ion-icon>
+        Comparer les Prix
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Comparison Results -->
+  <ion-card *ngIf="comparisonResults.length > 0">
+    <ion-card-header>
+      <ion-card-title>Résultats de la Comparaison</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="4" *ngFor="let product of comparisonResults">
+            <ion-card class="product-card">
+              <img [src]="product.image" [alt]="product.name">
+              <ion-card-header>
+                <ion-card-title>{{ product.name }}</ion-card-title>
+                <ion-card-subtitle>{{ product.store }}</ion-card-subtitle>
+              </ion-card-header>
+              <ion-card-content>
+                                 <div class="price-info">
+                   <span class="price">{{ formatPrice(product.price) }}</span>
+                   <ion-badge color="primary">{{ product.rating }}/5</ion-badge>
+                 </div>
+                 
+                 <!-- Actions -->
+                 <div class="product-actions">
+                   <ion-button 
+                     size="small" 
+                     fill="clear" 
+                     (click)="toggleFavorite(product)">
+                     <ion-icon 
+                       [name]="isFavorite(product) ? 'heart' : 'heart-outline'"
+                       [color]="isFavorite(product) ? 'danger' : 'medium'">
+                     </ion-icon>
+                   </ion-button>
+                   
+                   <ion-button 
+                     size="small" 
+                     fill="outline" 
+                     (click)="addToComparison(product)"
+                     [disabled]="productsToCompare.length >= 3">
+                     <ion-icon name="add" slot="start"></ion-icon>
+                     Ajouter
+                   </ion-button>
+                 </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Products to Compare -->
+  <ion-card *ngIf="productsToCompare.length > 0">
+    <ion-card-header>
+      <ion-card-title>
+        Produits à Comparer ({{ productsToCompare.length }}/3)
+        <ion-button 
+          size="small" 
+          fill="clear" 
+          color="danger" 
+          (click)="clearComparison()">
+          <ion-icon name="trash"></ion-icon>
+          Effacer
+        </ion-button>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="4" *ngFor="let product of productsToCompare; let i = index">
+            <ion-card class="comparison-card">
+              <img [src]="product.image" [alt]="product.name">
+              <ion-card-header>
+                <ion-card-title>{{ product.name }}</ion-card-title>
+                <ion-card-subtitle>{{ product.store }}</ion-card-subtitle>
+              </ion-card-header>
+              <ion-card-content>
+                <div class="price-info">
+                  <span class="price">{{ formatPrice(product.price) }}</span>
+                  <ion-badge color="primary">{{ product.rating }}/5</ion-badge>
+                </div>
+                <ion-button 
+                  size="small" 
+                  fill="clear" 
+                  color="danger" 
+                  (click)="removeFromComparison(i)">
+                  <ion-icon name="close"></ion-icon>
+                  Retirer
+                </ion-button>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Empty State -->
+  <ion-card *ngIf="comparisonResults.length === 0 && !searchQuery">
+    <ion-card-content class="empty-state">
+      <ion-icon name="git-compare" size="large" color="medium"></ion-icon>
+      <h3>Commencez à Comparer</h3>
+      <p>Recherchez un produit pour voir les prix dans différents magasins</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

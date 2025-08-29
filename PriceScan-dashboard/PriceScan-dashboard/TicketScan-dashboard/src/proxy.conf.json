@@ -1,0 +1,53 @@
+{
+    "/api/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/api": "/api"
+        }
+    },
+    "/auth/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/dashboard/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/promotions/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/users/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/receipts/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/products/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/stores/*": {
+        "target": "http://localhost:5000",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

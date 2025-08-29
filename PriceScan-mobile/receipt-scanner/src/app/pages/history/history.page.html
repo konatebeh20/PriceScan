@@ -1,0 +1,235 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Historique</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Segment Control -->
+  <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)" scrollable="true">
+    <ion-segment-button value="scans">
+      <ion-label>Scans</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="prices">
+      <ion-label>Prix</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="favorites">
+      <ion-label>Favoris</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="searches">
+      <ion-label>Recherches</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Scans History -->
+  <div *ngIf="selectedSegment === 'scans'">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="scan" color="primary"></ion-icon>
+          Historique des Scans
+          <ion-button 
+            size="small" 
+            fill="clear" 
+            color="danger" 
+            (click)="clearHistory('scans')">
+            <ion-icon name="trash"></ion-icon>
+            Effacer
+          </ion-button>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+                 <ion-list *ngIf="scanHistory.length > 0; else noScans">
+           <ion-item *ngFor="let scan of scanHistory">
+             <ion-label>
+               <h3>{{ scan.product }}</h3>
+               <p>{{ scan.barcode }}</p>
+               <p>{{ scan.timestamp | date:'short' }}</p>
+             </ion-label>
+             <ion-badge slot="end" color="primary">{{ formatPrice(scan.price) }}</ion-badge>
+             <ion-badge slot="end" color="secondary">{{ scan.store }}</ion-badge>
+             
+             <!-- Actions -->
+             <ion-button 
+               slot="end" 
+               fill="clear" 
+               size="small"
+               (click)="toggleFavorite(scan, 'scans')">
+               <ion-icon 
+                 [name]="scan.isFavorite ? 'heart' : 'heart-outline'"
+                 [color]="scan.isFavorite ? 'danger' : 'medium'">
+               </ion-icon>
+             </ion-button>
+             
+             <ion-button 
+               slot="end" 
+               fill="clear" 
+               size="small"
+               (click)="deleteItem(scan, 'scans')">
+               <ion-icon name="trash" color="danger"></ion-icon>
+             </ion-button>
+           </ion-item>
+         </ion-list>
+        <ng-template #noScans>
+          <div class="empty-state">
+            <ion-icon name="scan" size="large" color="medium"></ion-icon>
+            <p>Aucun scan enregistré</p>
+          </div>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Price History -->
+  <div *ngIf="selectedSegment === 'prices'">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="trending-down" color="success"></ion-icon>
+          Historique des Prix
+          <ion-button 
+            size="small" 
+            fill="clear" 
+            color="danger" 
+            (click)="clearHistory('prices')">
+            <ion-icon name="trash"></ion-icon>
+            Effacer
+          </ion-button>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list *ngIf="priceHistory.length > 0; else noPrices">
+          <ion-item *ngFor="let item of priceHistory">
+            <ion-label>
+              <h3>{{ item.product }}</h3>
+              <p>Prix actuel: {{ formatPrice(item.currentPrice) }}</p>
+              <p>Meilleur prix: {{ formatPrice(item.bestPrice) }}</p>
+              <p>Baisse: {{ formatPrice(item.priceDrop) }}</p>
+            </ion-label>
+            <ion-badge slot="end" [color]="getPriceTrend(item.priceChanges) === 'down' ? 'success' : 'warning'">
+              {{ getPriceTrend(item.priceChanges) === 'down' ? '↓' : getPriceTrend(item.priceChanges) === 'up' ? '↑' : '→' }}
+            </ion-badge>
+          </ion-item>
+        </ion-list>
+        <ng-template #noPrices>
+          <div class="empty-state">
+            <ion-icon name="trending-down" size="large" color="medium"></ion-icon>
+            <p>Aucun historique de prix</p>
+          </div>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Favorites -->
+  <div *ngIf="selectedSegment === 'favorites'">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="heart" color="danger"></ion-icon>
+          Mes Favoris
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list *ngIf="favorites.length > 0; else noFavorites">
+          <ion-item *ngFor="let favorite of favorites" class="favorite-item">
+            <ion-label>
+              <h3>{{ favorite.product }}</h3>
+              <p *ngIf="favorite.barcode">{{ favorite.barcode }}</p>
+              <p>{{ favorite.timestamp | date:'short' }}</p>
+            </ion-label>
+            <ion-badge slot="end" color="primary">
+              {{ formatPrice(favorite.price) }}
+            </ion-badge>
+            <ion-badge slot="end" color="secondary" *ngIf="favorite.store">{{ favorite.store }}</ion-badge>
+            
+            <!-- Bouton pour retirer des favoris -->
+            <ion-button 
+              slot="end" 
+              fill="clear" 
+              size="small"
+              class="remove-favorite-btn"
+              (click)="removeFromFavorites(favorite)"
+              title="Retirer des favoris">
+              <ion-icon name="heart" color="danger"></ion-icon>
+            </ion-button>
+            
+            <!-- Bouton pour supprimer complètement le favori -->
+            <ion-button 
+              slot="end" 
+              fill="clear" 
+              size="small"
+              class="delete-favorite-btn"
+              (click)="deleteFavorite(favorite)"
+              title="Supprimer définitivement">
+              <ion-icon name="trash" color="danger"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+        <ng-template #noFavorites>
+          <div class="empty-state">
+            <ion-icon name="heart" size="large" color="medium"></ion-icon>
+            <p>Aucun favori enregistré</p>
+          </div>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Search History -->
+  <div *ngIf="selectedSegment === 'searches'">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="search" color="secondary"></ion-icon>
+          Historique des Recherches
+          <ion-button 
+            size="small" 
+            fill="clear" 
+            color="danger" 
+            (click)="clearHistory('searches')">
+            <ion-icon name="trash"></ion-icon>
+            Effacer
+          </ion-button>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+                 <ion-list *ngIf="searchHistory.length > 0; else noSearches">
+           <ion-item *ngFor="let search of searchHistory">
+             <ion-label>
+               <h3>{{ search.query }}</h3>
+               <p>{{ search.timestamp | date:'short' }}</p>
+             </ion-label>
+             <ion-badge slot="end" color="primary">{{ search.resultCount }} résultats</ion-badge>
+             
+             <!-- Actions -->
+             <ion-button 
+               slot="end" 
+               fill="clear" 
+               size="small"
+               (click)="toggleFavorite(search, 'searches')">
+               <ion-icon 
+                 [name]="search.isFavorite ? 'heart' : 'heart-outline'"
+                 [color]="search.isFavorite ? 'danger' : 'medium'">
+               </ion-icon>
+             </ion-button>
+             
+             <ion-button 
+               slot="end" 
+               fill="clear" 
+               size="small"
+               (click)="deleteItem(search, 'searches')">
+               <ion-icon name="trash" color="danger"></ion-icon>
+             </ion-button>
+           </ion-item>
+         </ion-list>
+        <ng-template #noSearches>
+          <div class="empty-state">
+            <ion-icon name="search" size="large" color="medium"></ion-icon>
+            <p>Aucune recherche enregistrée</p>
+          </div>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,142 @@
+// Scan page styles
+.scan-area {
+  text-align: center;
+  padding: 2rem;
+  
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 1rem;
+    color: var(--ion-color-medium);
+  }
+  
+  p {
+    margin: 1rem 0;
+    color: var(--ion-color-medium);
+  }
+}
+
+.scanning {
+  text-align: center;
+  margin-top: 1rem;
+  
+  ion-spinner {
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.description {
+  color: var(--ion-color-medium);
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+
+.specifications {
+  margin: 1rem 0;
+  
+  h4 {
+    color: var(--ion-color-dark);
+    margin-bottom: 0.5rem;
+  }
+  
+  .spec-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--ion-color-light);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.store-item {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--ion-color-light);
+  border-radius: 8px;
+  
+  .store-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    
+    h4 {
+      margin: 0;
+      color: var(--ion-color-dark);
+    }
+  }
+  
+  .store-details {
+    p {
+      margin: 0.25rem 0;
+      color: var(--ion-color-medium);
+    }
+    
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      
+      span {
+        color: var(--ion-color-dark);
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.best-price {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.product-card {
+  margin-bottom: 1rem;
+  
+  .price-info {
+    margin: 1rem 0;
+    
+    .best-price {
+      font-weight: bold;
+      color: var(--ion-color-success);
+      font-size: 1.1em;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--ion-color-medium);
+  
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    margin: 1rem 0;
+    color: var(--ion-color-dark);
+  }
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
+}

@@ -1,0 +1,168 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Profil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- User Profile Card -->
+  <ion-card>
+    <ion-card-content class="profile-header">
+      <ion-avatar class="profile-avatar">
+        <img [src]="userProfile.avatar" [alt]="userProfile.name">
+      </ion-avatar>
+      <h2>{{ userProfile.name }}</h2>
+      <p>{{ userProfile.email }}</p>
+      <p>Membre depuis {{ userProfile.memberSince }}</p>
+      
+      <div class="stats">
+        <ion-chip color="primary">
+          <ion-icon name="scan"></ion-icon>
+          <ion-label>{{ userProfile.totalScans }} scans</ion-label>
+        </ion-chip>
+        <ion-chip color="success">
+          <ion-icon name="trending-down"></ion-icon>
+          <ion-label>{{ formatPrice(userProfile.totalSavings) }} économisés</ion-label>
+        </ion-chip>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Preferences -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="settings" color="primary"></ion-icon>
+        Préférences
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>
+            <h3>Notifications</h3>
+            <p>Recevoir des alertes de prix</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="preferences.notifications"
+            (ionChange)="togglePreference('notifications')">
+          </ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Mode Sombre</h3>
+            <p>Interface en thème sombre</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="preferences.darkMode"
+            (ionChange)="togglePreference('darkMode')">
+          </ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Scan Automatique</h3>
+            <p>Scanner automatiquement les codes-barres</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="preferences.autoScan"
+            (ionChange)="togglePreference('autoScan')">
+          </ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Alertes de Prix</h3>
+            <p>Notifications quand les prix baissent</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="preferences.priceAlerts"
+            (ionChange)="togglePreference('priceAlerts')">
+          </ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Partage Social</h3>
+            <p>Partager les bonnes affaires</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="preferences.socialSharing"
+            (ionChange)="togglePreference('socialSharing')">
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Achievements -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="trophy" color="warning"></ion-icon>
+        Réalisations
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" *ngFor="let achievement of achievements">
+            <ion-card class="achievement-card" [class.unlocked]="achievement.unlocked">
+              <ion-card-content>
+                <ion-icon 
+                  [name]="achievement.icon" 
+                  [color]="achievement.unlocked ? 'success' : 'medium'"
+                  size="large">
+                </ion-icon>
+                <h4>{{ achievement.name }}</h4>
+                <p>{{ achievement.description }}</p>
+                <ion-badge [color]="achievement.unlocked ? 'success' : 'medium'">
+                  {{ achievement.unlocked ? 'Débloqué' : 'Verrouillé' }}
+                </ion-badge>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Actions -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Actions</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" fill="outline" (click)="startEditProfile()">
+        <ion-icon name="create" slot="start"></ion-icon>
+        Modifier le Profil
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" (click)="exportData('csv')">
+        <ion-icon name="download" slot="start"></ion-icon>
+        Exporter en CSV
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" (click)="exportData('txt')">
+        <ion-icon name="document-text" slot="start"></ion-icon>
+        Exporter en TXT
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" (click)="exportData('pdf')">
+        <ion-icon name="document" slot="start"></ion-icon>
+        Exporter en PDF
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" color="danger" (click)="clearData()">
+        <ion-icon name="trash" slot="start"></ion-icon>
+        Effacer les Données
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" color="warning" (click)="logout()">
+        <ion-icon name="log-out" slot="start"></ion-icon>
+        Se Déconnecter
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

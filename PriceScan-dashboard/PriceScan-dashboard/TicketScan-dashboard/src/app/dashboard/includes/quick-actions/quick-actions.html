@@ -1,0 +1,80 @@
+<!-- Quick Actions Component -->
+<div class="content-section">
+    <h3 class="section-title">Actions rapides</h3>
+    <div class="quick-actions-grid">
+        <button class="action-card" (click)="showPage('receipts')">
+            <div class="action-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="action-content">
+                <h4>Créer un reçu</h4>
+                <p>Ajouter un nouveau reçu manuellement</p>
+            </div>
+        </button>
+
+        <button class="action-card" (click)="openExportModal()">
+            <div class="action-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="action-content">
+                <h4>Exporter les données</h4>
+                <p>Exporter vos données en Excel, CSV, JSON ou TXT</p>
+            </div>
+        </button>
+
+        <button class="action-card" (click)="showPage('products')">
+            <div class="action-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="action-content">
+                <h4>Gérer les produits</h4>
+                <p>Ajouter, modifier ou archiver des produits</p>
+            </div>
+        </button>
+
+        <button class="action-card" (click)="showPage('stores')">
+            <div class="action-icon">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="action-content">
+                <h4>Gérer les magasins</h4>
+                <p>Ajouter ou modifier des informations de magasins</p>
+            </div>
+        </button>
+
+        <button class="action-card test-receipt" (click)="addTestReceipt()">
+            <div class="action-icon">
+                <i class="fas fa-flask"></i>
+            </div>
+            <div class="action-content">
+                <h4>Test Ajout Reçu</h4>
+                <p>Ajouter un reçu de test pour vérifier la cohérence</p>
+            </div>
+        </button>
+    </div>
+
+    <!-- Section Graphiques -->
+    <div class="charts-section">
+        <div class="charts-header">
+            <h4 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Graphiques et analyses
+            </h4>
+            <button class="toggle-charts-btn" (click)="toggleCharts()">
+                <i class="fas" [class.fa-chevron-down]="!showCharts" [class.fa-chevron-up]="showCharts"></i>
+                {{ showCharts ? 'Masquer' : 'Afficher' }} les graphiques
+            </button>
+        </div>
+        
+        <div class="charts-content" *ngIf="showCharts">
+            <app-charts></app-charts>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<app-export-modal 
+    [isOpen]="showExportModal"
+    (closeModal)="closeExportModal()"
+    (exportData)="onExportData($event)">
+</app-export-modal>

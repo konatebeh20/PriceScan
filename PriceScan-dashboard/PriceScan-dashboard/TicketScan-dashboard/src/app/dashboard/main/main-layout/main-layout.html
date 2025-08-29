@@ -1,0 +1,34 @@
+<!-- Main Layout -->
+<header class="header">
+    <div class="header-left">
+        <button class="mobile-menu-btn" (click)="toggleSidebar()" title="Ouvrir/Fermer la sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title">{{ getPageTitle() }}</h1>
+    </div>
+    <div style="display: flex; align-items: center;">
+        <button class="theme-toggle" 
+                (click)="toggleTheme()" 
+                title="Changer le thème">
+            <i class="fas" [class.fa-moon]="!isDarkTheme" [class.fa-sun]="isDarkTheme"></i>
+        </button>
+        <div class="user-menu">
+            <div class="user-info" (click)="toggleUserMenu()">
+                <span class="user-name">{{ getUserDisplayName() }}</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="dropdown-menu" [class.active]="isUserMenuOpen">
+                <div class="dropdown-item" (click)="showUserProfileAction()">
+                    <i class="fas fa-user"></i> Mon Profil
+                </div>
+                <div class="dropdown-item" (click)="logoutUser()">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed">
+    <ng-content></ng-content>
+</main>

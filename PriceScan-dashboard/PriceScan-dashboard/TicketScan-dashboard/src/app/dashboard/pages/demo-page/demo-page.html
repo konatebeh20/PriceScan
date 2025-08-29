@@ -1,0 +1,58 @@
+<!-- Demo Page Component -->
+<div class="demo-page-container">
+    <h1 class="page-title">Version Démo - TicketScan</h1>
+    
+    <!-- Welcome Message -->
+    <div class="content-section">
+        <div class="demo-welcome">
+            <h2 class="section-title">Bienvenue sur la version démo !</h2>
+            <p class="demo-description">
+                Vous utilisez actuellement la version de démonstration de TicketScan. 
+                Certaines fonctionnalités sont limitées pour cette version.
+            </p>
+        </div>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="content-section">
+        <h3 class="section-title">Fonctionnalités disponibles</h3>
+        <div class="features-grid">
+            <div class="feature-card" 
+                 *ngFor="let feature of demoFeatures"
+                 [class.available]="feature.available"
+                 [class.unavailable]="!feature.available">
+                <div class="feature-icon">
+                    <i [class]="feature.icon"></i>
+                </div>
+                <div class="feature-content">
+                    <h4 class="feature-title">{{ feature.title }}</h4>
+                    <p class="feature-description">{{ feature.description }}</p>
+                    <div class="feature-status">
+                        <span *ngIf="feature.available" class="status-available">
+                            <i class="fas fa-check"></i> Disponible
+                        </span>
+                        <span *ngIf="!feature.available" class="status-unavailable">
+                            <i class="fas fa-lock"></i> Version Pro
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Message -->
+    <div class="content-section">
+        <div class="upgrade-section">
+            <h3 class="section-title">Passer à la version complète</h3>
+            <p class="upgrade-message">{{ upgradeMessage }}</p>
+            <div class="upgrade-actions">
+                <button class="btn-primary">
+                    <i class="fas fa-envelope"></i> Nous contacter
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-info-circle"></i> En savoir plus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

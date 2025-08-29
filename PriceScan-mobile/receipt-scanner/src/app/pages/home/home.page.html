@@ -1,0 +1,107 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>PriceScan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Search Bar -->
+  <ion-searchbar 
+    [(ngModel)]="searchQuery" 
+    (ionInput)="onSearch($event)"
+    placeholder="Rechercher un produit..."
+    show-clear-button="focus">
+  </ion-searchbar>
+
+  <!-- Price Alerts Section -->
+  <ion-card *ngIf="priceAlerts.length > 0">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="flash" color="warning"></ion-icon>
+        Alertes Prix
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div *ngFor="let alert of priceAlerts" class="alert-item">
+        <span>{{ alert.product }}</span>
+        <ion-badge color="success">{{ formatPrice(alert.price) }}</ion-badge>
+        <small>{{ alert.store }}</small>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Featured Products -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="star" color="primary"></ion-icon>
+        Produits Vedettes
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" *ngFor="let product of featuredProducts">
+            <div class="product-card">
+              <div class="image-wrap">
+                <img [src]="product.image" [alt]="product.name">
+                <ion-button fill="clear" size="small" class="fav-btn" (click)="toggleFavorite(product); $event.stopPropagation()">
+                  <ion-icon [name]="isFavorite(product) ? 'heart' : 'heart-outline'" [color]="isFavorite(product) ? 'danger' : 'medium'"></ion-icon>
+                </ion-button>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">{{ product.name }}</h3>
+                <p class="product-subtitle">{{ product.store }}</p>
+                <div class="price-info">
+                  <span class="current-price">{{ formatPrice(product.currentPrice) }}</span>
+                  <span class="old-price">{{ formatPrice(product.oldPrice) }}</span>
+                  <ion-badge color="success">-{{ product.discount }}%</ion-badge>
+                </div>
+                <div class="trend-info">
+                  <ion-icon 
+                    [name]="product.trend === 'down' ? 'trending-down' : 'trending-up'"
+                    [color]="product.trend === 'down' ? 'success' : 'danger'">
+                  </ion-icon>
+                  <span>Prix en {{ product.trend === 'down' ? 'baisse' : 'hausse' }}</span>
+                </div>
+                <div class="action-buttons">
+                  <ion-button size="small" fill="outline" (click)="navigateToCompare()">
+                    Voir autres offres
+                  </ion-button>
+                  <ion-button size="small" fill="clear" (click)="setPriceAlert(product)">
+                    <ion-icon name="notifications"></ion-icon>
+                  </ion-button>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Quick Actions -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Actions Rapides</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-button expand="block" fill="outline" (click)="navigateToScan()">
+              <ion-icon name="scan" slot="start"></ion-icon>
+              Scanner
+            </ion-button>
+          </ion-col>
+          <ion-col size="6">
+            <ion-button expand="block" fill="outline" (click)="navigateToCompare()">
+              <ion-icon name="git-compare" slot="start"></ion-icon>
+              Comparer
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,146 @@
+<!-- Export Modal -->
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-download"></i>
+                Exporter les données
+            </h2>
+            <button class="close-btn" (click)="close()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Format d'export -->
+            <div class="form-section">
+                <h3>Format d'export</h3>
+                <div class="format-options">
+                    <div class="format-option" 
+                         *ngFor="let format of formats"
+                         [class.selected]="exportOptions.format === format.value"
+                         (click)="setFormat(format.value)">
+                        <div class="format-icon">
+                            <i [class]="format.icon"></i>
+                        </div>
+                        <div class="format-info">
+                            <div class="format-label">{{ format.label }}</div>
+                            <div class="format-description">{{ format.description }}</div>
+                        </div>
+                        <div class="format-check">
+                            <i class="fas fa-check" *ngIf="exportOptions.format === format.value"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Période d'export -->
+            <div class="form-section">
+                <h3>Période d'export</h3>
+                <div class="form-group">
+                    <select [(ngModel)]="exportOptions.dateRange" 
+                            (change)="onDateRangeChange()"
+                            class="form-control">
+                        <option *ngFor="let range of dateRanges" 
+                                [value]="range.value">
+                            {{ range.label }}
+                        </option>
+                    </select>
+                </div>
+                
+                <!-- Dates personnalisées -->
+                <div class="custom-dates" *ngIf="showCustomDateInputs">
+                    <div class="date-inputs">
+                        <div class="form-group">
+                            <label>Date de début</label>
+                            <input type="date" 
+                                   [(ngModel)]="exportOptions.startDate"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Date de fin</label>
+                            <input type="date" 
+                                   [(ngModel)]="exportOptions.endDate"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Types de données -->
+            <div class="form-section">
+                <h3>Types de données à exporter</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" 
+                               [(ngModel)]="exportOptions.includeReceipts">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Reçus et transactions</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" 
+                               [(ngModel)]="exportOptions.includeProducts">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Produits et catalogues</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" 
+                               [(ngModel)]="exportOptions.includeStores">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Magasins et informations</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" 
+                               [(ngModel)]="exportOptions.includeAnalytics">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Analyses et statistiques</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Qualité des données -->
+            <div class="form-section">
+                <h3>Qualité des données</h3>
+                <div class="quality-options">
+                    <div class="quality-option" 
+                         *ngFor="let quality of dataQualityOptions"
+                         [class.selected]="exportOptions.dataQuality === quality.value"
+                         (click)="setDataQuality(quality.value)">
+                        <div class="quality-info">
+                            <div class="quality-label">{{ quality.label }}</div>
+                            <div class="quality-description">{{ quality.description }}</div>
+                        </div>
+                        <div class="quality-check">
+                            <i class="fas fa-check" *ngIf="exportOptions.dataQuality === quality.value"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations d'export -->
+            <div class="export-info">
+                <div class="info-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Les données exportées sont optimisées pour l'analyse de données (EDA), la Data Science et le Machine Learning.</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Format recommandé pour l'analyse : {{ exportOptions.format.toUpperCase() }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            <button class="btn-secondary" (click)="close()">
+                Annuler
+            </button>
+            <button class="btn-primary" (click)="onExport()">
+                <i class="fas fa-download"></i>
+                Exporter
+            </button>
+        </div>
+    </div>
+</div>

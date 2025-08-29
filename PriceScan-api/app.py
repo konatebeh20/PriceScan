@@ -27,6 +27,8 @@ from resources.stores import StoresApi
 from resources.products import ProductsApi
 from resources.prices import PricesApi
 from resources.receipts import ReceiptsApi
+from resources.promotions import PromotionsApi
+from resources.dashboard import DashboardApi
 
 # Import du scraping automatique
 from helpers.auto_scraper import AutoScraper
@@ -96,6 +98,13 @@ api.add_resource(FavoriteApi, '/api/favorite/<string:route>', endpoint='favorite
 # Device Tokens
 api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='device_tokens_all', methods=["GET","POST"])
 api.add_resource(DeviceTokens, '/api/device_tokens/<string:route>', endpoint='device_tokens_all_patch', methods=["PATCH","DELETE"])
+
+# Promotions API
+api.add_resource(PromotionsApi, '/api/promotions/<string:route>', endpoint='promotions_all', methods=["GET","POST"])
+api.add_resource(PromotionsApi, '/api/promotions/<string:route>', endpoint='promotions_all_patch', methods=["PATCH","DELETE"])
+
+# Dashboard API
+api.add_resource(DashboardApi, '/api/dashboard/<string:route>', endpoint='dashboard_all', methods=["GET","POST"])
 
 @app.route(BASE_URL + '/')
 def hello():
