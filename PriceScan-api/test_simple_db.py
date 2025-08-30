@@ -29,21 +29,21 @@ db.init_app(test_app)
 
 def test_database_connection():
     """Test de la connexion à la base de données"""
-    print("🔍 Test de connexion à la base de données...")
+    print(" Test de connexion à la base de données...")
     
     with test_app.app_context():
         try:
             # Test de connexion simple
             result = db.session.execute(text("SELECT 1"))
-            print("✅ Connexion à la base de données réussie")
+            print(" Connexion à la base de données réussie")
             return True
         except Exception as e:
-            print(f"❌ Erreur de connexion: {e}")
+            print(f" Erreur de connexion: {e}")
             return False
 
 def test_dashboard_tables():
     """Test des tables du dashboard"""
-    print("\n📋 Test des tables du dashboard...")
+    print("\n Test des tables du dashboard...")
     
     with test_app.app_context():
         tables_to_test = [
@@ -60,22 +60,22 @@ def test_dashboard_tables():
                 result = db.session.execute(text(f"SELECT COUNT(*) FROM {table_name}"))
                 count = result.scalar()
                 results[table_name] = {"status": "OK", "count": count}
-                print(f"   ✅ {table_name}: {count} enregistrements")
+                print(f"    {table_name}: {count} enregistrements")
             except Exception as e:
                 results[table_name] = {"status": "ERROR", "error": str(e)}
-                print(f"   ❌ {table_name}: Erreur - {e}")
+                print(f"    {table_name}: Erreur - {e}")
         
         return results
 
 def test_dashboard_data():
     """Test des données du dashboard"""
-    print("\n📊 Test des données du dashboard...")
+    print("\n Test des données du dashboard...")
     
     with test_app.app_context():
         try:
             # Test des promotions
             promotions = ps_promotions.query.limit(3).all()
-            print(f"   ✅ Promotions: {len(promotions)} trouvées")
+            print(f"    Promotions: {len(promotions)} trouvées")
             
             if promotions:
                 for promo in promotions:
@@ -83,11 +83,11 @@ def test_dashboard_data():
             
             # Test des profils utilisateurs
             user_profiles = ps_user_profiles.query.limit(3).all()
-            print(f"   ✅ Profils utilisateurs: {len(user_profiles)} trouvés")
+            print(f"    Profils utilisateurs: {len(user_profiles)} trouvés")
             
             # Test des statistiques
             dashboard_stats = ps_dashboard_stats.query.limit(3).all()
-            print(f"   ✅ Statistiques dashboard: {len(dashboard_stats)} trouvées")
+            print(f"    Statistiques dashboard: {len(dashboard_stats)} trouvées")
             
             if dashboard_stats:
                 for stats in dashboard_stats:
@@ -96,12 +96,12 @@ def test_dashboard_data():
             return True
             
         except Exception as e:
-            print(f"   ❌ Erreur lors du test des données: {e}")
+            print(f"    Erreur lors du test des données: {e}")
             return False
 
 def test_data_creation():
     """Test de création de nouvelles données"""
-    print("\n🔄 Test de création de nouvelles données...")
+    print("\n Test de création de nouvelles données...")
     
     with test_app.app_context():
         try:
@@ -123,7 +123,7 @@ def test_data_creation():
             db.session.add(new_promotion)
             db.session.commit()
             
-            print("   ✅ Nouvelle promotion créée avec succès")
+            print("    Nouvelle promotion créée avec succès")
             
             # Récupérer la promotion créée
             created_promo = ps_promotions.query.filter_by(title="Promotion Test Communication").first()
@@ -135,12 +135,12 @@ def test_data_creation():
             # Supprimer la promotion de test
             db.session.delete(created_promo)
             db.session.commit()
-            print("   ✅ Promotion de test supprimée")
+            print("    Promotion de test supprimée")
             
             return True
             
         except Exception as e:
-            print(f"   ❌ Erreur lors du test de création: {e}")
+            print(f"    Erreur lors du test de création: {e}")
             db.session.rollback()
             return False
 
@@ -151,7 +151,7 @@ def main():
     
     # Test 1: Connexion à la base de données
     if not test_database_connection():
-        print("\n❌ Impossible de se connecter à la base de données")
+        print("\n Impossible de se connecter à la base de données")
         return
     
     # Test 2: Tables du dashboard
@@ -165,7 +165,7 @@ def main():
     
     # Résumé des tests
     print("\n" + "=" * 60)
-    print("📋 RÉSUMÉ DES TESTS")
+    print(" RÉSUMÉ DES TESTS")
     print("=" * 60)
     
     all_tests_passed = all([
@@ -176,8 +176,8 @@ def main():
     
     if all_tests_passed:
         print("🎉 TOUS LES TESTS SONT PASSÉS AVEC SUCCÈS!")
-        print("✅ La communication Dashboard ↔ Base de données fonctionne parfaitement")
-        print("\n🚀 Le dashboard peut maintenant:")
+        print(" La communication Dashboard ↔ Base de données fonctionne parfaitement")
+        print("\n Le dashboard peut maintenant:")
         print("   - Lire les données de la base")
         print("   - Créer de nouvelles données")
         print("   - Mettre à jour les données existantes")
@@ -186,8 +186,8 @@ def main():
         print("   - Gérer les promotions")
         print("   - Gérer les profils utilisateurs")
     else:
-        print("⚠️  Certains tests ont échoué")
-        print("🔍 Vérifiez la configuration de la base de données")
+        print("  Certains tests ont échoué")
+        print(" Vérifiez la configuration de la base de données")
     
     print("\n📚 Prochaines étapes:")
     print("   1. Lancer l'API complète: python app.py")

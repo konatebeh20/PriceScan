@@ -4,7 +4,7 @@
 # Compatible avec Windows, Linux et macOS
 # ========================================
 
-## 🚀 PRÉREQUIS OBLIGATOIRES
+##  PRÉREQUIS OBLIGATOIRES
 
 ### 1. Python et pip installés
 - Python 3.8+ requis
@@ -51,7 +51,7 @@ DB_PASSWORD=your_password
 DB_NAME=PriceScan_db
 ```
 
-## 📋 INSTRUCTIONS PAR SYSTÈME D'EXPLOITATION
+##  INSTRUCTIONS PAR SYSTÈME D'EXPLOITATION
 
 ### 🪟 WINDOWS
 
@@ -229,7 +229,7 @@ PriceScan-api/
     └── PriceScan_db.py   # Modèles SQLAlchemy
 ```
 
-## 🔄 COMMANDES MIGRATION COMPLÈTES
+##  COMMANDES MIGRATION COMPLÈTES
 
 ### Initialisation (première fois)
 ```bash

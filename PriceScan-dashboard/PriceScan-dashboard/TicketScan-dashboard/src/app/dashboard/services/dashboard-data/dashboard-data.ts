@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, catchError, tap, map, retry } from 'rxjs';
+import { Observable, of, catchError, tap, map, retry, forkJoin } from 'rxjs';
 import { API_CONFIG } from '../api/api.config';
 import { ErrorHandlerService } from '../error-handler/error-handler.service';
 import { DataSyncService } from '../sync/sync.service';
+import { ProductsService } from '../products/products.service';
+import { StoresService, Store } from '../stores/stores.service';
 
 // Interfaces pour la compatibilité avec les composants existants
 export interface DashboardReceiptItem {
@@ -37,6 +39,15 @@ export interface DashboardStats {
   savingsFromComparison?: number;
   topCategories?: any[];
   topStores?: any[];
+  // Nouvelles statistiques pour les produits et magasins
+  totalProducts: number;
+  activeProducts: number;
+  archivedProducts: number;
+  favoriteProducts: number;
+  totalStores: number;
+  activeStores: number;
+  archivedStores: number;
+  favoriteStores: number;
 }
 
 export interface DashboardUserProfile {
@@ -56,7 +67,9 @@ export class DashboardDataService {
   constructor(
     private http: HttpClient,
     private errorHandler: ErrorHandlerService,
-    private syncService: DataSyncService
+    private syncService: DataSyncService,
+    private productsService: ProductsService,
+    private storesService: StoresService
   ) {
     console.log('DashboardDataService initialisé avec API:', this.apiUrl);
   }
@@ -73,6 +86,65 @@ export class DashboardDataService {
         console.error('Erreur lors de la récupération des stats:', error);
         console.log('Utilisation des données du session storage');
         // Retourner les données du session storage en cas d'erreur
+        return of(this.getStatsFromStorage());
+      })
+    );
+  }
+
+  // Méthode pour obtenir les statistiques complètes incluant produits et magasins
+  getCompleteStats(): Observable<DashboardStats> {
+    console.log('DashboardDataService: getCompleteStats appelé');
+    
+    return forkJoin({
+      backendStats: this.http.get<any>(this.apiUrl).pipe(
+        catchError(() => of(null))
+      ),
+      products: this.productsService.getProducts().pipe(
+        catchError(() => of([]))
+      ),
+      stores: this.storesService.getStores().pipe(
+        catchError(() => of([]))
+      ),
+      receipts: this.http.get<any[]>(`${API_CONFIG.BASE_URL}/receipts`).pipe(
+        catchError(() => of([]))
+      )
+    }).pipe(
+      map(({ backendStats, products, stores, receipts }) => {
+        const baseStats = backendStats ? this.transformBackendData(backendStats) : this.getStatsFromStorage();
+        
+        // Calculer les statistiques des produits
+        const totalProducts = products.length;
+        const activeProducts = products.filter(p => p.product_is_active).length;
+        const archivedProducts = products.filter(p => !p.product_is_active).length;
+        const favoriteProducts = products.filter(p => p.isFavorite).length;
+        
+        // Calculer les statistiques des magasins
+        const totalStores = stores.length;
+        const activeStores = stores.filter(s => s.status !== 'archived').length;
+        const archivedStores = stores.filter(s => s.status === 'archived').length;
+        const favoriteStores = stores.filter(s => s.isFavorite === true).length;
+        
+        // Calculer les statistiques des reçus depuis la vraie base de données
+        const receiptStats = this.calculateStatsFromRealReceipts(receipts);
+        
+        return {
+          ...baseStats,
+          totalReceipts: receiptStats.totalReceipts,
+          totalSpent: receiptStats.totalSpent,
+          thisMonthSpent: receiptStats.thisMonthSpent,
+          averageReceipt: receiptStats.averageReceipt,
+          totalProducts,
+          activeProducts,
+          archivedProducts,
+          favoriteProducts,
+          totalStores,
+          activeStores,
+          archivedStores,
+          favoriteStores
+        };
+      }),
+      catchError((error) => {
+        console.error('Erreur lors de la récupération des stats complètes:', error);
         return of(this.getStatsFromStorage());
       })
     );
@@ -104,6 +176,63 @@ export class DashboardDataService {
     return this.getRecentReceipts().pipe(
       map(receipts => receipts.find(r => r.id === id))
     );
+  }
+
+  // Méthode pour récupérer les reçus depuis l'API backend
+  getReceiptsFromAPI(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_CONFIG.BASE_URL}/receipts`).pipe(
+      tap(receipts => console.log('Reçus récupérés depuis l\'API:', receipts.length)),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des reçus:', error);
+        return of([]);
+      })
+    );
+  }
+
+  // Méthode pour calculer les statistiques depuis les reçus réels
+  private calculateStatsFromRealReceipts(receipts: any[]): {
+    totalReceipts: number;
+    totalSpent: number;
+    thisMonthSpent: number;
+    averageReceipt: number;
+  } {
+    const totalReceipts = receipts.length;
+    
+    if (totalReceipts === 0) {
+      return {
+        totalReceipts: 0,
+        totalSpent: 0,
+        thisMonthSpent: 0,
+        averageReceipt: 0
+      };
+    }
+
+    const totalSpent = receipts.reduce((sum, receipt) => {
+      const amount = this.parseReceiptAmount(receipt.receipt_total || receipt.total || '0');
+      return sum + amount;
+    }, 0);
+
+    // Calculer les dépenses du mois en cours
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const thisMonthSpent = receipts
+      .filter(receipt => {
+        const receiptDate = new Date(receipt.receipt_date || receipt.date || new Date());
+        return receiptDate.getMonth() === currentMonth && receiptDate.getFullYear() === currentYear;
+      })
+      .reduce((sum, receipt) => {
+        const amount = this.parseReceiptAmount(receipt.receipt_total || receipt.total || '0');
+        return sum + amount;
+      }, 0);
+
+    const averageReceipt = totalSpent / totalReceipts;
+
+    return {
+      totalReceipts,
+      totalSpent,
+      thisMonthSpent,
+      averageReceipt
+    };
   }
 
   // Récupérer les données depuis le session storage
@@ -216,7 +345,16 @@ export class DashboardDataService {
       savingsFromPromos: 0,
       savingsFromComparison: 0,
       topCategories: [],
-      topStores: []
+      topStores: [],
+      // Nouvelles statistiques avec valeurs par défaut
+      totalProducts: 0,
+      activeProducts: 0,
+      archivedProducts: 0,
+      favoriteProducts: 0,
+      totalStores: 0,
+      activeStores: 0,
+      archivedStores: 0,
+      favoriteStores: 0
     };
   }
 
@@ -256,6 +394,14 @@ export class DashboardDataService {
     return parseInt(numericPart) || 0;
   }
 
+  private parseReceiptAmount(amountStr: string): number {
+    // Convertir "18 450 F CFA" en 18450
+    if (!amountStr) return 0;
+    
+    const numericPart = amountStr.replace(/[^\d]/g, '');
+    return parseInt(numericPart) || 0;
+  }
+
   private transformBackendData(backendData: any): DashboardStats {
     // Transformer les données du backend vers le format attendu
     return {
@@ -268,7 +414,16 @@ export class DashboardDataService {
       savingsFromPromos: backendData.savings_from_promos || 0,
       savingsFromComparison: backendData.savings_from_comparison || 0,
       topCategories: backendData.top_categories || [],
-      topStores: backendData.top_stores || []
+      topStores: backendData.top_stores || [],
+      // Nouvelles statistiques avec valeurs par défaut
+      totalProducts: backendData.total_products || 0,
+      activeProducts: backendData.active_products || 0,
+      archivedProducts: backendData.archived_products || 0,
+      favoriteProducts: backendData.favorite_products || 0,
+      totalStores: backendData.total_stores || 0,
+      activeStores: backendData.active_stores || 0,
+      archivedStores: backendData.archived_stores || 0,
+      favoriteStores: backendData.favorite_stores || 0
     };
   }
 

@@ -254,4 +254,4 @@ if __name__ == "__main__":
     print(f"Configuration par environnement: {config_par_environnement()}")
     print(f"Configuration avec fallback: {config_avec_fallback()}")
     
-    print("\n✅ Toutes les configurations sont valides")
+    print("\n Toutes les configurations sont valides")

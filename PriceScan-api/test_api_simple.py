@@ -1,110 +1,77 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
-🧪 Test simple de l'API Dashboard
-Lance une version simplifiée de l'API pour les tests
+API PriceScan simplifiée pour les tests du dashboard
 """
 
-import sys
-import os
-import time
-import requests
-from flask import Flask, jsonify
-from flask_restful import Api, Resource
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+import datetime
 
-# Ajouter le répertoire parent au path pour les imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'test_secret_key_12345'
+CORS(app)
 
-from config.db import db
-from model.PriceScan_db import *
+@app.route('/')
+def home():
+    return jsonify({
+        "message": "PriceScan API de test",
+        "status": "running",
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    })
 
-# Créer une application Flask simple pour les tests
-test_app = Flask(__name__)
-test_app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:Konate%202019@localhost:5432/PriceScan_db'
-test_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Initialiser la base de données
-db.init_app(test_app)
-
-# Activer CORS
-CORS(test_app)
-
-# Créer l'API
-test_api = Api(test_app)
-
-# Routes de test simples
-@test_app.route('/api/health')
+@app.route('/api/health')
 def health_check():
-    return jsonify({"status": "OK", "message": "API Dashboard fonctionnelle"})
+    return jsonify({
+        "status": "healthy",
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    })
 
-@test_app.route('/api/test')
-def test_endpoint():
-    return jsonify({"message": "Endpoint de test accessible"})
+@app.route('/api/promotions', methods=['GET'])
+def get_promotions():
+    test_promotions = [
+        {
+            'id': 1,
+            'title': 'Promotion Carrefour',
+            'description': '20% sur tous les produits',
+            'discount_type': 'percentage',
+            'discount_value': 20,
+            'is_featured': True
+        }
+    ]
+    return jsonify(test_promotions)
 
-# Test des modèles
-@test_app.route('/api/test/models')
-def test_models():
-    try:
-        with test_app.app_context():
-            # Test des nouvelles tables
-            tables = ['ps_promotions', 'ps_user_profiles', 'ps_dashboard_stats', 'ps_scan_history']
-            results = {}
-            
-            for table in tables:
-                try:
-                    result = db.session.execute(f"SELECT COUNT(*) FROM {table}")
-                    count = result.scalar()
-                    results[table] = {"status": "OK", "count": count}
-                except Exception as e:
-                    results[table] = {"status": "ERROR", "error": str(e)}
-            
-            return jsonify({
-                "status": "OK",
-                "message": "Test des modèles terminé",
-                "results": results
-            })
-    except Exception as e:
-        return jsonify({"status": "ERROR", "error": str(e)})
+@app.route('/api/dashboard/stats/<user_uid>', methods=['GET'])
+def get_dashboard_stats(user_uid):
+    return jsonify({
+        'total_receipts': 5,
+        'total_spent': 125000.0,
+        'this_month_spent': 45000.0,
+        'avg_receipt_amount': 25000.0,
+        'total_savings': 15000.0
+    })
 
-# Test des données
-@test_app.route('/api/test/data')
-def test_data():
-    try:
-        with test_app.app_context():
-            # Récupérer quelques données de test
-            promotions = ps_promotions.query.limit(5).all()
-            user_profiles = ps_user_profiles.query.limit(5).all()
-            dashboard_stats = ps_dashboard_stats.query.limit(5).all()
-            
-            return jsonify({
-                "status": "OK",
-                "message": "Données de test récupérées",
-                "data": {
-                    "promotions_count": len(promotions),
-                    "user_profiles_count": len(user_profiles),
-                    "dashboard_stats_count": len(dashboard_stats)
-                }
-            })
-    except Exception as e:
-        return jsonify({"status": "ERROR", "error": str(e)})
+@app.route('/api/receipts', methods=['GET'])
+def get_receipts():
+    test_receipts = [
+        {
+            'id': 1,
+            'store': 'Carrefour Market',
+            'address': 'Bamako, Mali',
+            'date': '2024-11-15',
+            'time': '14:30',
+            'ticket_number': 'TK001',
+            'status': 'analyzed',
+            'items': [
+                {'name': 'Pain de mie', 'qty': 2, 'price': 1500},
+                {'name': 'Lait UHT 1L', 'qty': 3, 'price': 2250}
+            ],
+            'total': '18 450 F CFA',
+            'type': 'scanned'
+        }
+    ]
+    return jsonify(test_receipts)
 
-def run_test_api():
-    """Lance l'API de test"""
-    print("🚀 Lancement de l'API de test...")
-    print("📍 Endpoints disponibles:")
-    print("   - /api/health - Vérification de santé")
-    print("   - /api/test - Endpoint de test")
-    print("   - /api/test/models - Test des modèles")
-    print("   - /api/test/data - Test des données")
-    print("\n🌐 API accessible sur: http://localhost:5001")
-    print("⏹️  Appuyez sur Ctrl+C pour arrêter")
-    
-    try:
-        test_app.run(host='0.0.0.0', port=5001, debug=False)
-    except KeyboardInterrupt:
-        print("\n✅ API de test arrêtée")
-
-if __name__ == "__main__":
-    run_test_api()
+if __name__ == '__main__':
+    print(" API PriceScan de test démarrée sur http://localhost:5000")
+    app.run(host='0.0.0.0', port=5000, debug=True)

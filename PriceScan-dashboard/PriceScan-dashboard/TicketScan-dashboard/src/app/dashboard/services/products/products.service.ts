@@ -1,20 +1,38 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { getApiConfig } from '../api/api.config';
 
 export interface Product {
+  product_status: string;
   id: string;
-  name: string;
-  barcode: string;
-  price: number;
-  category: string;
-  description?: string;
-  stock?: number;
-  unit?: string;
-  status: 'active' | 'archived';
-  isFavorite: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  product_name: string;
+  product_barcode?: string;
+  product_description?: string;
+  product_brand?: string;
+  category_id: number;
+  category_name: string;
+  store_id?: number;
+  price_amount: number;
+  price_currency: string;
+  product_unit?: string;
+  product_image?: string;
+  product_is_active: boolean;
+  isFavorite?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProductFormData {
+  product_name: string;
+  product_barcode?: string;
+  product_description?: string;
+  product_brand?: string;
+  category_id: number;
+  store_id: number;
+  price_amount: number;
+  price_currency?: string;
+  product_image?: string;
 }
 
 @Injectable({
@@ -27,17 +45,44 @@ export class ProductsService {
   private productsSubject = new BehaviorSubject<Product[]>([]);
   public products$ = this.productsSubject.asObservable();
 
-  constructor() {
-    this.loadFromStorage();
+  constructor(private http: HttpClient) {
+    this.loadProductsFromAPI();
   }
 
   // ========================================
   // 📦 GESTION GLOBALE DES PRODUITS
   // ========================================
-  // ✅ Stockage en session storage
-  // ✅ Synchronisation avec la base de données
-  // ✅ Accessible partout dans le dashboard
+  //  Synchronisation avec l'API PriceScan
+  //  Stockage en session storage pour performance
+  //  Accessible partout dans le dashboard
   // ========================================
+
+  // Charger les produits depuis l'API
+  private loadProductsFromAPI(): void {
+    this.http.get<any>(`${this.API_URL}`).subscribe({
+      next: (response) => {
+        if (response.response === 'success') {
+          const products = response.products.map((p: any) => ({
+            ...p,
+            id: p.id.toString(),
+            createdAt: p.creation_date ? new Date(p.creation_date) : new Date(),
+            updatedAt: p.updated_on ? new Date(p.updated_on) : new Date()
+          }));
+          
+          this.productsSubject.next(products);
+          this.saveToStorage(products);
+          console.log(' Produits chargés depuis l\'API:', products.length);
+        } else {
+          console.error(' Erreur API:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error(' Erreur lors du chargement des produits:', error);
+        // En cas d'erreur, charger depuis le stockage local
+        this.loadFromStorage();
+      }
+    });
+  }
 
   // Charger les produits depuis le stockage local
   private loadFromStorage(): void {
@@ -50,8 +95,9 @@ export class ProductsService {
           updatedAt: new Date(p.updatedAt)
         }));
         this.productsSubject.next(products);
+        console.log('📦 Produits chargés depuis le stockage local:', products.length);
       } catch (error) {
-        console.error('Erreur lors du chargement des produits depuis le stockage:', error);
+        console.error(' Erreur lors du chargement des produits depuis le stockage:', error);
       }
     }
   }
@@ -61,7 +107,7 @@ export class ProductsService {
     try {
       sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(products));
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde des produits:', error);
+      console.error(' Erreur lors de la sauvegarde des produits:', error);
     }
   }
 
@@ -76,197 +122,223 @@ export class ProductsService {
   }
 
   // Ajouter un nouveau produit
-  addProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
+  addProduct(productData: ProductFormData): Promise<Product> {
     return new Promise((resolve, reject) => {
-      const newProduct: Product = {
-        ...product,
-        id: this.generateId(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      } as Product;
+      this.http.post<any>(`${this.API_URL}`, productData).subscribe({
+        next: (response) => {
+          if (response.response === 'success') {
+            const newProduct: Product = {
+              ...response.product,
+              id: response.product.id.toString(),
+              createdAt: new Date(),
+              updatedAt: new Date()
+            };
 
-      const currentProducts = this.getCurrentProducts();
-      const updatedProducts = [...currentProducts, newProduct];
-      
-      this.productsSubject.next(updatedProducts);
-      this.saveToStorage(updatedProducts);
-      
-      // Synchroniser avec la base de données
-      this.syncToDatabase(newProduct, 'create')
-        .then(() => resolve(newProduct))
-        .catch(reject);
+            const currentProducts = this.getCurrentProducts();
+            const updatedProducts = [...currentProducts, newProduct];
+            
+            this.productsSubject.next(updatedProducts);
+            this.saveToStorage(updatedProducts);
+            
+            console.log(' Produit ajouté avec succès:', newProduct);
+            resolve(newProduct);
+          } else {
+            reject(new Error(response.message || 'Erreur lors de l\'ajout du produit'));
+          }
+        },
+        error: (error) => {
+          console.error(' Erreur lors de l\'ajout du produit:', error);
+          reject(error);
+        }
+      });
     });
   }
 
-  // Mettre à jour un produit existant
-  updateProduct(id: string, updates: Partial<Product>): Promise<Product> {
+  // Mettre à jour un produit
+  updateProduct(productId: string, updates: Partial<Product>): Promise<Product> {
     return new Promise((resolve, reject) => {
-      const currentProducts = this.getCurrentProducts();
-      const productIndex = currentProducts.findIndex(p => p.id === id);
-      
-      if (productIndex === -1) {
-        reject(new Error('Produit non trouvé'));
-        return;
-      }
+      this.http.put<any>(`${this.API_URL}/${productId}`, updates).subscribe({
+        next: (response) => {
+          if (response.response === 'success') {
+            const updatedProduct: Product = {
+              ...response.product,
+              id: response.product.id.toString(),
+              updatedAt: new Date()
+            };
 
-      const updatedProduct = {
-        ...currentProducts[productIndex],
-        ...updates,
-        updatedAt: new Date()
-      } as Product;
-
-      const updatedProducts = [...currentProducts];
-      updatedProducts[productIndex] = updatedProduct;
-      
-      this.productsSubject.next(updatedProducts);
-      this.saveToStorage(updatedProducts);
-      
-      // Synchroniser avec la base de données
-      this.syncToDatabase(updatedProduct, 'update')
-        .then(() => resolve(updatedProduct))
-        .catch(reject);
+            const currentProducts = this.getCurrentProducts();
+            const updatedProducts = currentProducts.map(p => 
+              p.id === productId ? updatedProduct : p
+            );
+            
+            this.productsSubject.next(updatedProducts);
+            this.saveToStorage(updatedProducts);
+            
+            console.log(' Produit mis à jour avec succès:', updatedProduct);
+            resolve(updatedProduct);
+          } else {
+            reject(new Error(response.message || 'Erreur lors de la mise à jour du produit'));
+          }
+        },
+        error: (error) => {
+          console.error(' Erreur lors de la mise à jour du produit:', error);
+          reject(error);
+        }
+      });
     });
   }
 
   // Supprimer un produit
-  deleteProduct(id: string): Promise<void> {
+  deleteProduct(productId: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      const currentProducts = this.getCurrentProducts();
-      const updatedProducts = currentProducts.filter(p => p.id !== id);
-      
-      this.productsSubject.next(updatedProducts);
-      this.saveToStorage(updatedProducts);
-      
-      // Synchroniser avec la base de données
-      this.syncToDatabase({ id } as Product, 'delete')
-        .then(() => resolve())
-        .catch(reject);
+      try {
+        const currentProducts = this.getCurrentProducts();
+        const updatedProducts = currentProducts.filter(p => p.id !== productId);
+        
+        this.productsSubject.next(updatedProducts);
+        this.saveToStorage(updatedProducts);
+        
+        console.log(' Produit supprimé localement');
+        resolve(true);
+        
+        // TODO: Réactiver l'API quand elle sera disponible
+        /*
+        this.http.delete<any>(`${this.API_URL}/${productId}`).subscribe({
+          next: (response) => {
+            if (response.response === 'success') {
+              const currentProducts = this.getCurrentProducts();
+              const updatedProducts = currentProducts.filter(p => p.id !== productId);
+              
+              this.productsSubject.next(updatedProducts);
+              this.saveToStorage(updatedProducts);
+              
+              console.log(' Produit supprimé avec succès');
+              resolve(true);
+            } else {
+              reject(new Error(response.message || 'Erreur lors de la suppression du produit'));
+            }
+          },
+          error: (error) => {
+            console.error(' Erreur lors de la suppression du produit:', error);
+            reject(error);
+          }
+        });
+        */
+      } catch (error) {
+        console.error(' Erreur lors de la suppression du produit:', error);
+        reject(error);
+      }
     });
   }
 
-  // Rechercher des produits par nom
-  searchProductsByName(query: string): Product[] {
-    const products = this.getCurrentProducts();
-    if (!query) return products;
+  // Rechercher des produits
+  searchProducts(query: string, categoryId?: number): Observable<Product[]> {
+    // Pour l'instant, recherche locale - peut être étendue avec l'API
+    const currentProducts = this.getCurrentProducts();
     
-    return products.filter(product =>
-      product.name.toLowerCase().includes(query.toLowerCase()) ||
-      (product.description && product.description.toLowerCase().includes(query.toLowerCase()))
-    );
+    let filtered = currentProducts;
+    
+    if (query) {
+      filtered = filtered.filter(p => 
+        p.product_name.toLowerCase().includes(query.toLowerCase()) ||
+        (p.product_barcode && p.product_barcode.includes(query))
+      );
+    }
+    
+    if (categoryId) {
+      filtered = filtered.filter(p => p.category_id === categoryId);
+    }
+    
+    return of(filtered);
   }
 
-  // Rechercher des produits par code-barres
-  searchProductsByBarcode(barcode: string): Product | null {
-    const products = this.getCurrentProducts();
-    return products.find(product => product.barcode === barcode) || null;
+  // Basculer le statut favori - synchronisé avec la BDD
+  toggleFavorite(productId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        const currentProducts = this.getCurrentProducts();
+        const product = currentProducts.find(p => p.id === productId);
+        
+        if (!product) {
+          reject(new Error('Produit non trouvé'));
+          return;
+        }
+
+        const newFavoriteStatus = !product.isFavorite;
+        
+        // Mettre à jour localement (temporairement sans API)
+        const updatedProducts = currentProducts.map(p => 
+          p.id === productId ? { ...p, isFavorite: newFavoriteStatus } : p
+        );
+        
+        this.productsSubject.next(updatedProducts);
+        this.saveToStorage(updatedProducts);
+        
+        console.log(' Statut favori mis à jour localement:', newFavoriteStatus);
+        resolve();
+        
+        // TODO: Réactiver l'API quand elle sera disponible
+        /*
+        this.http.patch<any>(`${this.API_URL}/${productId}`, { 
+          isFavorite: newFavoriteStatus 
+        }).subscribe({
+          next: (response) => {
+            if (response.response === 'success') {
+              // Mettre à jour localement
+              const updatedProducts = currentProducts.map(p => 
+                p.id === productId ? { ...p, isFavorite: newFavoriteStatus } : p
+              );
+              
+              this.productsSubject.next(updatedProducts);
+              this.saveToStorage(updatedProducts);
+              
+              console.log(' Statut favori mis à jour dans la BDD:', newFavoriteStatus);
+              resolve();
+            } else {
+              reject(new Error(response.message || 'Erreur lors de la mise à jour du favori'));
+            }
+          },
+          error: (error) => {
+            console.error(' Erreur lors de la mise à jour du favori:', error);
+            reject(error);
+          }
+        });
+        */
+      } catch (error) {
+        console.error(' Erreur lors de la mise à jour du favori:', error);
+        reject(error);
+      }
+    });
+  }
+
+  // Rafraîchir les produits depuis l'API
+  refreshProducts(): void {
+    this.loadProductsFromAPI();
+  }
+
+  // Obtenir un produit par ID
+  getProductById(productId: string): Product | undefined {
+    return this.getCurrentProducts().find(p => p.id === productId);
   }
 
   // Obtenir les produits par catégorie
-  getProductsByCategory(category: string): Product[] {
-    const products = this.getCurrentProducts();
-    return products.filter(product => product.category === category);
+  getProductsByCategory(categoryId: number): Product[] {
+    return this.getCurrentProducts().filter(p => p.category_id === categoryId);
   }
 
-  // Obtenir les produits favoris
-  getFavoriteProducts(): Product[] {
-    const products = this.getCurrentProducts();
-    return products.filter(product => product.isFavorite);
+  // Obtenir les produits actifs
+  getActiveProducts(): Product[] {
+    return this.getCurrentProducts().filter(p => p.product_is_active);
   }
 
-  // Basculer le statut favori d'un produit
-  toggleFavorite(id: string): Promise<void> {
+  // Obtenir les produits archivés
+  getArchivedProducts(): Product[] {
+    return this.getCurrentProducts().filter(p => !p.product_is_active);
+  }
+
+  // Rechercher un produit par code-barres
+  searchProductsByBarcode(barcode: string): Product | undefined {
     const currentProducts = this.getCurrentProducts();
-    const product = currentProducts.find(p => p.id === id);
-    
-    if (product) {
-      return this.updateProduct(id, { isFavorite: !product.isFavorite }).then(() => {});
-    }
-    
-    return Promise.reject(new Error('Produit non trouvé'));
-  }
-
-  // Générer un ID unique
-  private generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  }
-
-  // ========================================
-  // 🔄 SYNCHRONISATION BASE DE DONNÉES
-  // ========================================
-  // ✅ Création, mise à jour, suppression
-  // ✅ Gestion des erreurs et retry
-  // ========================================
-
-  private async syncToDatabase(product: Product, action: 'create' | 'update' | 'delete'): Promise<void> {
-    try {
-      let response: Response;
-      
-      const config = getApiConfig();
-      
-      switch (action) {
-        case 'create':
-          response = await fetch(`${config.BASE_URL}${this.API_URL}`, {
-            method: 'POST',
-            headers: { ...config.DEFAULT_HEADERS },
-            body: JSON.stringify(product)
-          });
-          break;
-          
-        case 'update':
-          response = await fetch(`${config.BASE_URL}${this.API_URL}/${product.id}`, {
-            method: 'PUT',
-            headers: { ...config.DEFAULT_HEADERS },
-            body: JSON.stringify(product)
-          });
-          break;
-          
-        case 'delete':
-          response = await fetch(`${config.BASE_URL}${this.API_URL}/${product.id}`, {
-            method: 'DELETE',
-            headers: { ...config.DEFAULT_HEADERS }
-          });
-          break;
-      }
-      
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      
-      console.log(`Produit ${action === 'create' ? 'créé' : action === 'update' ? 'mis à jour' : 'supprimé'} avec succès`);
-      
-    } catch (error) {
-      console.error(`Erreur lors de la synchronisation avec la base de données (${action}):`, error);
-      // En cas d'erreur, on garde les données en local
-      // Une synchronisation sera tentée plus tard
-    }
-  }
-
-  // Charger les produits depuis la base de données
-  async loadFromDatabase(): Promise<void> {
-    try {
-      const config = getApiConfig();
-      const response = await fetch(`${config.BASE_URL}${this.API_URL}`);
-      if (response.ok) {
-        const products = await response.json();
-        const formattedProducts = products.map((p: any) => ({
-          ...p,
-          createdAt: new Date(p.createdAt),
-          updatedAt: new Date(p.updatedAt)
-        }));
-        
-        this.productsSubject.next(formattedProducts);
-        this.saveToStorage(formattedProducts);
-        console.log('Produits chargés depuis la base de données:', formattedProducts.length);
-      }
-    } catch (error) {
-      console.error('Erreur lors du chargement depuis la base de données:', error);
-      // En cas d'erreur, on garde les données locales
-    }
-  }
-
-  // Vider le stockage local
-  clearStorage(): void {
-    sessionStorage.removeItem(this.STORAGE_KEY);
-    this.productsSubject.next([]);
+    return currentProducts.find(p => p.product_barcode === barcode);
   }
 }

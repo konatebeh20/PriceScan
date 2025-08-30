@@ -12,13 +12,13 @@ def test_import(module_name, description=""):
     """Teste l'import d'un module"""
     try:
         importlib.import_module(module_name)
-        print(f"✅ {module_name} - {description}")
+        print(f" {module_name} - {description}")
         return True
     except ImportError as e:
-        print(f"❌ {module_name} - {description}: {e}")
+        print(f" {module_name} - {description}: {e}")
         return False
     except Exception as e:
-        print(f"⚠️  {module_name} - {description}: {e}")
+        print(f"  {module_name} - {description}: {e}")
         return False
 
 def test_all_imports():
@@ -65,25 +65,25 @@ def test_all_imports():
 
 def test_specific_functions():
     """Teste des fonctions spécifiques"""
-    print("\n🔍 Test des fonctions spécifiques :")
+    print("\n Test des fonctions spécifiques :")
     
     try:
         from helpers.mailer import send_mailer_custom
-        print("✅ send_mailer_custom importée avec succès")
+        print(" send_mailer_custom importée avec succès")
     except ImportError as e:
-        print(f"❌ send_mailer_custom: {e}")
+        print(f" send_mailer_custom: {e}")
     
     try:
         from helpers.users import create_user
-        print("✅ create_user importée avec succès")
+        print(" create_user importée avec succès")
     except ImportError as e:
-        print(f"❌ create_user: {e}")
+        print(f" create_user: {e}")
     
     try:
         from helpers.auth import login
-        print("✅ login importée avec succès")
+        print(" login importée avec succès")
     except ImportError as e:
-        print(f"❌ login: {e}")
+        print(f" login: {e}")
 
 def main():
     """Fonction principale"""
@@ -96,7 +96,7 @@ def main():
         print("=" * 60)
         
     except Exception as e:
-        print(f"❌ Erreur lors du test : {e}")
+        print(f" Erreur lors du test : {e}")
         return False
     
     return True

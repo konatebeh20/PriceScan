@@ -1,0 +1,85 @@
+<!-- Stores Favorie Component -->
+<div class="stores-favorie-content">
+  <div class="favorie-header">
+    <h2 class="section-title">
+      <i class="fas fa-heart"></i> Magasins Favoris
+    </h2>
+    <div class="favorie-count">
+      {{ favoriteStores.length }} magasin{{ favoriteStores.length > 1 ? 's' : '' }} favori{{ favoriteStores.length > 1 ? 's' : '' }}
+    </div>
+  </div>
+
+  <!-- Favorite Stores Grid -->
+  <div class="favorite-stores-grid" *ngIf="favoriteStores.length > 0">
+    <div class="store-card" *ngFor="let store of favoriteStores">
+      <div class="store-card-header">
+        <div class="store-logo" [class]="'logo-' + store.type">
+          <i class="fas" [class]="getStoreTypeIcon(store.type)"></i>
+        </div>
+        <div class="store-info">
+          <h3 class="store-name">{{ store.name }}</h3>
+          <span class="type-badge" [class]="'type-' + store.type">
+            {{ getStoreTypeLabel(store.type) }}
+          </span>
+        </div>
+        <button class="btn-remove-favorite" 
+                (click)="removeFromFavorites(store)"
+                title="Retirer des favoris">
+          <i class="fas fa-heart-broken"></i>
+        </button>
+      </div>
+      
+      <div class="store-card-body">
+        <div class="store-description">
+          {{ store.description || 'Aucune description disponible' }}
+        </div>
+        
+        <div class="store-details">
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ store.address }}, {{ store.city }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="store.phone">
+            <i class="fas fa-phone"></i>
+            <span>{{ store.phone }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="store.email">
+            <i class="fas fa-envelope"></i>
+            <span>{{ store.email }}</span>
+          </div>
+        </div>
+        
+        <div class="store-stats">
+          <div class="stat-item">
+            <span class="stat-label">Reçus:</span>
+            <span class="stat-value">{{ store.receiptsCount }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total dépensé:</span>
+            <span class="stat-value">{{ store.totalSpent | number }} F CFA</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dernière visite:</span>
+            <span class="stat-value">{{ store.lastVisit | date:'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="store-card-actions">
+        <button class="btn-primary" (click)="viewStoreDetails(store)">
+          <i class="fas fa-eye"></i> Voir détails
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="favoriteStores.length === 0">
+    <i class="fas fa-heart"></i>
+    <h3>Aucun magasin favori</h3>
+    <p>Vous n'avez pas encore ajouté de magasins à vos favoris.</p>
+    <p>Retournez à la liste des magasins et cliquez sur le cœur pour ajouter vos préférés !</p>
+  </div>
+</div>

@@ -25,15 +25,25 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   thisMonthSpent: number = 0;
   averageReceipt: number = 0;
 
+  // Nouvelles statistiques pour les produits et magasins
+  totalProducts: number = 0;
+  activeProducts: number = 0;
+  archivedProducts: number = 0;
+  favoriteProducts: number = 0;
+  totalStores: number = 0;
+  activeStores: number = 0;
+  archivedStores: number = 0;
+  favoriteStores: number = 0;
+
   // Données d'activité récente
   recentReceipts: any[] = [];
 
   constructor(private dashboardDataService: DashboardDataService) {
-    console.log('✅ DashboardPageComponent constructor appelé');
+    console.log(' DashboardPageComponent constructor appelé');
   }
 
   ngOnInit() {
-    console.log('✅ DashboardPageComponent ngOnInit appelé');
+    console.log(' DashboardPageComponent ngOnInit appelé');
     
     // Ne plus initialiser avec des valeurs statiques
     // Les données viendront directement du service
@@ -48,7 +58,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('✅ DashboardPageComponent ngOnDestroy appelé');
+    console.log(' DashboardPageComponent ngOnDestroy appelé');
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
     }
@@ -73,31 +83,41 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   private loadDashboardData() {
-    console.log('✅ Chargement des données du dashboard...');
-    // S'abonner aux statistiques du service
-    this.statsSubscription = this.dashboardDataService.getStats().subscribe(
+    console.log(' Chargement des données du dashboard...');
+    // S'abonner aux statistiques complètes du service
+    this.statsSubscription = this.dashboardDataService.getCompleteStats().subscribe(
       (stats: DashboardStats) => {
-        console.log('✅ Statistiques reçues:', stats);
+        console.log(' Statistiques complètes reçues:', stats);
         // Utiliser les données du service
         this.totalReceipts = stats.totalReceipts;
         this.totalSpent = stats.totalSpent;
         this.thisMonthSpent = stats.thisMonthSpent;
         this.averageReceipt = stats.averageReceipt;
         
+        // Nouvelles statistiques pour les produits et magasins
+        this.totalProducts = stats.totalProducts;
+        this.activeProducts = stats.activeProducts;
+        this.archivedProducts = stats.archivedProducts;
+        this.favoriteProducts = stats.favoriteProducts;
+        this.totalStores = stats.totalStores;
+        this.activeStores = stats.activeStores;
+        this.archivedStores = stats.archivedStores;
+        this.favoriteStores = stats.favoriteStores;
+        
         // Charger les reçus récents
         this.loadRecentReceipts();
       },
       (error) => {
-        console.error('❌ Erreur lors du chargement des statistiques:', error);
+        console.error(' Erreur lors du chargement des statistiques:', error);
       }
     );
   }
 
   private loadRecentReceipts() {
-    console.log('✅ Chargement des reçus récents...');
+    console.log(' Chargement des reçus récents...');
     this.dashboardDataService.getRecentReceipts().subscribe(
       (receipts: DashboardReceipt[]) => {
-        console.log('✅ Reçus reçus:', receipts);
+        console.log(' Reçus reçus:', receipts);
         this.recentReceipts = receipts.map(receipt => ({
           id: receipt.id,
           amount: this.parseCurrencyAmount(receipt.total),
@@ -110,10 +130,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
             year: 'numeric' 
           })
         }));
-        console.log('✅ Reçus formatés:', this.recentReceipts);
+        console.log(' Reçus formatés:', this.recentReceipts);
       },
       (error) => {
-        console.error('❌ Erreur lors du chargement des reçus:', error);
+        console.error(' Erreur lors du chargement des reçus:', error);
       }
     );
   }
@@ -149,7 +169,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   showPage(pageName: 'dashboard' | 'receipts' | 'products' | 'stores' | 'settings') {
-    console.log('✅ Navigation vers:', pageName);
+    console.log(' Navigation vers:', pageName);
     this.pageChange.emit(pageName);
   }
 

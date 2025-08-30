@@ -1,42 +1,23 @@
-<!-- Main Content -->
-<main class="main-content">
-    <!-- Dashboard Page -->
-    <app-dashboard-page 
-        *ngIf="currentPage === 'dashboard'"
-        (pageChange)="pageChange.emit($any($event))">
-    </app-dashboard-page>
+<!-- Main Content Component -->
+<div class="main-content">
+  <!-- Dashboard Page -->
+  <app-dashboard-page *ngIf="currentPage === 'dashboard'"></app-dashboard-page>
 
-    <!-- Receipts Page -->
-    <app-receipts-list 
-        *ngIf="currentPage === 'receipts'"
-        (pageChange)="pageChange.emit($any($event))">
-    </app-receipts-list>
+  <!-- Receipts Page -->
+  <app-receipts-list *ngIf="currentPage === 'receipts'"></app-receipts-list>
 
-    <!-- Products Page -->
-    <app-products-list 
-        *ngIf="currentPage === 'products'"
-        (pageChange)="pageChange.emit($any($event))">
-    </app-products-list>
+  <!-- Products Page -->
+  <app-products-main *ngIf="currentPage === 'products'"></app-products-main>
 
-    <!-- Stores Page -->
-    <app-stores-list 
-        *ngIf="currentPage === 'stores'"
-        (pageChange)="pageChange.emit($any($event))">
-    </app-stores-list>
+  <!-- Stores Page -->
+  <app-stores-main *ngIf="currentPage === 'stores'"></app-stores-main>
 
-    <!-- Settings Page -->
-    <app-settings-page 
-        *ngIf="currentPage === 'settings'"
-        (pageChange)="pageChange.emit($any($event))">
-    </app-settings-page>
+  <!-- Settings Page -->
+  <app-settings-page *ngIf="currentPage === 'settings'"></app-settings-page>
 
-    <!-- Demo Page -->
-    <app-demo-page 
-        *ngIf="currentPage === 'demo'">
-    </app-demo-page>
+  <!-- Demo Page -->
+  <app-demo-page *ngIf="currentPage === 'demo'"></app-demo-page>
 
-    <!-- Profile Page -->
-    <app-profile 
-        *ngIf="currentPage === 'profile'">
-    </app-profile>
-</main>
+  <!-- Profile Page -->
+  <app-profile *ngIf="currentPage === 'profile'"></app-profile>
+</div>

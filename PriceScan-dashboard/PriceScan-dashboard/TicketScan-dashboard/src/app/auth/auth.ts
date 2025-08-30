@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../dashboard/services/auth/auth';
 
 interface LoginForm {
   email: string;
@@ -50,18 +51,12 @@ export class AuthComponent implements OnInit {
   formErrors: { [key: string]: string } = {};
   passwordStrength: PasswordStrength = { text: '', class: '' };
   
-  // Sample users for demo
-  private users = [
-    {
-      email: 'konatebeh20@gmail.com',
-      password: 'scan123',
-      firstName: 'Konaté',
-      lastName: 'Beh',
-      accountType: 'particulier'
-    }
-  ];
+  // Aucun utilisateur statique - tous les utilisateurs viennent de la base de données
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     // Check if user is already logged in
@@ -87,61 +82,67 @@ export class AuthComponent implements OnInit {
 
     this.isLoading = true;
     
-    // Simulate API call
-    setTimeout(() => {
-      const user = this.users.find(u => 
-        u.email === this.loginForm.email && u.password === this.loginForm.password
-      );
-      
-      if (user) {
-        // Store user data
-        const userData = {
-          username: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          accountType: user.accountType,
-          createdAt: new Date(),
-          lastLogin: new Date()
-        };
-        
-        sessionStorage.setItem('ticketscan_current_user', JSON.stringify(userData));
-        
-        // Redirect to dashboard
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.formErrors['loginPassword'] = 'Email ou mot de passe incorrect';
+    // Appel réel à l'API PriceScan
+    // L'API accepte soit username soit email pour la connexion
+    this.authService.login({
+      email: this.loginForm.email,
+      password: this.loginForm.password
+    }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Connexion réussie
+          this.router.navigate(['/dashboard']);
+        } else {
+          // Erreur de connexion
+          this.formErrors['loginPassword'] = response.message || 'Email ou mot de passe incorrect';
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erreur de connexion:', error);
+        this.formErrors['loginPassword'] = 'Erreur de connexion au serveur';
+        this.isLoading = false;
       }
-      
-      this.isLoading = false;
-    }, 1000);
+    });
   }
 
   handleRegister() {
     this.clearFormErrors();
+    console.log(' Début de la validation d\'inscription...');
     
     // Validate required fields
     if (!this.registerForm.firstName) {
       this.formErrors['registerFirstName'] = 'Le prénom est requis';
+      console.log(' Prénom manquant');
     }
     if (!this.registerForm.lastName) {
       this.formErrors['registerLastName'] = 'Le nom est requis';
+      console.log(' Nom manquant');
     }
     if (!this.registerForm.email) {
       this.formErrors['registerEmail'] = 'L\'email est requis';
+      console.log(' Email manquant');
     }
     if (!this.registerForm.accountType) {
       this.formErrors['registerAccountType'] = 'Le type de compte est requis';
+      console.log(' Type de compte manquant');
     }
     if (!this.registerForm.password) {
       this.formErrors['registerPassword'] = 'Le mot de passe est requis';
+      console.log(' Mot de passe manquant');
     }
     if (!this.registerForm.confirmPassword) {
       this.formErrors['registerConfirmPassword'] = 'La confirmation du mot de passe est requise';
+      console.log(' Confirmation mot de passe manquante');
     }
     
     // Check if there are any errors
     if (Object.keys(this.formErrors).some(key => this.formErrors[key])) {
+      console.log(' Erreurs de validation détectées:', this.formErrors);
       return;
     }
+    
+    console.log(' Validation réussie, appel de l\'API...');
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -156,51 +157,62 @@ export class AuthComponent implements OnInit {
       return;
     }
     
-    // Validate password strength
-    if (this.passwordStrength.class === 'weak') {
-      this.formErrors['registerPassword'] = 'Le mot de passe est trop faible';
+    // Validation simple du mot de passe - au moins 6 caractères
+    if (this.registerForm.password.length < 6) {
+      this.formErrors['registerPassword'] = 'Le mot de passe doit contenir au moins 6 caractères';
       return;
     }
 
     this.isLoading = true;
     
-    // Simulate API call
-    setTimeout(() => {
-      // Check if email already exists
-      const existingUser = this.users.find(u => u.email === this.registerForm.email);
-      if (existingUser) {
-        this.formErrors['registerEmail'] = 'Cet email est déjà utilisé';
+    // Appel réel à l'API PriceScan
+    console.log(' Tentative d\'inscription avec:', {
+      firstname: this.registerForm.firstName,
+      lastname: this.registerForm.lastName,
+      email: this.registerForm.email,
+      password: this.registerForm.password,
+      accountType: this.registerForm.accountType
+    });
+    
+    // Créer un username unique basé sur l'email
+    const username = this.registerForm.email.split('@')[0] + '_' + Date.now();
+    
+    this.authService.register({
+      firstname: this.registerForm.firstName,
+      lastname: this.registerForm.lastName,
+      username: username,
+      email: this.registerForm.email,
+      password: this.registerForm.password,
+      accountType: this.registerForm.accountType as 'particulier' | 'supermarche' | 'pharmacie' | 'quincaillerie' | 'autre'
+    }).subscribe({
+      next: (response) => {
+        console.log('📡 Réponse de l\'API:', response);
+        if (response.success) {
+          // Inscription réussie, redirection vers le dashboard
+          console.log(' Inscription réussie, redirection...');
+          this.router.navigate(['/dashboard']);
+        } else {
+          // Erreur d'inscription
+          if (response.errors && response.errors.length > 0) {
+            response.errors.forEach(error => {
+              if (error.includes('email')) {
+                this.formErrors['registerEmail'] = error;
+              } else if (error.includes('mot de passe')) {
+                this.formErrors['registerPassword'] = error;
+              }
+            });
+          } else {
+            this.formErrors['registerEmail'] = response.message || 'Erreur lors de l\'inscription';
+          }
+        }
         this.isLoading = false;
-        return;
+      },
+      error: (error) => {
+        console.error('Erreur d\'inscription:', error);
+        this.formErrors['registerEmail'] = error;
+        this.isLoading = false;
       }
-      
-      // Create new user
-      const newUser = {
-        email: this.registerForm.email,
-        password: this.registerForm.password,
-        firstName: this.registerForm.firstName,
-        lastName: this.registerForm.lastName,
-        accountType: this.registerForm.accountType
-      };
-      
-      this.users.push(newUser);
-      
-      // Auto-login after registration
-      const userData = {
-        username: `${newUser.firstName} ${newUser.lastName}`,
-        email: newUser.email,
-        accountType: newUser.accountType,
-        createdAt: new Date(),
-        lastLogin: new Date()
-      };
-      
-      sessionStorage.setItem('ticketscan_current_user', JSON.stringify(userData));
-      
-      // Redirect to dashboard
-      this.router.navigate(['/dashboard']);
-      
-      this.isLoading = false;
-    }, 1500);
+    });
   }
 
   checkPasswordStrength() {
@@ -211,29 +223,13 @@ export class AuthComponent implements OnInit {
       return;
     }
     
-    let score = 0;
-    let feedback = '';
-    
-    // Length check
-    if (password.length >= 8) score += 1;
-    if (password.length >= 12) score += 1;
-    
-    // Character variety checks
-    if (/[a-z]/.test(password)) score += 1;
-    if (/[A-Z]/.test(password)) score += 1;
-    if (/[0-9]/.test(password)) score += 1;
-    if (/[^A-Za-z0-9]/.test(password)) score += 1;
-    
-    // Determine strength
-    if (score <= 2) {
-      feedback = 'Faible';
-      this.passwordStrength = { text: feedback, class: 'weak' };
-    } else if (score <= 4) {
-      feedback = 'Moyen';
-      this.passwordStrength = { text: feedback, class: 'medium' };
+    // Validation simple - afficher la force sans bloquer l'inscription
+    if (password.length < 6) {
+      this.passwordStrength = { text: 'Trop court', class: 'weak' };
+    } else if (password.length < 8) {
+      this.passwordStrength = { text: 'Moyen', class: 'medium' };
     } else {
-      feedback = 'Fort';
-      this.passwordStrength = { text: feedback, class: 'strong' };
+      this.passwordStrength = { text: 'Fort', class: 'strong' };
     }
   }
 

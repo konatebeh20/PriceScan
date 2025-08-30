@@ -23,15 +23,15 @@ def test_jumia_scraping():
         results = scraper_jumia("smartphone")
         
         if results:
-            print(f"✅ Succès! {len(results)} produits trouvés")
+            print(f" Succès! {len(results)} produits trouvés")
             print(f"📱 Premier produit: {results[0]}")
             return True
         else:
-            print("⚠️  Aucun produit trouvé")
+            print("  Aucun produit trouvé")
             return False
             
     except Exception as e:
-        print(f"❌ Erreur: {e}")
+        print(f" Erreur: {e}")
         return False
 
 def test_auto_scraper():
@@ -43,11 +43,11 @@ def test_auto_scraper():
         
         # Créer une instance
         scraper = AutoScraper()
-        print("✅ Instance créée")
+        print(" Instance créée")
         
         # Vérifier la configuration
         status = scraper.get_status()
-        print(f"📊 Statut: {status['is_running']}")
+        print(f" Statut: {status['is_running']}")
         print(f"🏪 Magasins: {len(status['stores'])}")
         
         # Afficher les intervalles
@@ -59,7 +59,7 @@ def test_auto_scraper():
         return True
         
     except Exception as e:
-        print(f"❌ Erreur: {e}")
+        print(f" Erreur: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -71,8 +71,8 @@ def test_config():
     try:
         from config.scraping_config import SCRAPING_INTERVALS, STORE_CONFIG
         
-        print("✅ Configuration chargée")
-        print(f"📊 Intervalles: {len(SCRAPING_INTERVALS)} magasins")
+        print(" Configuration chargée")
+        print(f" Intervalles: {len(SCRAPING_INTERVALS)} magasins")
         print(f"🏪 Magasins configurés: {len(STORE_CONFIG)}")
         
         # Vérifier Jumia
@@ -84,12 +84,12 @@ def test_config():
         return True
         
     except Exception as e:
-        print(f"❌ Erreur: {e}")
+        print(f" Erreur: {e}")
         return False
 
 def main():
     """Fonction principale"""
-    print("🚀 TEST SIMPLE DU SCRAPING PRICESCAN")
+    print(" TEST SIMPLE DU SCRAPING PRICESCAN")
     print("=" * 50)
     
     tests = [
@@ -106,26 +106,26 @@ def main():
             result = test_func()
             results.append((test_name, result))
         except Exception as e:
-            print(f"\n❌ Erreur lors du test {test_name}: {e}")
+            print(f"\n Erreur lors du test {test_name}: {e}")
             results.append((test_name, False))
     
     # Résumé
     print("\n" + "=" * 50)
-    print("📊 RÉSUMÉ DES TESTS")
+    print(" RÉSUMÉ DES TESTS")
     print("=" * 50)
     
     passed = sum(1 for _, result in results if result)
     total = len(results)
     
     for test_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
+        status = " PASS" if result else " FAIL"
         print(f"{status} {test_name}")
     
     print(f"\n🎯 Résultat: {passed}/{total} tests réussis")
     
     if passed == total:
         print("\n🎉 TOUS LES TESTS SONT PASSÉS !")
-        print("🚀 Le scraping est prêt à fonctionner !")
+        print(" Le scraping est prêt à fonctionner !")
         
         print("\n💡 POUR LANCER EN PRODUCTION:")
         print("   python run_production.py")
@@ -134,7 +134,7 @@ def main():
         print("   python app.py")
         
     else:
-        print(f"\n⚠️  {total - passed} test(s) ont échoué")
+        print(f"\n  {total - passed} test(s) ont échoué")
 
 if __name__ == "__main__":
     main()

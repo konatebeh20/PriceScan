@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # --- Fonction de Scraping (modifiée pour fonctionner avec des termes de recherche) ---
-def scraper_jumia(query):
+def scrape_jumia(query):
     """
     Scrape les produits Jumia pour un terme de recherche donné.
     

@@ -53,7 +53,7 @@ session_storage = SessionStorage()
 
 def test_dashboard_data_persistence():
     """Test de persistance des données du dashboard"""
-    print("\n🔄 Test de persistance des données du dashboard...")
+    print("\n Test de persistance des données du dashboard...")
     
     with test_app.app_context():
         try:
@@ -83,7 +83,7 @@ def test_dashboard_data_persistence():
             session_storage.setItem("user_session", json.dumps(dashboard_data["current_session"]))
             session_storage.setItem("user_preferences", json.dumps(dashboard_data["user_preferences"]))
             
-            print("   ✅ Données du dashboard sauvegardées dans le session storage")
+            print("    Données du dashboard sauvegardées dans le session storage")
             
             # Créer d'abord un utilisateur dans la base de données
             new_user = ps_users(
@@ -98,7 +98,7 @@ def test_dashboard_data_persistence():
             
             db.session.add(new_user)
             db.session.commit()
-            print("   ✅ Utilisateur créé dans la base de données")
+            print("    Utilisateur créé dans la base de données")
             
             # Créer un profil utilisateur dans la base de données
             new_user_profile = ps_user_profiles(
@@ -111,7 +111,7 @@ def test_dashboard_data_persistence():
             
             db.session.add(new_user_profile)
             db.session.commit()
-            print("   ✅ Profil utilisateur créé dans la base de données")
+            print("    Profil utilisateur créé dans la base de données")
             
             # Créer des statistiques de dashboard
             new_dashboard_stats = ps_dashboard_stats(
@@ -130,7 +130,7 @@ def test_dashboard_data_persistence():
             
             db.session.add(new_dashboard_stats)
             db.session.commit()
-            print("   ✅ Statistiques dashboard créées dans la base de données")
+            print("    Statistiques dashboard créées dans la base de données")
             
             # Créer une promotion depuis le dashboard
             new_promotion = ps_promotions(
@@ -147,7 +147,7 @@ def test_dashboard_data_persistence():
             
             db.session.add(new_promotion)
             db.session.commit()
-            print("   ✅ Promotion créée depuis le dashboard")
+            print("    Promotion créée depuis le dashboard")
             
             # Sauvegarder l'ID de la promotion dans le session storage
             session_storage.setItem("last_created_promotion_id", str(new_promotion.id))
@@ -156,13 +156,13 @@ def test_dashboard_data_persistence():
             return True
             
         except Exception as e:
-            print(f"   ❌ Erreur lors du test de persistance: {e}")
+            print(f"    Erreur lors du test de persistance: {e}")
             db.session.rollback()
             return False
 
 def test_data_retrieval_and_sync():
     """Test de récupération et synchronisation des données"""
-    print("\n📥 Test de récupération et synchronisation des données...")
+    print("\n Test de récupération et synchronisation des données...")
     
     with test_app.app_context():
         try:
@@ -172,7 +172,7 @@ def test_data_retrieval_and_sync():
             promotion = ps_promotions.query.filter_by(title="Promotion Dashboard Test").first()
             
             if user_profile and dashboard_stats and promotion:
-                print("   ✅ Toutes les données récupérées depuis la base")
+                print("    Toutes les données récupérées depuis la base")
                 
                 # Mettre à jour le session storage avec les données de la base
                 session_storage.setItem("user_profile_from_db", json.dumps({
@@ -195,15 +195,15 @@ def test_data_retrieval_and_sync():
                     "is_active": promotion.is_active
                 }))
                 
-                print("   ✅ Session storage synchronisé avec la base de données")
+                print("    Session storage synchronisé avec la base de données")
                 
                 return True
             else:
-                print("   ❌ Certaines données n'ont pas été trouvées")
+                print("    Certaines données n'ont pas été trouvées")
                 return False
                 
         except Exception as e:
-            print(f"   ❌ Erreur lors de la récupération: {e}")
+            print(f"    Erreur lors de la récupération: {e}")
             return False
 
 def test_session_storage_integration():
@@ -229,10 +229,10 @@ def test_session_storage_integration():
                 missing_keys.append(key)
         
         if not missing_keys:
-            print("   ✅ Toutes les données sont présentes dans le session storage")
+            print("    Toutes les données sont présentes dans le session storage")
             
             # Afficher un résumé des données stockées
-            print("\n   📋 Résumé des données en session storage:")
+            print("\n    Résumé des données en session storage:")
             for key in required_keys:
                 value = session_storage.getItem(key)
                 if len(str(value)) > 100:
@@ -241,11 +241,11 @@ def test_session_storage_integration():
             
             return True
         else:
-            print(f"   ❌ Clés manquantes dans le session storage: {missing_keys}")
+            print(f"    Clés manquantes dans le session storage: {missing_keys}")
             return False
             
     except Exception as e:
-        print(f"   ❌ Erreur lors du test du session storage: {e}")
+        print(f"    Erreur lors du test du session storage: {e}")
         return False
 
 def test_data_modification_from_dashboard():
@@ -269,7 +269,7 @@ def test_data_modification_from_dashboard():
                     "notifications": True
                 }))
                 
-                print("   ✅ Préférences utilisateur modifiées")
+                print("    Préférences utilisateur modifiées")
                 
                 # Modifier la promotion
                 promotion = ps_promotions.query.filter_by(title="Promotion Dashboard Test").first()
@@ -285,15 +285,15 @@ def test_data_modification_from_dashboard():
                         "is_featured": promotion.is_featured
                     }))
                     
-                    print("   ✅ Promotion modifiée")
+                    print("    Promotion modifiée")
                 
                 return True
             else:
-                print("   ❌ Profil utilisateur non trouvé")
+                print("    Profil utilisateur non trouvé")
                 return False
                 
         except Exception as e:
-            print(f"   ❌ Erreur lors de la modification: {e}")
+            print(f"    Erreur lors de la modification: {e}")
             db.session.rollback()
             return False
 
@@ -310,16 +310,16 @@ def cleanup_test_data():
             ps_users.query.filter_by(u_uid="dashboard-user-456").delete()
             
             db.session.commit()
-            print("   ✅ Données de test supprimées de la base")
+            print("    Données de test supprimées de la base")
             
             # Vider le session storage
             session_storage.clear()
-            print("   ✅ Session storage vidé")
+            print("    Session storage vidé")
             
             return True
             
         except Exception as e:
-            print(f"   ❌ Erreur lors du nettoyage: {e}")
+            print(f"    Erreur lors du nettoyage: {e}")
             db.session.rollback()
             return False
 
@@ -345,7 +345,7 @@ def main():
     
     # Résumé des tests
     print("\n" + "=" * 80)
-    print("📋 RÉSUMÉ DES TESTS COMPLETS")
+    print(" RÉSUMÉ DES TESTS COMPLETS")
     print("=" * 80)
     
     all_tests_passed = all([
@@ -358,8 +358,8 @@ def main():
     
     if all_tests_passed:
         print("🎉 TOUS LES TESTS SONT PASSÉS AVEC SUCCÈS!")
-        print("✅ La communication complète Dashboard ↔ Base de données ↔ Session Storage fonctionne parfaitement")
-        print("\n🚀 Le dashboard peut maintenant:")
+        print(" La communication complète Dashboard ↔ Base de données ↔ Session Storage fonctionne parfaitement")
+        print("\n Le dashboard peut maintenant:")
         print("   - Enregistrer les données dans la base de données")
         print("   - Persister les données dans le session storage")
         print("   - Synchroniser les données entre dashboard et base")
@@ -368,8 +368,8 @@ def main():
         print("   - Gérer les sessions utilisateur")
         print("   - Sauvegarder les préférences utilisateur")
     else:
-        print("⚠️  Certains tests ont échoué")
-        print("🔍 Vérifiez la configuration et les permissions")
+        print("  Certains tests ont échoué")
+        print(" Vérifiez la configuration et les permissions")
     
     print("\n📚 Prochaines étapes:")
     print("   1. Intégrer ces tests dans le dashboard Angular")

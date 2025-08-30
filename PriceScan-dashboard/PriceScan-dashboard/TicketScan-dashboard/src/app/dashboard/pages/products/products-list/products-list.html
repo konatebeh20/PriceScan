@@ -32,18 +32,36 @@
     <div class="product-filters">
         <div class="filter-group">
             <label class="filter-label">Rechercher</label>
-            <input type="text" class="form-input" placeholder="Nom du produit..." [(ngModel)]="searchTerm" (input)="filterProducts()">
+            <div class="search-container">
+                <select class="form-select" 
+                        [(ngModel)]="searchTerm" 
+                        (change)="onSearchChange()">
+                    <option value="">Choisir un produit...</option>
+                    <option *ngFor="let product of products" 
+                            [value]="product.product_name">
+                        {{ product.product_name }} - {{ product.category_name }}
+                    </option>
+                </select>
+                
+                <!-- Suggestion de catégorie -->
+                <div class="category-suggestion" *ngIf="suggestedCategory">
+                    <span class="suggestion-text">
+                        💡 Catégorie suggérée: <strong>{{ suggestedCategory }}</strong>
+                    </span>
+                    <button class="btn-suggestion" (click)="applySuggestedCategory()">
+                        Appliquer
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div class="filter-group">
             <label class="filter-label">Catégorie</label>
             <select class="form-select" [(ngModel)]="selectedCategory" (change)="filterProducts()">
                 <option value="">Toutes les catégories</option>
-                <option value="alimentaire">Alimentaire</option>
-                <option value="hygiene">Hygiène</option>
-                <option value="maison">Maison</option>
-                <option value="sante">Santé</option>
-                <option value="autre">Autre</option>
+                <option *ngFor="let cat of categories" [value]="cat.cat_label">
+                    {{ cat.cat_label }} ({{ filteredStats.byCategory[cat.cat_label] || 0 }})
+                </option>
             </select>
         </div>
         
@@ -51,8 +69,8 @@
             <label class="filter-label">Statut</label>
             <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterProducts()">
                 <option value="">Tous les statuts</option>
-                <option value="active">Actif</option>
-                <option value="archived">Archivé</option>
+                <option value="active">Actif ({{ filteredStats.byStatus['active'] || 0 }})</option>
+                <option value="archived">Archivé ({{ filteredStats.byStatus['archived'] || 0 }})</option>
             </select>
         </div>
         
@@ -60,9 +78,9 @@
             <label class="filter-label">Prix</label>
             <select class="form-select" [(ngModel)]="selectedPrice" (change)="filterProducts()">
                 <option value="">Tous les prix</option>
-                <option value="0-1000">0 - 1000 F CFA</option>
-                <option value="1000-5000">1000 - 5000 F CFA</option>
-                <option value="5000+">Plus de 5000 F CFA</option>
+                <option value="0-1000">0 - 1000 F CFA ({{ filteredStats.byPrice['0-1000'] || 0 }})</option>
+                <option value="1000-5000">1000 - 5000 F CFA ({{ filteredStats.byPrice['1000-5000'] || 0 }})</option>
+                <option value="5000+">Plus de 5000 F CFA ({{ filteredStats.byPrice['5000+'] || 0 }})</option>
             </select>
         </div>
         
@@ -70,7 +88,7 @@
             <label class="filter-label">Favoris</label>
             <select class="form-select" [(ngModel)]="selectedFavorite" (change)="filterProducts()">
                 <option value="">Tous les produits</option>
-                <option value="favorite">Favoris uniquement</option>
+                <option value="favorite">Favoris uniquement ({{ filteredStats.favorites || 0 }})</option>
                 <option value="not-favorite">Non favoris</option>
             </select>
         </div>
@@ -78,6 +96,187 @@
         <button class="btn-secondary" (click)="resetFilters()">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
+    </div>
+
+    <!-- Filtres actifs et statistiques -->
+    <div class="active-filters" *ngIf="hasActiveFilters()">
+        <div class="filter-summary">
+            <h4>Filtres actifs:</h4>
+            <div class="active-filter-tags">
+                <span class="filter-tag" *ngIf="searchTerm">
+                    Recherche: "{{ searchTerm }}"
+                    <button class="remove-filter" (click)="searchTerm = ''; filterProducts()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </span>
+                <span class="filter-tag" *ngIf="selectedCategory">
+                    Catégorie: {{ selectedCategory }}
+                    <button class="remove-filter" (click)="selectedCategory = ''; filterProducts()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </span>
+                <span class="filter-tag" *ngIf="selectedStatus">
+                    Statut: {{ getStatusLabel(selectedStatus) }}
+                    <button class="remove-filter" (click)="selectedStatus = ''; filterProducts()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </span>
+                <span class="filter-tag" *ngIf="selectedPrice">
+                    Prix: {{ getPriceLabel(selectedPrice) }}
+                    <button class="remove-filter" (click)="selectedPrice = ''; filterProducts()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </span>
+                <span class="filter-tag" *ngIf="selectedFavorite">
+                    Favoris: {{ selectedFavorite === 'favorite' ? 'Oui' : 'Non' }}
+                    <button class="remove-filter" (click)="selectedFavorite = ''; filterProducts()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+        
+        <div class="filter-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ filteredStats.total }}</span>
+                <span class="stat-label">Produits trouvés</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ filteredStats.active }}</span>
+                <span class="stat-label">Actifs</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ filteredStats.favorites }}</span>
+                <span class="stat-label">Favoris</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau de comparaison des prix -->
+    <div class="price-comparison-section">
+        <div class="section-header">
+            <h3><i class="fas fa-chart-line"></i> Comparaison des Prix</h3>
+            <button class="btn-secondary" (click)="refreshPriceComparison()">
+                <i class="fas fa-sync-alt"></i> Actualiser
+            </button>
+        </div>
+        
+        <div class="price-comparison-table-container">
+            <table class="price-comparison-table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Catégorie</th>
+                        <th>Code-barres</th>
+                        <th>Prix moyen</th>
+                        <th>Prix min</th>
+                        <th>Prix max</th>
+                        <th>Écart</th>
+                        <th>Magasins</th>
+                        <th>Tendance</th>
+                        <th>Détails</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let comparison of priceComparisons">
+                        <td>
+                            <div class="product-comparison-info">
+                                <div class="product-image-small">
+                                    <img [src]="getDisplayImage(comparison.product)" 
+                                         [alt]="comparison.product.product_name"
+                                         class="product-img-small"
+                                         (error)="onImageError($event)">
+                                </div>
+                                <div class="product-details-small">
+                                    <div class="product-name">{{ comparison.product.product_name }}</div>
+                                    <div class="product-brand" *ngIf="comparison.product.product_brand">
+                                        {{ comparison.product.product_brand }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="category-badge" [class]="'category-' + comparison.product.category_name?.toLowerCase()">
+                                {{ comparison.product.category_name || 'Non catégorisé' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="barcode-info" *ngIf="comparison.product.product_barcode">
+                                {{ comparison.product.product_barcode }}
+                            </span>
+                            <span class="no-barcode" *ngIf="!comparison.product.product_barcode">
+                                Non défini
+                            </span>
+                        </td>
+                        <td class="price-cell">
+                            <span class="price-average">{{ comparison.averagePrice | number }} F CFA</span>
+                        </td>
+                        <td class="price-cell">
+                            <span class="price-min">{{ comparison.minPrice | number }} F CFA</span>
+                        </td>
+                        <td class="price-cell">
+                            <span class="price-max">{{ comparison.maxPrice | number }} F CFA</span>
+                        </td>
+                        <td class="price-difference">
+                            <span class="difference-amount" [class]="'diff-' + (comparison.priceDifference > 0 ? 'high' : 'low')">
+                                {{ comparison.priceDifference | number }} F CFA
+                            </span>
+                            <div class="difference-percentage">
+                                {{ comparison.priceDifferencePercentage | number:'1.1-1' }}%
+                            </div>
+                        </td>
+                        <td>
+                            <div class="stores-count">
+                                <span class="stores-number">{{ comparison.storesCount }}</span>
+                                <span class="stores-label">magasin{{ comparison.storesCount > 1 ? 's' : '' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="trend-indicator" [class]="'trend-' + comparison.trend">
+                                <i class="fas" [class]="getTrendIcon(comparison.trend)"></i>
+                                <span class="trend-text">{{ getTrendText(comparison.trend) }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-details" (click)="showStoreDetails(comparison)" title="Voir les détails des magasins">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Résumé des comparaisons -->
+        <div class="comparison-summary">
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-number">{{ averagePriceDifference | number:'1.1-1' }}%</div>
+                    <div class="summary-label">Écart moyen des prix</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-number">{{ totalStoresInComparison }}</div>
+                    <div class="summary-label">Magasins analysés</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-number">{{ productsWithPriceVariation }}</div>
+                    <div class="summary-label">Produits avec variation</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Products Table -->
@@ -98,32 +297,35 @@
                 <tr *ngFor="let product of filteredProducts">
                     <td>
                         <div class="product-info">
-                            <div class="product-icon" [class]="'icon-' + product.category">
-                                <i class="fas" [class]="getCategoryIcon(product.category)"></i>
+                            <div class="product-image">
+                                <img [src]="getDisplayImage(product)" 
+                                     [alt]="product.product_name"
+                                     class="product-img"
+                                     (error)="onImageError($event)">
                             </div>
                             <div class="product-details">
-                                <div class="product-name">{{ product.name }}</div>
-                                <div class="product-description">{{ product.description || 'Aucune description' }}</div>
+                                <div class="product-name">{{ product.product_name }}</div>
+                                <div class="product-description">{{ product.product_description || 'Aucune description' }}</div>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <span class="product-barcode">{{ product.barcode || 'Non défini' }}</span>
+                        <span class="product-barcode">{{ product.product_barcode || 'Non défini' }}</span>
                     </td>
                     <td>
-                        <span class="category-badge" [class]="'category-' + product.category">
-                            {{ getCategoryLabel(product.category) }}
+                                                    <span class="category-badge" [class]="'category-' + product.category_name.toLowerCase()">
+                            {{ product.category_name || 'Non catégorisé' }}
                         </span>
                     </td>
                     <td>
-                        {{ product.price ? (product.price | number) + ' F CFA / ' + product.unit : 'Non défini' }}
+                        {{ product.price_amount ? (product.price_amount | number) + ' ' + product.price_currency : 'Non défini' }}
                     </td>
                     <td>
                         {{ product.updatedAt | date:'dd/MM/yyyy' }}
                     </td>
                     <td>
-                        <span class="status-badge" [class]="'status-' + product.status">
-                            {{ getStatusLabel(product.status) }}
+                        <span class="status-badge" [class]="'status-' + (product.product_is_active ? 'active' : 'archived')">
+                            {{ product.product_is_active ? 'Actif' : 'Archivé' }}
                         </span>
                     </td>
                     <td>
@@ -138,13 +340,13 @@
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn-action btn-archive" 
-                                    *ngIf="product.status === 'active'"
+                                    *ngIf="product.product_is_active"
                                     (click)="archiveProduct(product)" 
                                     title="Archiver">
                                 <i class="fas fa-archive"></i>
                             </button>
                             <button class="btn-action btn-restore" 
-                                    *ngIf="product.status === 'archived'"
+                                    *ngIf="!product.product_is_active"
                                     (click)="restoreProduct(product)" 
                                     title="Restaurer">
                                 <i class="fas fa-undo"></i>
@@ -184,51 +386,86 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Nom du produit *</label>
-                        <input type="text" class="form-input" [(ngModel)]="editingProduct.name" name="name" required>
+                        <input type="text" class="form-input" [(ngModel)]="editingProduct.product_name" name="product_name" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Code-barres *</label>
-                        <input type="text" class="form-input" [(ngModel)]="editingProduct.barcode" name="barcode" required placeholder="1234567890123">
+                        <label class="form-label">Code-barres</label>
+                        <input type="text" class="form-input" [(ngModel)]="editingProduct.product_barcode" name="product_barcode" placeholder="1234567890123">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Catégorie *</label>
-                        <select class="form-select" [(ngModel)]="editingProduct.category" name="category" required>
+                        <select class="form-select" [(ngModel)]="editingProduct.category_id" name="category_id" required>
                             <option value="">Sélectionner une catégorie</option>
-                            <option value="alimentaire">Alimentaire</option>
-                            <option value="hygiene">Hygiène</option>
-                            <option value="maison">Maison</option>
-                            <option value="sante">Santé</option>
-                            <option value="autre">Autre</option>
+                            <option *ngFor="let cat of categories" [value]="cat.id">
+                                {{ cat.cat_label }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Prix (F CFA)</label>
-                        <input type="number" class="form-input" [(ngModel)]="editingProduct.price" name="price" min="0" step="1">
+                        <label class="form-label">Magasin *</label>
+                        <select class="form-select" [(ngModel)]="editingProduct.store_id" name="store_id" required>
+                            <option value="">Sélectionner un magasin</option>
+                            <option *ngFor="let store of stores" [value]="store.id">
+                                {{ store.store_name }}
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Prix (F CFA)</label>
-                        <input type="number" class="form-input" [(ngModel)]="editingProduct.price" name="price" min="0" step="1">
+                        <label class="form-label">Prix *</label>
+                        <input type="number" class="form-input" [(ngModel)]="editingProduct.price_amount" name="price_amount" min="0" step="1" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Unité</label>
-                        <select class="form-select" [(ngModel)]="editingProduct.unit" name="unit">
-                            <option value="pièce">Pièce</option>
-                            <option value="kg">Kilogramme</option>
-                            <option value="g">Gramme</option>
-                            <option value="l">Litre</option>
-                            <option value="ml">Millilitre</option>
-                            <option value="paquet">Paquet</option>
-                            <option value="boîte">Boîte</option>
+                        <label class="form-label">Devise</label>
+                        <select class="form-select" [(ngModel)]="editingProduct.price_currency" name="price_currency">
+                            <option value="CFA">F CFA</option>
+                            <option value="EUR">EUR</option>
+                            <option value="USD">USD</option>
                         </select>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Marque</label>
+                        <input type="text" class="form-input" [(ngModel)]="editingProduct.product_brand" name="product_brand" placeholder="Marque du produit">
+                    </div>
+                </div>
+                
+                <!-- Section Image avancée -->
+                <div class="form-group">
+                    <label class="form-label">Image du produit</label>
+                    
+                    <!-- Prévisualisation de l'image -->
+                    <div class="image-preview" *ngIf="previewImage || editingProduct.product_image">
+                        <img [src]="previewImage || editingProduct.product_image" alt="Prévisualisation" class="preview-image">
+                        <button type="button" class="btn-remove-image" (click)="removeImage()" title="Supprimer l'image">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Options d'ajout d'image -->
+                    <div class="image-options">
+                        <button type="button" class="btn-image-option" (click)="openImageSelector()">
+                            <i class="fas fa-upload"></i> PC Local
+                        </button>
+                        <button type="button" class="btn-image-option" (click)="openNetworkImageSelector()">
+                            <i class="fas fa-network-wired"></i> Réseau
+                        </button>
+                        <button type="button" class="btn-image-option" (click)="openOnlineImageSelector()">
+                            <i class="fas fa-globe"></i> En ligne
+                        </button>
+                    </div>
+                    
+                    <!-- URL manuelle (fallback) -->
+                    <input type="url" class="form-input mt-2" [(ngModel)]="editingProduct.product_image" name="product_image" 
+                           placeholder="Ou saisissez directement l'URL de l'image">
+                </div>
                 <div class="form-group">
                     <label class="form-label">Description</label>
-                    <textarea class="form-input" [(ngModel)]="editingProduct.description" name="description" rows="3" placeholder="Description du produit (optionnel)"></textarea>
+                    <textarea class="form-input" [(ngModel)]="editingProduct.product_description" name="product_description" rows="3" placeholder="Description du produit (optionnel)"></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" (click)="closeModal()">Annuler</button>

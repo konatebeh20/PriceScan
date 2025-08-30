@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-📊 API Resource pour les données du dashboard
+ API Resource pour les données du dashboard
 Gère la récupération des statistiques et données utilisateur
 """
 

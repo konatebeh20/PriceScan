@@ -19,17 +19,17 @@ SCRAPING_DEBUG = os.getenv('SCRAPING_DEBUG', 'false').lower() == 'true'
 if os.getenv('ENVIRONMENT', 'development').lower() == 'production':
     SCRAPING_INTERVALS = {
         'carrefour': int(os.getenv('SCRAPING_CARREFOUR_INTERVAL', 432000)),      # 5 jours
-        'abidjanmall': int(os.getenv('SCRAPING_ABIDJANMALL_INTERVAL', 432000)),  # 5 jours
-        'prosuma': int(os.getenv('SCRAPING_PROSUMA_INTERVAL', 432000)),          # 5 jours
-        'playce': int(os.getenv('SCRAPING_PLACE_INTERVAL', 432000)),             # 5 jours
+        'kedjenou': int(os.getenv('SCRAPING_KEDJENOU_INTERVAL', 432000)),        # 5 jours
+        'afrikmall': int(os.getenv('SCRAPING_AFRIKMALL_INTERVAL', 432000)),      # 5 jours
+        'bazart': int(os.getenv('SCRAPING_BAZART_INTERVAL', 432000)),            # 5 jours
         'jumia': int(os.getenv('SCRAPING_JUMIA_INTERVAL', 432000))               # 5 jours
     }
 else:
     SCRAPING_INTERVALS = {
         'carrefour': int(os.getenv('SCRAPING_CARREFOUR_INTERVAL', 3600)),        # 1 heure
-        'abidjanmall': int(os.getenv('SCRAPING_ABIDJANMALL_INTERVAL', 3600)),    # 1 heure
-        'prosuma': int(os.getenv('SCRAPING_PROSUMA_INTERVAL', 7200)),            # 2 heures
-        'playce': int(os.getenv('SCRAPING_PLACE_INTERVAL', 7200)),               # 2 heures
+        'kedjenou': int(os.getenv('SCRAPING_KEDJENOU_INTERVAL', 3600)),          # 1 heure
+        'afrikmall': int(os.getenv('SCRAPING_AFRIKMALL_INTERVAL', 7200)),        # 2 heures
+        'bazart': int(os.getenv('SCRAPING_BAZART_INTERVAL', 7200)),              # 2 heures
         'jumia': int(os.getenv('SCRAPING_JUMIA_INTERVAL', 3600))                 # 1 heure
     }
 
@@ -93,40 +93,40 @@ STORE_CONFIG = {
             'product_image': '.product-image img'
         }
     },
-    'abidjanmall': {
-        'enabled': os.getenv('SCRAPING_ABIDJANMALL_ENABLED', 'true').lower() == 'true',
-        'name': 'Abidjan Mall',
-        'url_base': 'https://abidjanmall.org',
-        'search_url': 'https://abidjanmall.org/catalogsearch/result/?q={query}',
+    'kedjenou': {
+        'enabled': os.getenv('SCRAPING_KEDJENOU_ENABLED', 'true').lower() == 'true',
+        'name': 'Kedjenou',
+        'url_base': 'https://kedjenou.ci',
+        'search_url': 'https://kedjenou.ci/recherche?q={query}',
         'selectors': {
-            'product_container': '.product-item',
-            'product_name': '.product-item-link',
-            'product_price': '.price',
-            'product_image': '.product-image img'
+            'product_container': '.product-card',
+            'product_name': 'h3, h2, .product-name',
+            'product_price': '.price, .amount',
+            'product_image': 'img'
         }
     },
-    'prosuma': {
-        'enabled': os.getenv('SCRAPING_PROSUMA_ENABLED', 'true').lower() == 'true',
-        'name': 'Prosuma',
-        'url_base': 'https://groupeprosuma.com',
-        'search_url': 'https://groupeprosuma.com/enseigne/cap-nord/?s={query}',
+    'afrikmall': {
+        'enabled': os.getenv('SCRAPING_AFRIKMALL_ENABLED', 'true').lower() == 'true',
+        'name': 'AfrikMall',
+        'url_base': 'https://afrikmall.com',
+        'search_url': 'https://afrikmall.com/search?q={query}',
         'selectors': {
-            'product_container': '.product-wrapper',
-            'product_name': '.product-title',
-            'product_price': '.price',
-            'product_image': '.product-image img'
+            'product_container': '.product-card',
+            'product_name': 'h3, h2, .product-name',
+            'product_price': '.price, .amount',
+            'product_image': 'img'
         }
     },
-    'playce': {
-        'enabled': os.getenv('SCRAPING_PLACE_ENABLED', 'true').lower() == 'true',
-        'name': 'Playce',
-        'url_base': 'https://playce.ci',
-        'search_url': 'https://playce.ci/catalogsearch/result/?q={query}',
+    'bazart': {
+        'enabled': os.getenv('SCRAPING_BAZART_ENABLED', 'true').lower() == 'true',
+        'name': 'Bazart',
+        'url_base': 'https://bazart.ci',
+        'search_url': 'https://bazart.ci/recherche?q={query}',
         'selectors': {
-            'product_container': '.product-item',
-            'product_name': '.product-item-link',
-            'product_price': '.price',
-            'product_image': '.product-image img'
+            'product_container': '.product-card',
+            'product_name': 'h3, h2, .product-name',
+            'product_price': '.price, .amount',
+            'product_image': 'img'
         }
     },
     'jumia': {

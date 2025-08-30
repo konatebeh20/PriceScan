@@ -24,6 +24,9 @@ class AuthApi(Resource):
         
         if route == 'loginSocial':
             return loginSocial()
+            
+        if route == 'register':
+            return register()
         
     def patch(self, route):
         return True

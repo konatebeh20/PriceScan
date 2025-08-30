@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DashboardPageComponent } from '../../pages/dashboard-page/dashboard-page';
 import { ReceiptsListComponent } from '../../pages/receipts/receipts-list/receipts-list';
-import { ProductsListComponent } from '../../pages/products/products-list/products-list';
-import { StoresListComponent } from '../../pages/stores/stores-list/stores-list';
+import { ProductsMainComponent } from '../../pages/products/products-main/products-main';
+import { StoresMainComponent } from '../../../stores/stores-main/stores-main';
 import { SettingsPageComponent } from '../../pages/settings/settings-page/settings-page';
 import { DemoPageComponent } from '../../pages/demo-page/demo-page';
 import { ProfileComponent } from '../../pages/profile/profile';
@@ -12,7 +12,7 @@ import { ProfileComponent } from '../../pages/profile/profile';
 @Component({
   selector: 'app-main-content',
   standalone: true,
-  imports: [CommonModule, FormsModule, DashboardPageComponent, ReceiptsListComponent, ProductsListComponent, StoresListComponent, SettingsPageComponent, DemoPageComponent, ProfileComponent],
+  imports: [CommonModule, FormsModule, DashboardPageComponent, ReceiptsListComponent, ProductsMainComponent, StoresMainComponent, SettingsPageComponent, DemoPageComponent, ProfileComponent],
   templateUrl: './main-content.html',
   styleUrls: ['./main-content.scss']
 })

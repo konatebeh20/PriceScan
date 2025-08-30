@@ -1,0 +1,224 @@
+<!-- Stores List Component -->
+<div class="stores-list-content">
+  <!-- Stores Header -->
+  <div class="stores-header">
+    <!-- Debug info -->
+    <!-- <div style="background: yellow; padding: 5px; margin-bottom: 10px; border-radius: 5px;">
+      Debug: showAddForm = {{ showAddForm }} | Total magasins: {{ stores.length }}
+    </div> -->
+    
+    <div class="stores-stats">
+      <div class="stat-card">
+        <div class="stat-number">{{ totalStores }}</div>
+        <div class="stat-label">Total Magasins</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ activeStores }}</div>
+        <div class="stat-label">Actifs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ favoriteStores }}</div>
+        <div class="stat-label">Favoris</div>
+      </div>
+    </div>
+    
+    <div class="stores-actions">
+      <button class="btn-primary" (click)="showAddStoreForm()">
+        <i class="fas fa-plus"></i> Ajouter un magasin
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="stores-filters">
+    <div class="filter-group">
+      <label class="filter-label">Rechercher</label>
+      <select class="form-select" [(ngModel)]="searchTerm" (change)="filterStores()">
+        <option value="">Choisir un magasin...</option>
+        <option *ngFor="let store of stores" [value]="store.store_name">
+          {{ store.store_name }} - {{ store.store_city }}
+        </option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label class="filter-label">Ville</label>
+      <select class="form-select" [(ngModel)]="selectedCity" (change)="filterStores()">
+        <option value="">Toutes les villes</option>
+        <option *ngFor="let city of getUniqueCities()" [value]="city">{{ city }}</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label class="filter-label">Statut</label>
+      <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterStores()">
+        <option value="">Tous les statuts</option>
+        <option value="active">Actif</option>
+        <option value="archived">Archivé</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label class="filter-label">Ville</label>
+      <select class="form-select" [(ngModel)]="selectedCity" (change)="filterStores()">
+        <option value="">Toutes les villes</option>
+        <option value="Abidjan">Abidjan</option>
+        <option value="Yamoussoukro">Yamoussoukro</option>
+        <option value="Bouaké">Bouaké</option>
+        <option value="San-Pédro">San-Pédro</option>
+        <option value="Korhogo">Korhogo</option>
+      </select>
+    </div>
+    
+    <button class="btn-secondary" (click)="resetFilters()">
+      <i class="fas fa-undo"></i> Réinitialiser
+    </button>
+  </div>
+
+  <!-- Liste des magasins en cards -->
+  <div class="stores-grid">
+    <div class="store-card" *ngFor="let store of filteredStores">
+      <div class="store-header">
+        <div class="store-info">
+          <i class="fas fa-store"></i>
+          <h3>{{ store.store_name }}</h3>
+        </div>
+        <div class="store-status">
+          <span class="status-badge" [class]="store.store_status">
+            <i class="fas {{ getStatusIcon(store.store_status) }}"></i>
+            {{ getStatusLabel(store.store_status) }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="store-details">
+        <p class="store-address">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ store.store_address }}, {{ store.store_city }}
+        </p>
+
+        <p class="store-phone" *ngIf="store.store_phone">
+          <i class="fas fa-phone"></i>
+          {{ store.store_phone }}
+        </p>
+        <p class="store-email" *ngIf="store.store_email">
+          <i class="fas fa-envelope"></i>
+          {{ store.store_email }}
+        </p>
+      </div>
+      
+      <div class="store-card-actions">
+        <button class="btn-action btn-view" (click)="viewStoreDetails(store)" title="Voir les détails">
+          <i class="fas fa-eye"></i>
+        </button>
+        <button class="btn-action btn-favorite" 
+                [class.active]="store.is_favorite"
+                (click)="toggleFavorite(store)" 
+                title="Ajouter aux favoris">
+          <i class="fas fa-heart"></i>
+        </button>
+        <button class="btn-action btn-edit" (click)="showEditStoreForm(store)" title="Modifier">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn-action btn-archive" 
+                [class.active]="store.store_status === 'archived'"
+                (click)="archiveStore(store)" 
+                title="Archiver">
+          <i class="fas fa-archive"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Store Form -->
+  <div class="store-form-overlay" *ngIf="showAddForm">
+    <!-- Debug info -->
+    <div style="position: absolute; top: 10px; left: 10px; background: red; color: white; padding: 5px; z-index: 10000;">
+      Modal ouvert - showAddForm: {{ showAddForm }}
+    </div>
+    
+    <div class="store-form-container">
+      <div class="form-header">
+        <h3>{{ editingStore ? 'Modifier le magasin' : 'Ajouter un nouveau magasin' }}</h3>
+        <button class="btn-close" (click)="hideForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="store-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nom du magasin *</label>
+            <input type="text" class="form-input" [(ngModel)]="storeForm.store_name" 
+                   name="store_name" required placeholder="Nom du magasin">
+          </div>
+          
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Adresse *</label>
+            <input type="text" class="form-input" [(ngModel)]="storeForm.store_address" 
+                   name="store_address" required placeholder="Adresse complète">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Ville *</label>
+            <input type="text" class="form-input" [(ngModel)]="storeForm.store_city" 
+                   name="store_city" required placeholder="Ville">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Pays</label>
+            <input type="text" class="form-input" [(ngModel)]="storeForm.store_country" 
+                   name="store_country" placeholder="Pays">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Téléphone</label>
+            <input type="tel" class="form-input" [(ngModel)]="storeForm.store_phone" 
+                   name="store_phone" placeholder="+225 27222444">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" [(ngModel)]="storeForm.store_email" 
+                 name="store_email" placeholder="contact@magasin.ci">
+        </div>
+
+
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Site web</label>
+            <input type="url" class="form-input" [(ngModel)]="storeForm.store_website" 
+                   name="store_website" placeholder="https://www.magasin.ci">
+          </div>
+          
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="hideForm()">
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+            <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+            {{ editingStore ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredStores.length === 0">
+    <i class="fas fa-store"></i>
+    <h3>Aucun magasin trouvé</h3>
+    <p>Essayez de modifier vos filtres ou ajoutez un nouveau magasin.</p>
+  </div>
+</div>

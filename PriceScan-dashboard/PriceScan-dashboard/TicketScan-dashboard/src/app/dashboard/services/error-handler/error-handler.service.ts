@@ -102,7 +102,7 @@ export class ErrorHandlerService {
     const retryCount = errorInfo.retryCount + 1;
     const delayTime = config.retryDelay * Math.pow(config.backoffMultiplier, retryCount - 1);
 
-    console.log(`🔄 Tentative de retry ${retryCount}/${config.maxRetries} dans ${delayTime}ms`);
+    console.log(` Tentative de retry ${retryCount}/${config.maxRetries} dans ${delayTime}ms`);
 
     return timer(delayTime).pipe(
       take(1),
@@ -112,7 +112,7 @@ export class ErrorHandlerService {
         
         // Si c'est le dernier retry, retourner l'erreur
         if (retryCount >= config.maxRetries) {
-          console.log('❌ Nombre maximum de retries atteint');
+          console.log(' Nombre maximum de retries atteint');
           return throwError(() => this.createUserFriendlyError(new HttpErrorResponse({
             error: 'Nombre maximum de tentatives atteint',
             status: 0
@@ -236,7 +236,7 @@ export class ErrorHandlerService {
               return throwError(() => error);
             }
             const delayTime = config.retryDelay * Math.pow(config.backoffMultiplier, index);
-            console.log(`🔄 Retry automatique ${index + 1}/${config.maxRetries} dans ${delayTime}ms`);
+            console.log(` Retry automatique ${index + 1}/${config.maxRetries} dans ${delayTime}ms`);
             return timer(delayTime);
           })
         )

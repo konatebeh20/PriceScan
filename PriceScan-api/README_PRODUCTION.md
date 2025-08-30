@@ -1,10 +1,10 @@
 # 🏭 PRICESCAN API - GUIDE DE PRODUCTION
 
-## 📋 **VUE D'ENSEMBLE**
+##  **VUE D'ENSEMBLE**
 
 Ce guide détaille le déploiement et la gestion de l'API PriceScan en production avec Gunicorn, Docker et des outils de monitoring avancés.
 
-## 🚀 **ARCHITECTURE DE PRODUCTION**
+##  **ARCHITECTURE DE PRODUCTION**
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -179,7 +179,7 @@ docker-compose -f docker-compose.prod.yml exec pricescan-mysql mysqladmin ping
 docker-compose -f docker-compose.prod.yml exec pricescan-redis redis-cli ping
 ```
 
-## 🚀 **GESTION DES SERVICES**
+##  **GESTION DES SERVICES**
 
 ### **Commandes principales**
 ```bash
@@ -214,7 +214,7 @@ python manage_prod.py stop --service pricescan-mysql
 python manage_prod.py logs --service pricescan-api --follow
 ```
 
-## 📊 **MONITORING ET OBSERVABILITÉ**
+##  **MONITORING ET OBSERVABILITÉ**
 
 ### **1. Prometheus (Métriques)**
 - **URL** : http://localhost:9090
@@ -360,7 +360,7 @@ docker-compose -f docker-compose.prod.yml exec -T pricescan-mysql \
 5. **Vérification** : Tests de santé
 6. **Documentation** : Rapport d'incident
 
-## 🔄 **DÉPLOIEMENT CONTINU**
+##  **DÉPLOIEMENT CONTINU**
 
 ### **1. Pipeline CI/CD**
 ```yaml
@@ -500,12 +500,12 @@ docker-compose -f docker-compose.prod.yml exec pricescan-api top
 ## 📝 **CHANGELOG**
 
 ### **Version 1.0.0** (Décembre 2024)
-- ✅ Configuration de production complète
-- ✅ Intégration Gunicorn
-- ✅ Monitoring Prometheus/Grafana
-- ✅ Logs centralisés ELK
-- ✅ Déploiement Docker automatisé
-- ✅ Gestionnaire de production unifié
+-  Configuration de production complète
+-  Intégration Gunicorn
+-  Monitoring Prometheus/Grafana
+-  Logs centralisés ELK
+-  Déploiement Docker automatisé
+-  Gestionnaire de production unifié
 
 ---
 

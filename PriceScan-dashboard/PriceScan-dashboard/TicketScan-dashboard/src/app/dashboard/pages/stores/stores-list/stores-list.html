@@ -2,6 +2,21 @@
 <div class="stores-list-page">
     <h1 class="page-title">Gestion des Magasins</h1>
     
+    <!-- Stores Tabs -->
+    <div class="stores-tabs-container">
+        <div class="stores-tabs">
+            <button class="stores-tab active" (click)="setActiveTab('list')" [class.active]="activeTab === 'list'">
+                <i class="fas fa-list"></i> Liste-magasins
+            </button>
+            <button class="stores-tab" (click)="setActiveTab('favorites')" [class.active]="activeTab === 'favorites'">
+                <i class="fas fa-heart"></i> Favoris
+            </button>
+            <button class="stores-tab" (click)="setActiveTab('archived')" [class.active]="activeTab === 'archived'">
+                <i class="fas fa-archive"></i> Archivés
+            </button>
+        </div>
+    </div>
+    
     <!-- Stores Header -->
     <div class="stores-header">
         <div class="stores-stats">

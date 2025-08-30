@@ -17,17 +17,17 @@ TEST_USER_UID = "test-user-123"
 
 def test_api_health():
     """Test de santé de l'API"""
-    print("🔍 Test de santé de l'API...")
+    print(" Test de santé de l'API...")
     try:
         response = requests.get("http://localhost:5000/health", timeout=5)
         if response.status_code == 200:
-            print("✅ API en ligne et fonctionnelle")
+            print(" API en ligne et fonctionnelle")
             return True
         else:
-            print(f"❌ API répond avec le code {response.status_code}")
+            print(f" API répond avec le code {response.status_code}")
             return False
     except requests.exceptions.RequestException as e:
-        print(f"❌ Impossible de contacter l'API: {e}")
+        print(f" Impossible de contacter l'API: {e}")
         return False
 
 def test_promotions_api():
@@ -39,57 +39,57 @@ def test_promotions_api():
         response = requests.get(f"{API_BASE_URL}/promotions/active", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Promotions actives récupérées: {data.get('total', 0)} promotions")
+            print(f" Promotions actives récupérées: {data.get('total', 0)} promotions")
         else:
-            print(f"❌ Erreur lors de la récupération des promotions actives: {response.status_code}")
+            print(f" Erreur lors de la récupération des promotions actives: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des promotions: {e}")
+        print(f" Erreur lors du test des promotions: {e}")
     
     # Test récupération des promotions mises en avant
     try:
         response = requests.get(f"{API_BASE_URL}/promotions/featured", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Promotions mises en avant récupérées: {data.get('total', 0)} promotions")
+            print(f" Promotions mises en avant récupérées: {data.get('total', 0)} promotions")
         else:
-            print(f"❌ Erreur lors de la récupération des promotions mises en avant: {response.status_code}")
+            print(f" Erreur lors de la récupération des promotions mises en avant: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des promotions mises en avant: {e}")
+        print(f" Erreur lors du test des promotions mises en avant: {e}")
 
 def test_dashboard_api():
     """Test des endpoints du dashboard"""
-    print("\n📊 Test des endpoints du dashboard...")
+    print("\n Test des endpoints du dashboard...")
     
     # Test récupération des statistiques utilisateur
     try:
         response = requests.get(f"{API_BASE_URL}/dashboard/stats/{TEST_USER_UID}", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print("✅ Statistiques du dashboard récupérées avec succès")
+            print(" Statistiques du dashboard récupérées avec succès")
             if 'stats' in data:
                 stats = data['stats']
                 print(f"   - Total reçus: {stats.get('total_receipts', 0)}")
                 print(f"   - Total dépensé: {stats.get('total_spent', 0)} CFA")
                 print(f"   - Montant moyen par reçu: {stats.get('avg_receipt_amount', 0)} CFA")
         elif response.status_code == 404:
-            print("⚠️  Utilisateur de test non trouvé (normal pour un test)")
+            print("  Utilisateur de test non trouvé (normal pour un test)")
         else:
-            print(f"❌ Erreur lors de la récupération des stats: {response.status_code}")
+            print(f" Erreur lors de la récupération des stats: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des statistiques: {e}")
+        print(f" Erreur lors du test des statistiques: {e}")
     
     # Test récupération du profil utilisateur
     try:
         response = requests.get(f"{API_BASE_URL}/dashboard/profile/{TEST_USER_UID}", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print("✅ Profil utilisateur récupéré avec succès")
+            print(" Profil utilisateur récupéré avec succès")
         elif response.status_code == 404:
-            print("⚠️  Profil utilisateur de test non trouvé (normal pour un test)")
+            print("  Profil utilisateur de test non trouvé (normal pour un test)")
         else:
-            print(f"❌ Erreur lors de la récupération du profil: {response.status_code}")
+            print(f" Erreur lors de la récupération du profil: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test du profil: {e}")
+        print(f" Erreur lors du test du profil: {e}")
 
 def test_receipts_api():
     """Test des endpoints des reçus"""
@@ -99,11 +99,11 @@ def test_receipts_api():
         response = requests.get(f"{API_BASE_URL}/receipts/all", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Reçus récupérés: {data.get('total', 0)} reçus")
+            print(f" Reçus récupérés: {data.get('total', 0)} reçus")
         else:
-            print(f"❌ Erreur lors de la récupération des reçus: {response.status_code}")
+            print(f" Erreur lors de la récupération des reçus: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des reçus: {e}")
+        print(f" Erreur lors du test des reçus: {e}")
 
 def test_products_api():
     """Test des endpoints des produits"""
@@ -113,11 +113,11 @@ def test_products_api():
         response = requests.get(f"{API_BASE_URL}/products/all", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Produits récupérés: {data.get('total', 0)} produits")
+            print(f" Produits récupérés: {data.get('total', 0)} produits")
         else:
-            print(f"❌ Erreur lors de la récupération des produits: {response.status_code}")
+            print(f" Erreur lors de la récupération des produits: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des produits: {e}")
+        print(f" Erreur lors du test des produits: {e}")
 
 def test_stores_api():
     """Test des endpoints des magasins"""
@@ -127,11 +127,11 @@ def test_stores_api():
         response = requests.get(f"{API_BASE_URL}/stores/all", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Magasins récupérés: {data.get('total', 0)} magasins")
+            print(f" Magasins récupérés: {data.get('total', 0)} magasins")
         else:
-            print(f"❌ Erreur lors de la récupération des magasins: {response.status_code}")
+            print(f" Erreur lors de la récupération des magasins: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des magasins: {e}")
+        print(f" Erreur lors du test des magasins: {e}")
 
 def test_categories_api():
     """Test des endpoints des catégories"""
@@ -141,15 +141,15 @@ def test_categories_api():
         response = requests.get(f"{API_BASE_URL}/categories/all", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Catégories récupérées: {data.get('total', 0)} catégories")
+            print(f" Catégories récupérées: {data.get('total', 0)} catégories")
         else:
-            print(f"❌ Erreur lors de la récupération des catégories: {response.status_code}")
+            print(f" Erreur lors de la récupération des catégories: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors du test des catégories: {e}")
+        print(f" Erreur lors du test des catégories: {e}")
 
 def test_data_creation():
     """Test de création de données de test"""
-    print("\n🔄 Test de création de données de test...")
+    print("\n Test de création de données de test...")
     
     # Test création d'une promotion
     try:
@@ -172,14 +172,14 @@ def test_data_creation():
         
         if response.status_code == 201:
             data = response.json()
-            print(f"✅ Promotion de test créée avec succès (ID: {data.get('promotion_id')})")
+            print(f" Promotion de test créée avec succès (ID: {data.get('promotion_id')})")
             return data.get('promotion_id')
         else:
-            print(f"❌ Erreur lors de la création de la promotion: {response.status_code}")
+            print(f" Erreur lors de la création de la promotion: {response.status_code}")
             print(f"   Réponse: {response.text}")
             return None
     except Exception as e:
-        print(f"❌ Erreur lors de la création de la promotion: {e}")
+        print(f" Erreur lors de la création de la promotion: {e}")
         return None
 
 def test_data_retrieval(promotion_id):
@@ -187,7 +187,7 @@ def test_data_retrieval(promotion_id):
     if not promotion_id:
         return
     
-    print(f"\n📥 Test de récupération de la promotion {promotion_id}...")
+    print(f"\n Test de récupération de la promotion {promotion_id}...")
     
     try:
         response = requests.get(f"{API_BASE_URL}/promotions/all", timeout=10)
@@ -203,16 +203,16 @@ def test_data_retrieval(promotion_id):
                     break
             
             if test_promotion:
-                print("✅ Promotion de test trouvée dans la liste")
+                print(" Promotion de test trouvée dans la liste")
                 print(f"   - Titre: {test_promotion.get('title')}")
                 print(f"   - Réduction: {test_promotion.get('discount_value')}%")
                 print(f"   - Mise en avant: {'Oui' if test_promotion.get('is_featured') else 'Non'}")
             else:
-                print("❌ Promotion de test non trouvée dans la liste")
+                print(" Promotion de test non trouvée dans la liste")
         else:
-            print(f"❌ Erreur lors de la récupération des promotions: {response.status_code}")
+            print(f" Erreur lors de la récupération des promotions: {response.status_code}")
     except Exception as e:
-        print(f"❌ Erreur lors de la récupération des promotions: {e}")
+        print(f" Erreur lors de la récupération des promotions: {e}")
 
 def test_dashboard_integration():
     """Test d'intégration complète du dashboard"""
@@ -223,36 +223,36 @@ def test_dashboard_integration():
         # 1. Récupérer les promotions actives
         response = requests.get(f"{API_BASE_URL}/promotions/active", timeout=10)
         if response.status_code == 200:
-            print("✅ Étape 1: Promotions actives récupérées")
+            print(" Étape 1: Promotions actives récupérées")
         
         # 2. Récupérer les catégories
         response = requests.get(f"{API_BASE_URL}/categories/all", timeout=10)
         if response.status_code == 200:
-            print("✅ Étape 2: Catégories récupérées")
+            print(" Étape 2: Catégories récupérées")
         
         # 3. Récupérer les magasins
         response = requests.get(f"{API_BASE_URL}/stores/all", timeout=10)
         if response.status_code == 200:
-            print("✅ Étape 3: Magasins récupérés")
+            print(" Étape 3: Magasins récupérés")
         
         # 4. Récupérer les produits
         response = requests.get(f"{API_BASE_URL}/products/all", timeout=10)
         if response.status_code == 200:
-            print("✅ Étape 4: Produits récupérés")
+            print(" Étape 4: Produits récupérés")
         
         print("🎉 Intégration dashboard complète réussie!")
         
     except Exception as e:
-        print(f"❌ Erreur lors de l'intégration: {e}")
+        print(f" Erreur lors de l'intégration: {e}")
 
 def main():
     """Fonction principale de test"""
-    print("🚀 Démarrage des tests de communication Dashboard ↔ API ↔ Base de données")
+    print(" Démarrage des tests de communication Dashboard ↔ API ↔ Base de données")
     print("=" * 70)
     
     # Test de santé de l'API
     if not test_api_health():
-        print("\n❌ L'API n'est pas accessible. Arrêt des tests.")
+        print("\n L'API n'est pas accessible. Arrêt des tests.")
         return
     
     # Tests des différents endpoints
@@ -272,10 +272,10 @@ def main():
     
     print("\n" + "=" * 70)
     print("🎯 Résumé des tests de communication")
-    print("✅ Tous les tests ont été exécutés")
-    print("📊 Le dashboard peut maintenant communiquer avec l'API")
+    print(" Tous les tests ont été exécutés")
+    print(" Le dashboard peut maintenant communiquer avec l'API")
     print("💾 Les données sont correctement enregistrées et récupérées")
-    print("\n🚀 Prochaines étapes:")
+    print("\n Prochaines étapes:")
     print("   1. Lancer le dashboard Angular")
     print("   2. Tester les fonctionnalités d'enregistrement")
     print("   3. Vérifier l'affichage des données en temps réel")

@@ -22,16 +22,16 @@ def test_api_accessibility():
     try:
         response = requests.get(f"{base_url}/health", timeout=5)
         if response.status_code == 200:
-            print("   ✅ Health Check OK")
-            print(f"   📊 Réponse: {response.json()}")
+            print("    Health Check OK")
+            print(f"    Réponse: {response.json()}")
         else:
-            print(f"   ❌ Health Check échoué: {response.status_code}")
+            print(f"    Health Check échoué: {response.status_code}")
     except requests.exceptions.ConnectionError:
-        print("   ❌ Impossible de se connecter à l'API")
+        print("    Impossible de se connecter à l'API")
         print("   💡 L'API n'est pas en cours d'exécution")
         return False
     except Exception as e:
-        print(f"   ❌ Erreur: {e}")
+        print(f"    Erreur: {e}")
         return False
     
     # Test 2: Endpoint racine
@@ -39,11 +39,11 @@ def test_api_accessibility():
     try:
         response = requests.get(f"{base_url}/", timeout=5)
         if response.status_code == 200:
-            print("   ✅ Endpoint racine OK")
+            print("    Endpoint racine OK")
         else:
-            print(f"   ❌ Endpoint racine échoué: {response.status_code}")
+            print(f"    Endpoint racine échoué: {response.status_code}")
     except Exception as e:
-        print(f"   ❌ Erreur: {e}")
+        print(f"    Erreur: {e}")
     
     # Test 3: Test des APIs principales
     print("\n3️⃣ Test des APIs principales...")
@@ -63,13 +63,13 @@ def test_api_accessibility():
         try:
             response = requests.get(f"{base_url}{endpoint}", timeout=5)
             if response.status_code == 200:
-                print(f"   ✅ {name} OK")
+                print(f"    {name} OK")
             elif response.status_code == 404:
-                print(f"   ⚠️  {name} - Endpoint non trouvé (normal si pas de données)")
+                print(f"     {name} - Endpoint non trouvé (normal si pas de données)")
             else:
-                print(f"   ❌ {name} - Status: {response.status_code}")
+                print(f"    {name} - Status: {response.status_code}")
         except Exception as e:
-            print(f"   ❌ {name} - Erreur: {e}")
+            print(f"    {name} - Erreur: {e}")
     
     # Test 4: Test des endpoints spéciaux
     print("\n4️⃣ Test des endpoints spéciaux...")
@@ -84,11 +84,11 @@ def test_api_accessibility():
         try:
             response = requests.get(f"{base_url}{endpoint}", timeout=5)
             if response.status_code in [200, 404, 400]:
-                print(f"   ✅ {name} OK (Status: {response.status_code})")
+                print(f"    {name} OK (Status: {response.status_code})")
             else:
-                print(f"   ❌ {name} - Status inattendu: {response.status_code}")
+                print(f"    {name} - Status inattendu: {response.status_code}")
         except Exception as e:
-            print(f"   ❌ {name} - Erreur: {e}")
+            print(f"    {name} - Erreur: {e}")
     
     print("\n" + "=" * 50)
     print("🎯 RÉSUMÉ DES TESTS")
@@ -136,12 +136,12 @@ def show_api_info():
 
 def main():
     """Fonction principale"""
-    print("🚀 TEST DE L'API PRICESCAN")
+    print(" TEST DE L'API PRICESCAN")
     print("=" * 40)
     
     # Vérifier si l'API est accessible
     if test_api_accessibility():
-        print("\n✅ L'API est accessible et fonctionne !")
+        print("\n L'API est accessible et fonctionne !")
         show_api_info()
         
         print("\n🌐 Pour tester l'interface web:")
@@ -150,7 +150,7 @@ def main():
         print("   3. Vérifiez les réponses de l'API")
         
     else:
-        print("\n❌ L'API n'est pas accessible")
+        print("\n L'API n'est pas accessible")
         print("💡 Solutions:")
         print("   1. Vérifiez que l'API est en cours d'exécution")
         print("   2. Lancez: python manage.py dev")

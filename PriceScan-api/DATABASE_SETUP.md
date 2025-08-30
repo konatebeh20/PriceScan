@@ -2,7 +2,7 @@
 
 Ce guide vous explique comment configurer PriceScan API avec différentes bases de données selon votre environnement.
 
-## 📋 Table des matières
+##  Table des matières
 
 1. [Configuration rapide](#-configuration-rapide)
 2. [XAMPP sur Windows](#-xampp-sur-windows)
@@ -12,7 +12,7 @@ Ce guide vous explique comment configurer PriceScan API avec différentes bases 
 6. [SQLite](#-sqlite)
 7. [Dépannage](#-dépannage)
 
-## 🚀 Configuration rapide
+##  Configuration rapide
 
 ### Étape 1 : Choisir votre base de données
 Ouvrez le fichier `config/database_config.py` et décommentez la ligne correspondant à votre environnement :
@@ -261,7 +261,7 @@ Créez un fichier `.env` dans le dossier `PriceScan-api` :
 DATABASE_URL=mysql+pymysql://root:@localhost:3306/PriceScan_db
 ```
 
-## ✅ Test final
+##  Test final
 
 Après configuration, testez votre installation :
 

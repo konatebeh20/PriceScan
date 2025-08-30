@@ -28,8 +28,8 @@ export const API_CONFIG = {
   USERS: {
     BASE: 'http://localhost:5000/api/users',
     PROFILE: 'http://localhost:5000/api/users/profile',
-    LOGIN: 'http://localhost:5000/api/users/login',
-    REGISTER: 'http://localhost:5000/api/users/register'
+    LOGIN: 'http://localhost:5000/api/auth/login',
+    REGISTER: 'http://localhost:5000/api/auth/register'
   },
   
   // Endpoints des reçus
@@ -51,6 +51,13 @@ export const API_CONFIG = {
     BASE: 'http://localhost:5000/api/stores',
     BY_ID: (id: number) => `http://localhost:5000/api/stores/${id}`,
     NEARBY: 'http://localhost:5000/api/stores/nearby'
+  },
+  
+  // Endpoints des catégories
+  CATEGORIES: {
+    BASE: 'http://localhost:5000/api/categories',
+    BY_ID: (id: number) => `http://localhost:5000/api/categories/${id}`,
+    FEATURED: 'http://localhost:5000/api/categories/featured'
   },
   
   // Configuration des requêtes

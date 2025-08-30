@@ -4,7 +4,7 @@
 
 PriceScan Mobile est une application mobile innovante de comparaison de prix qui se distingue des solutions existantes comme Idealo Shopping. Cette application a été conçue pour valider l'UE de Développement Web/Mobile en Data Science.
 
-## 🚀 **Fonctionnalités Uniques (Différentes d'Idealo)**
+##  **Fonctionnalités Uniques (Différentes d'Idealo)**
 
 ### 1. **Scanner Hybride**
 - **Code-barres** : Scan rapide des produits en magasin
@@ -58,7 +58,7 @@ src/
 │       └── tabs.page.ts          # Navigation principale
 ```
 
-## 🔍 **Différenciation par rapport à Idealo Shopping**
+##  **Différenciation par rapport à Idealo Shopping**
 
 | Fonctionnalité | Idealo Shopping | PriceScan Mobile |
 |----------------|-----------------|------------------|
@@ -76,16 +76,16 @@ src/
 - **Thème adaptatif** : Mode clair/sombre automatique
 - **Accessibilité** : Support des lecteurs d'écran
 
-## 📊 **Fonctionnalités pour la Validation UE**
+##  **Fonctionnalités pour la Validation UE**
 
 ### **Niveau Débutant (Validation)**
-- ✅ Scanner de code-barres fonctionnel
-- ✅ Comparaison de prix basique
-- ✅ Interface utilisateur responsive
-- ✅ Stockage local des données
+-  Scanner de code-barres fonctionnel
+-  Comparaison de prix basique
+-  Interface utilisateur responsive
+-  Stockage local des données
 
 ### **Niveau Intermédiaire (Bonus)**
-- 🔄 OCR des reçus
+-  OCR des reçus
 - 📈 Graphiques de tendances
 - 🔔 Système d'alertes
 - 🌐 Synchronisation cloud
@@ -94,9 +94,9 @@ src/
 - 🤖 IA pour prédictions de prix
 - 📱 Notifications push
 - 🔐 Authentification utilisateur
-- 📊 Analytics et rapports
+-  Analytics et rapports
 
-## 🚀 **Installation et Démarrage**
+##  **Installation et Démarrage**
 
 ```bash
 # Cloner le projet

@@ -44,12 +44,12 @@ export class PromotionService {
     return this.http.get<Promotion[]>(this.apiUrl).pipe(
       retry(2),
       tap(promotions => {
-        console.log('✅ Promotions récupérées:', promotions.length);
+        console.log(' Promotions récupérées:', promotions.length);
         // Sauvegarder dans le session storage
         sessionStorage.setItem('ticketscan_promotions', JSON.stringify(promotions));
       }),
       catchError(error => {
-        console.error('❌ Erreur récupération promotions:', error);
+        console.error(' Erreur récupération promotions:', error);
         // Retourner les promotions du session storage en cas d'erreur
         const storedPromotions = sessionStorage.getItem('ticketscan_promotions');
         return of(storedPromotions ? JSON.parse(storedPromotions) : []);
@@ -62,11 +62,11 @@ export class PromotionService {
     return this.http.get<Promotion[]>(`${API_CONFIG.PROMOTIONS.ACTIVE}`).pipe(
       retry(2),
       tap(promotions => {
-        console.log('✅ Promotions actives récupérées:', promotions.length);
+        console.log(' Promotions actives récupérées:', promotions.length);
         sessionStorage.setItem('ticketscan_active_promotions', JSON.stringify(promotions));
       }),
       catchError(error => {
-        console.error('❌ Erreur récupération promotions actives:', error);
+        console.error(' Erreur récupération promotions actives:', error);
         const storedPromotions = sessionStorage.getItem('ticketscan_active_promotions');
         return of(storedPromotions ? JSON.parse(storedPromotions) : []);
       })
@@ -78,11 +78,11 @@ export class PromotionService {
     return this.http.get<Promotion[]>(`${API_CONFIG.PROMOTIONS.FEATURED}`).pipe(
       retry(2),
       tap(promotions => {
-        console.log('✅ Promotions en vedette récupérées:', promotions.length);
+        console.log(' Promotions en vedette récupérées:', promotions.length);
         sessionStorage.setItem('ticketscan_featured_promotions', JSON.stringify(promotions));
       }),
       catchError(error => {
-        console.error('❌ Erreur récupération promotions vedette:', error);
+        console.error(' Erreur récupération promotions vedette:', error);
         const storedPromotions = sessionStorage.getItem('ticketscan_featured_promotions');
         return of(storedPromotions ? JSON.parse(storedPromotions) : []);
       })
@@ -93,9 +93,9 @@ export class PromotionService {
   getPromotionById(id: number): Observable<Promotion | null> {
     return this.http.get<Promotion>(`${API_CONFIG.PROMOTIONS.BY_ID(id)}`).pipe(
       retry(2),
-      tap(promotion => console.log('✅ Promotion récupérée:', promotion.title)),
+      tap(promotion => console.log(' Promotion récupérée:', promotion.title)),
       catchError(error => {
-        console.error(`❌ Erreur récupération promotion ${id}:`, error);
+        console.error(` Erreur récupération promotion ${id}:`, error);
         // Chercher dans le session storage
         const storedPromotions = sessionStorage.getItem('ticketscan_promotions');
         if (storedPromotions) {
@@ -124,13 +124,13 @@ export class PromotionService {
       retry(2),
       tap(response => {
         if (response.success) {
-          console.log('✅ Promotion créée avec succès');
+          console.log(' Promotion créée avec succès');
           // Mettre à jour le session storage
           this.updatePromotionsInStorage(response.data as Promotion, 'add');
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur création promotion:', error);
+        console.error(' Erreur création promotion:', error);
         return of({
           success: false,
           message: 'Erreur lors de la création de la promotion',
@@ -157,13 +157,13 @@ export class PromotionService {
       retry(2),
       tap(response => {
         if (response.success) {
-          console.log('✅ Promotion mise à jour avec succès');
+          console.log(' Promotion mise à jour avec succès');
           // Mettre à jour le session storage
           this.updatePromotionsInStorage(response.data as Promotion, 'update');
         }
       }),
       catchError(error => {
-        console.error(`❌ Erreur mise à jour promotion ${id}:`, error);
+        console.error(` Erreur mise à jour promotion ${id}:`, error);
         return of({
           success: false,
           message: 'Erreur lors de la mise à jour de la promotion',
@@ -179,13 +179,13 @@ export class PromotionService {
       retry(2),
       tap(response => {
         if (response.success) {
-          console.log('✅ Promotion supprimée avec succès');
+          console.log(' Promotion supprimée avec succès');
           // Mettre à jour le session storage
           this.updatePromotionsInStorage({ id } as Promotion, 'delete');
         }
       }),
       catchError(error => {
-        console.error(`❌ Erreur suppression promotion ${id}:`, error);
+        console.error(` Erreur suppression promotion ${id}:`, error);
         return of({
           success: false,
           message: 'Erreur lors de la suppression de la promotion',
@@ -203,9 +203,9 @@ export class PromotionService {
 
     return this.http.get<Promotion[]>(`${this.apiUrl}/search?q=${encodeURIComponent(query)}`).pipe(
       retry(2),
-      tap(promotions => console.log(`✅ Recherche promotions "${query}":`, promotions.length)),
+      tap(promotions => console.log(` Recherche promotions "${query}":`, promotions.length)),
       catchError(error => {
-        console.error('❌ Erreur recherche promotions:', error);
+        console.error(' Erreur recherche promotions:', error);
         // Recherche locale dans le session storage
         return of(this.searchPromotionsInStorage(query));
       })
@@ -295,7 +295,7 @@ export class PromotionService {
         const applicable = promotions.filter(p => 
           !p.minPurchase || purchaseAmount >= p.minPurchase
         );
-        console.log(`✅ Promotions applicables pour ${purchaseAmount} F CFA:`, applicable.length);
+        console.log(` Promotions applicables pour ${purchaseAmount} F CFA:`, applicable.length);
       })
     );
   }

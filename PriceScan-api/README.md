@@ -1,14 +1,14 @@
-# 🚀 PRICESCAN-API
+#  PRICESCAN-API
 
 **API REST complète pour l'application PriceScan - Scanner de reçus intelligent avec OCR**
 
-## 📋 Description
+##  Description
 
 PriceScan-API est une API Flask robuste qui fournit des services backend pour l'application mobile PriceScan. Elle inclut :
 
-- 🔍 **OCR intelligent** pour l'extraction de données depuis les reçus
+-  **OCR intelligent** pour l'extraction de données depuis les reçus
 - 🗄️ **Gestion des utilisateurs** avec authentification JWT
-- 📊 **Stockage et analyse** des données de reçus
+-  **Stockage et analyse** des données de reçus
 - 🔒 **Sécurité avancée** avec validation et rate limiting
 - 📱 **API REST** complète pour l'intégration mobile
 - 🐳 **Déploiement Docker** prêt pour la production
@@ -16,7 +16,7 @@ PriceScan-API est une API Flask robuste qui fournit des services backend pour l'
 
 ## ✨ Fonctionnalités
 
-### 🔍 OCR et Traitement d'Images
+###  OCR et Traitement d'Images
 - Extraction automatique des informations de reçus
 - Support multi-langues (Français, Anglais)
 - Prétraitement d'images pour améliorer la précision OCR
@@ -38,13 +38,13 @@ PriceScan-API est une API Flask robuste qui fournit des services backend pour l'
 - Rate limiting et protection CORS
 - Chiffrement des mots de passe avec bcrypt
 
-### 📊 Monitoring et Performance
+###  Monitoring et Performance
 - Métriques Prometheus intégrées
 - Logs structurés et rotation automatique
 - Health checks et endpoints de diagnostic
 - Cache intelligent pour optimiser les performances
 
-## 🚀 Installation Rapide
+##  Installation Rapide
 
 ### Prérequis
 - Python 3.8+
@@ -93,7 +93,7 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
-### 🚀 Installation Automatique (Recommandée)
+###  Installation Automatique (Recommandée)
 
 #### Windows
 ```cmd
@@ -120,7 +120,7 @@ Après l'installation, vérifiez que tout est correctement installé :
 python test_dependencies.py
 
 # Ou test rapide
-python -c "import flask, cv2, sqlalchemy; print('✅ Dépendances OK')"
+python -c "import flask, cv2, sqlalchemy; print(' Dépendances OK')"
 ```
 
 ## 🗄️ Configuration des Bases de Données
@@ -271,7 +271,7 @@ POST /api/receipts/scan
 }
 ```
 
-#### 📊 Gestion des Reçus
+####  Gestion des Reçus
 ```bash
 # Récupérer tous les reçus
 GET /api/receipts/all
@@ -360,7 +360,7 @@ curl -X POST http://localhost:5000/api/auth/register \
   -d '{"username":"test","password":"test123","email":"test@test.com"}'
 ```
 
-## 📊 Monitoring
+##  Monitoring
 
 ### Métriques Prometheus
 - Accès via `http://localhost:9090`

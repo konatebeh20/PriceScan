@@ -23,13 +23,13 @@ from app import app
 
 def create_dashboard_tables():
     """Crée les nouvelles tables du dashboard"""
-    print("🚀 Création des tables du dashboard...")
+    print(" Création des tables du dashboard...")
     
     with app.app_context():
         try:
             # Créer toutes les tables
             db.create_all()
-            print("✅ Toutes les tables ont été créées avec succès!")
+            print(" Toutes les tables ont été créées avec succès!")
             
             # Vérifier que les nouvelles tables existent
             new_tables = [
@@ -39,25 +39,25 @@ def create_dashboard_tables():
                 'ps_scan_history'
             ]
             
-            print("\n📋 Vérification des nouvelles tables:")
+            print("\n Vérification des nouvelles tables:")
             for table_name in new_tables:
                 try:
                     # Vérifier si la table existe en essayant une requête simple
                     result = db.session.execute(text(f"SELECT 1 FROM {table_name} LIMIT 1"))
-                    print(f"   ✅ {table_name} - Table créée et accessible")
+                    print(f"    {table_name} - Table créée et accessible")
                 except Exception as e:
-                    print(f"   ❌ {table_name} - Erreur: {e}")
+                    print(f"    {table_name} - Erreur: {e}")
             
             print("\n🎯 Tables du dashboard prêtes!")
             return True
             
         except Exception as e:
-            print(f"❌ Erreur lors de la création des tables: {e}")
+            print(f" Erreur lors de la création des tables: {e}")
             return False
 
 def insert_sample_data():
     """Insère des données d'exemple pour tester le dashboard"""
-    print("\n🔄 Insertion de données d'exemple...")
+    print("\n Insertion de données d'exemple...")
     
     with app.app_context():
         try:
@@ -157,10 +157,10 @@ def insert_sample_data():
             
             # Valider toutes les modifications
             db.session.commit()
-            print("✅ Données d'exemple insérées avec succès!")
+            print(" Données d'exemple insérées avec succès!")
             
             # Afficher un résumé
-            print("\n📊 Résumé des données créées:")
+            print("\n Résumé des données créées:")
             print(f"   - Catégorie: {sample_category.cat_label}")
             print(f"   - Magasin: {sample_store.store_name}")
             print(f"   - Produit: {sample_product.product_name}")
@@ -172,7 +172,7 @@ def insert_sample_data():
             return True
             
         except Exception as e:
-            print(f"❌ Erreur lors de l'insertion des données: {e}")
+            print(f" Erreur lors de l'insertion des données: {e}")
             db.session.rollback()
             return False
 
@@ -183,23 +183,23 @@ def main():
     
     # Créer les tables
     if create_dashboard_tables():
-        print("\n✅ Tables créées avec succès!")
+        print("\n Tables créées avec succès!")
         
         # Demander si l'utilisateur veut insérer des données d'exemple
         response = input("\n🤔 Voulez-vous insérer des données d'exemple? (y/n): ")
         if response.lower() in ['y', 'yes', 'o', 'oui']:
             if insert_sample_data():
                 print("\n🎉 Configuration du dashboard terminée!")
-                print("\n🚀 Prochaines étapes:")
+                print("\n Prochaines étapes:")
                 print("   1. Lancer l'API: python app.py")
                 print("   2. Tester la communication: python test_dashboard_communication.py")
                 print("   3. Lancer le dashboard Angular")
             else:
-                print("\n⚠️  Erreur lors de l'insertion des données d'exemple")
+                print("\n  Erreur lors de l'insertion des données d'exemple")
         else:
-            print("\n✅ Configuration terminée sans données d'exemple")
+            print("\n Configuration terminée sans données d'exemple")
     else:
-        print("\n❌ Erreur lors de la création des tables")
+        print("\n Erreur lors de la création des tables")
 
 if __name__ == "__main__":
     main()

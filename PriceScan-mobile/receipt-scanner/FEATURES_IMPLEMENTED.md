@@ -1,6 +1,6 @@
-# 🚀 **Fonctionnalités Implémentées - PriceScan Mobile**
+#  **Fonctionnalités Implémentées - PriceScan Mobile**
 
-## ✅ **Fonctionnalités Principales Implémentées**
+##  **Fonctionnalités Principales Implémentées**
 
 ### 🏠 **Page d'Accueil (Home)**
 - **Boutons Actions Rapides** : Scanner et Comparer fonctionnent maintenant correctement
@@ -24,7 +24,7 @@
   - Bouton "Effacer tout" pour nettoyer l'historique
 - **Recherche Manuelle** : Saisie manuelle de codes-barres
 
-### 🔍 **Page Comparaison (Compare)**
+###  **Page Comparaison (Compare)**
 - **Bouton "Ajouter"** : Fonctionne maintenant pour ajouter des produits à la comparaison
 - **Cœurs Favoris** : 
   - Ajout/suppression des favoris
@@ -36,7 +36,7 @@
 ### 📚 **Page Historique (History)**
 - **Nouvel Onglet "Favoris"** : Entre "Prix" et "Recherches"
 - **Actions sur Chaque Élément** :
-  - 👁️ **Voir les détails** : Affichage des informations complètes
+  -  **Voir les détails** : Affichage des informations complètes
   - ❤️ **Favoris** : Ajout/suppression des favoris
   - 🗑️ **Supprimer** : Suppression individuelle vers les archives
 - **Archives** : 
@@ -58,7 +58,7 @@
 - **Actions** :
   - ✏️ **Modifier le Profil** : Interface d'édition (à implémenter)
   - 📄 **Exporter en TXT** : Export fonctionnel
-  - 📋 **Exporter en PDF** : Simulation (nécessite jsPDF)
+  -  **Exporter en PDF** : Simulation (nécessite jsPDF)
   - 🗑️ **Effacer les Données** : Remet à l'état initial
   - 🚪 **Se Déconnecter** : Remet à l'état initial
 
@@ -98,7 +98,7 @@
 - **Permissions** : Demande d'accès à la caméra
 - **Fallback Desktop** : `getUserMedia` pour les ordinateurs
 
-### 📊 **Export Avancé**
+###  **Export Avancé**
 - **PDF** : Intégration de jsPDF
 - **Excel** : Intégration de xlsx
 - **Images** : Capture d'écran et export

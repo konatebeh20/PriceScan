@@ -23,38 +23,38 @@ def test_api_creation():
         from flask_sqlalchemy import SQLAlchemy
         from flask_restful import Api
         
-        print("   ✅ Modules Flask importés")
+        print("    Modules Flask importés")
         
         # Créer l'application Flask
         app = Flask(__name__)
-        print("   ✅ Application Flask créée")
+        print("    Application Flask créée")
         
         # Configuration
         app.config['DEBUG'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         
-        print("   ✅ Configuration appliquée")
+        print("    Configuration appliquée")
         
         # Initialiser les extensions
         db = SQLAlchemy()
         db.init_app(app)
-        print("   ✅ Base de données initialisée")
+        print("    Base de données initialisée")
         
         migrate = Migrate(app, db)
-        print("   ✅ Migrations initialisées")
+        print("    Migrations initialisées")
         
         CORS(app)
-        print("   ✅ CORS activé")
+        print("    CORS activé")
         
         api = Api(app)
-        print("   ✅ API REST initialisée")
+        print("    API REST initialisée")
         
-        print("   ✅ API Flask créée avec succès !")
+        print("    API Flask créée avec succès !")
         return True
         
     except Exception as e:
-        print(f"   ❌ Erreur lors de la création de l'API : {e}")
+        print(f"    Erreur lors de la création de l'API : {e}")
         return False
 
 def test_resources_import():
@@ -72,11 +72,11 @@ def test_resources_import():
         from resources.prices import PricesApi
         from resources.receipts import ReceiptsApi
         
-        print("   ✅ Toutes les ressources importées")
+        print("    Toutes les ressources importées")
         return True
         
     except Exception as e:
-        print(f"   ❌ Erreur lors de l'import des ressources : {e}")
+        print(f"    Erreur lors de l'import des ressources : {e}")
         return False
 
 def test_helpers_import():
@@ -89,11 +89,11 @@ def test_helpers_import():
         from helpers.auth import login
         from helpers.receipt import upload_receipt
         
-        print("   ✅ Tous les helpers importés")
+        print("    Tous les helpers importés")
         return True
         
     except Exception as e:
-        print(f"   ❌ Erreur lors de l'import des helpers : {e}")
+        print(f"    Erreur lors de l'import des helpers : {e}")
         return False
 
 def test_models_import():
@@ -103,11 +103,11 @@ def test_models_import():
         
         from model.PriceScan_db import ps_users, ps_stores, ps_products, ps_prices
         
-        print("   ✅ Tous les modèles importés")
+        print("    Tous les modèles importés")
         return True
         
     except Exception as e:
-        print(f"   ❌ Erreur lors de l'import des modèles : {e}")
+        print(f"    Erreur lors de l'import des modèles : {e}")
         return False
 
 def main():
@@ -137,10 +137,10 @@ def main():
     print("\n" + "=" * 60)
     if success:
         print("🎉 TOUS LES TESTS SONT PASSÉS !")
-        print("✅ L'API PriceScan est prête à être lancée !")
-        print("\n🚀 Lancez l'API avec : python app.py")
+        print(" L'API PriceScan est prête à être lancée !")
+        print("\n Lancez l'API avec : python app.py")
     else:
-        print("⚠️  CERTAINS TESTS ONT ÉCHOUÉ")
+        print("  CERTAINS TESTS ONT ÉCHOUÉ")
         print("🔧 Vérifiez les erreurs ci-dessus")
     print("=" * 60)
     

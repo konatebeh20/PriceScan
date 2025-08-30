@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-🚀 Lancement de l'API PriceScan en mode Production
+ Lancement de l'API PriceScan en mode Production
 Configure et démarre l'API avec le scraping automatique tous les 5 jours
 """
 
@@ -18,9 +18,9 @@ def load_production_config():
     config_file = 'config/production.env'
     if os.path.exists(config_file):
         load_dotenv(config_file)
-        print(f"✅ Configuration chargée depuis {config_file}")
+        print(f" Configuration chargée depuis {config_file}")
     else:
-        print(f"⚠️  Fichier de configuration {config_file} non trouvé")
+        print(f"  Fichier de configuration {config_file} non trouvé")
         print("🔧 Utilisation des valeurs par défaut")
     
     # Vérifier les variables d'environnement
@@ -34,7 +34,7 @@ def load_production_config():
         'SCRAPING_JUMIA_INTERVAL'
     ]
     
-    print("\n📊 Configuration actuelle:")
+    print("\n Configuration actuelle:")
     for var in env_vars:
         value = os.getenv(var, 'Non défini')
         print(f"   {var}: {value}")
@@ -58,13 +58,13 @@ def load_production_config():
 
 def start_production_api():
     """Démarre l'API en mode production"""
-    print("\n🚀 Démarrage de l'API PriceScan en mode production...")
+    print("\n Démarrage de l'API PriceScan en mode production...")
     
     try:
         # Importer et démarrer l'API
         from app import app
         
-        print("✅ API Flask chargée avec succès")
+        print(" API Flask chargée avec succès")
         print("🔧 Configuration de production activée")
         print("🤖 Scraping automatique configuré pour s'exécuter tous les 5 jours")
         
@@ -77,7 +77,7 @@ def start_production_api():
         )
         
     except Exception as e:
-        print(f"❌ Erreur lors du démarrage de l'API: {e}")
+        print(f" Erreur lors du démarrage de l'API: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -87,17 +87,17 @@ def start_production_api():
 def main():
     """Fonction principale"""
     print("=" * 60)
-    print("🚀 LANCEMENT DE L'API PRICESCAN EN MODE PRODUCTION")
+    print(" LANCEMENT DE L'API PRICESCAN EN MODE PRODUCTION")
     print("=" * 60)
     
     # Charger la configuration
     if not load_production_config():
-        print("❌ Impossible de charger la configuration")
+        print(" Impossible de charger la configuration")
         sys.exit(1)
     
     # Démarrer l'API
     if not start_production_api():
-        print("❌ Impossible de démarrer l'API")
+        print(" Impossible de démarrer l'API")
         sys.exit(1)
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# 📋 RÉSUMÉ DE L'INSTALLATION - PRICESCAN-API
+#  RÉSUMÉ DE L'INSTALLATION - PRICESCAN-API
 
 ## 🎯 Objectif
 
@@ -22,7 +22,7 @@ Automatiser l'installation complète de PriceScan-API avec toutes ses dépendanc
 - **`DATABASE_SETUP.md`** - Configuration des bases de données
 - **`README.md`** - Mis à jour avec les nouvelles instructions
 
-## 🚀 Installation en 3 Étapes
+##  Installation en 3 Étapes
 
 ### **Étape 1: Installation Automatique**
 ```bash
@@ -82,24 +82,24 @@ python app.py
 - Environnement virtuel activé
 - Toutes les dépendances installées
 
-## 📊 Avantages de cette Approche
+##  Avantages de cette Approche
 
-### **✅ Automatisation**
+### ** Automatisation**
 - Installation en un clic
 - Pas de commandes manuelles
 - Gestion des erreurs
 
-### **✅ Compatibilité**
+### ** Compatibilité**
 - Windows et Linux/Mac
 - Différentes versions de Python
 - Gestion des environnements virtuels
 
-### **✅ Fiabilité**
+### ** Fiabilité**
 - Tests automatiques
 - Vérification des dépendances
 - Instructions claires
 
-### **✅ Maintenance**
+### ** Maintenance**
 - Fichiers organisés
 - Documentation complète
 - Scripts réutilisables
@@ -107,11 +107,11 @@ python app.py
 ## 🎉 Résultat Final
 
 Après l'installation, vous aurez :
-- ✅ Toutes les dépendances installées
-- ✅ Environnement virtuel configuré
-- ✅ Base de données configurée
-- ✅ API prête à être lancée
-- ✅ Tests de validation
+-  Toutes les dépendances installées
+-  Environnement virtuel configuré
+-  Base de données configurée
+-  API prête à être lancée
+-  Tests de validation
 
 ---
 

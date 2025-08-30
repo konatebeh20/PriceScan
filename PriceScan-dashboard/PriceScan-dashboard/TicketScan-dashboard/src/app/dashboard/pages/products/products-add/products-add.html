@@ -1,0 +1,186 @@
+<!-- Products Add Component -->
+<div class="products-add-content">
+  <!-- Header -->
+  <div class="add-header">
+    <h2 class="add-title">
+      <i class="fas fa-plus-circle"></i>
+      Ajouter un Nouveau Produit
+    </h2>
+    <p class="add-description">
+      Remplissez le formulaire ci-dessous pour ajouter un nouveau produit à votre catalogue
+    </p>
+  </div>
+
+  <!-- Success Message -->
+  <div class="alert alert-success" *ngIf="showSuccessMessage">
+    <i class="fas fa-check-circle"></i>
+    <span>Produit créé avec succès !</span>
+    <button class="btn-close" (click)="hideMessages()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Error Message -->
+  <div class="alert alert-error" *ngIf="showErrorMessage">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-close" (click)="hideMessages()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Product Form -->
+  <form (ngSubmit)="onSubmit()" class="product-form">
+    <div class="form-section">
+      <h3 class="section-title">Informations Générales</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nom du Produit *</label>
+          <input type="text" class="form-input" 
+                 [(ngModel)]="productForm.product_name" 
+                 name="product_name" 
+                 required 
+                 placeholder="Nom du produit">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Code Barres</label>
+          <input type="text" class="form-input" 
+                 [(ngModel)]="productForm.product_barcode" 
+                 name="product_barcode" 
+                 placeholder="Code barres (optionnel)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" 
+                  [(ngModel)]="productForm.product_description" 
+                  name="product_description" 
+                  rows="3" 
+                  placeholder="Description détaillée du produit"></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">Catégorisation & Prix</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Catégorie *</label>
+          <select class="form-select" 
+                  [(ngModel)]="productForm.product_category_id" 
+                  name="product_category_id" 
+                  required>
+            <option value="">Sélectionner une catégorie</option>
+            <option *ngFor="let category of categories" 
+                    [value]="category.id">
+              {{ category.category_name }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Magasin *</label>
+          <select class="form-select" 
+                  [(ngModel)]="productForm.product_store_id" 
+                  name="product_store_id" 
+                  required>
+            <option value="">Sélectionner un magasin</option>
+            <option *ngFor="let store of stores" 
+                    [value]="store.id">
+              {{ store.store_name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Prix *</label>
+          <div class="price-input-group">
+            <input type="number" class="form-input" 
+                   [(ngModel)]="productForm.product_price" 
+                   name="product_price" 
+                   required 
+                   step="0.01" 
+                   min="0" 
+                   placeholder="0.00">
+            <span class="currency">F CFA</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Unité</label>
+          <select class="form-select" 
+                  [(ngModel)]="productForm.product_unit" 
+                  name="product_unit">
+            <option value="piece">Pièce</option>
+            <option value="kg">Kilogramme</option>
+            <option value="g">Gramme</option>
+            <option value="l">Litre</option>
+            <option value="ml">Millilitre</option>
+            <option value="m">Mètre</option>
+            <option value="cm">Centimètre</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">Image du Produit</h3>
+      
+      <div class="image-upload-section">
+        <div class="image-preview" *ngIf="productForm.product_image">
+          <img [src]="productForm.product_image" alt="Aperçu" class="preview-image">
+          <button type="button" class="btn-remove-image" (click)="removeImage()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="image-upload" *ngIf="!productForm.product_image">
+          <input type="file" 
+                 id="product-image" 
+                 class="file-input" 
+                 accept="image/*" 
+                 (change)="onImageUpload($event)">
+          <label for="product-image" class="upload-label">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Cliquez pour sélectionner une image</span>
+            <small>Formats acceptés: JPG, PNG, GIF (Max: 5MB)</small>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">Statut</h3>
+      
+      <div class="form-group">
+        <label class="form-label">Statut du Produit</label>
+        <select class="form-select" 
+                [(ngModel)]="productForm.product_status" 
+                name="product_status">
+          <option value="active">Actif</option>
+          <option value="inactive">Inactif</option>
+          <option value="draft">Brouillon</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="resetForm()">
+        <i class="fas fa-undo"></i>
+        Réinitialiser
+      </button>
+      
+      <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+        {{ isSubmitting ? 'Création...' : 'Créer le Produit' }}
+      </button>
+    </div>
+  </form>
+</div>

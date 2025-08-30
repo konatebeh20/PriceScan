@@ -25,7 +25,7 @@ def test_scraping_modules():
         print("\n1️⃣ Test Carrefour...")
         from helpers.scrapper.carrefour import scrape_carrefour
         results = scrape_carrefour("smartphone")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   📱 Premier produit: {results[0]}")
         
@@ -33,7 +33,7 @@ def test_scraping_modules():
         print("\n2️⃣ Test Abidjan Mall...")
         from helpers.scrapper.abidjanmall import scrape_abidjanmall
         results = scrape_abidjanmall("laptop")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   💻 Premier produit: {results[0]}")
         
@@ -41,7 +41,7 @@ def test_scraping_modules():
         print("\n3️⃣ Test Prosuma...")
         from helpers.scrapper.prosuma import scrape_prosuma
         results = scrape_prosuma("écran")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   🖥️ Premier produit: {results[0]}")
         
@@ -49,15 +49,15 @@ def test_scraping_modules():
         print("\n4️⃣ Test Playce...")
         from helpers.scrapper.playce import scrape_playce
         results = scrape_playce("clavier")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   ⌨️ Premier produit: {results[0]}")
         
-        print("\n✅ Tous les modules de scraping fonctionnent !")
+        print("\n Tous les modules de scraping fonctionnent !")
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test des modules: {e}")
+        print(f"\n Erreur lors du test des modules: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -72,11 +72,11 @@ def test_auto_scraper():
         
         # Créer une instance de test
         scraper = AutoScraper()
-        print("   ✅ Instance AutoScraper créée")
+        print("    Instance AutoScraper créée")
         
         # Vérifier la configuration
         status = scraper.get_status()
-        print(f"   📊 Statut: {status['is_running']}")
+        print(f"    Statut: {status['is_running']}")
         print(f"   🏪 Magasins configurés: {len(status['stores'])}")
         print(f"   📦 Produits populaires: {status['popular_products_count']}")
         
@@ -85,11 +85,11 @@ def test_auto_scraper():
         result = scraper.manual_scrape("smartphone")
         print(f"   📝 Résultat: {result}")
         
-        print("\n✅ AutoScraper fonctionne correctement !")
+        print("\n AutoScraper fonctionne correctement !")
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test AutoScraper: {e}")
+        print(f"\n Erreur lors du test AutoScraper: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -106,26 +106,26 @@ def test_scraping_api():
         print("\n1️⃣ Test statut scraping...")
         response = requests.get(f"{base_url}/api/scraper/status", timeout=10)
         if response.status_code == 401:  # Non autorisé (normal sans JWT)
-            print("   ✅ API accessible (authentification requise)")
+            print("    API accessible (authentification requise)")
         else:
-            print(f"   ⚠️  Status inattendu: {response.status_code}")
+            print(f"     Status inattendu: {response.status_code}")
         
         # Test des statistiques
         print("\n2️⃣ Test statistiques scraping...")
         response = requests.get(f"{base_url}/api/scraping_stats/overview", timeout=10)
         if response.status_code == 401:  # Non autorisé (normal sans JWT)
-            print("   ✅ API statistiques accessible")
+            print("    API statistiques accessible")
         else:
-            print(f"   ⚠️  Status inattendu: {response.status_code}")
+            print(f"     Status inattendu: {response.status_code}")
         
-        print("\n✅ API de scraping accessible !")
+        print("\n API de scraping accessible !")
         return True
         
     except requests.exceptions.ConnectionError:
-        print("   ❌ API non accessible (vérifiez que l'API est lancée)")
+        print("    API non accessible (vérifiez que l'API est lancée)")
         return False
     except Exception as e:
-        print(f"   ❌ Erreur: {e}")
+        print(f"    Erreur: {e}")
         return False
 
 def test_scraping_integration():
@@ -140,7 +140,7 @@ def test_scraping_integration():
         
         app = create_app()
         if app:
-            print("   ✅ API créée avec succès")
+            print("    API créée avec succès")
             
             # Vérifier que le scraping est initialisé
             with app.app_context():
@@ -149,22 +149,22 @@ def test_scraping_integration():
                     status = get_scraper_status()
                     print(f"   🤖 Scraping initialisé: {status['is_running']}")
                 except Exception as e:
-                    print(f"   ⚠️  Scraping non initialisé: {e}")
+                    print(f"     Scraping non initialisé: {e}")
             
             return True
         else:
-            print("   ❌ Impossible de créer l'API")
+            print("    Impossible de créer l'API")
             return False
             
     except Exception as e:
-        print(f"\n❌ Erreur lors du test d'intégration: {e}")
+        print(f"\n Erreur lors du test d'intégration: {e}")
         import traceback
         traceback.print_exc()
         return False
 
 def main():
     """Fonction principale"""
-    print("🚀 TEST COMPLET DU SYSTÈME DE SCRAPING")
+    print(" TEST COMPLET DU SYSTÈME DE SCRAPING")
     print("=" * 50)
     
     tests = [
@@ -181,19 +181,19 @@ def main():
             result = test_func()
             results.append((test_name, result))
         except Exception as e:
-            print(f"\n❌ Erreur lors du test {test_name}: {e}")
+            print(f"\n Erreur lors du test {test_name}: {e}")
             results.append((test_name, False))
     
     # Résumé des tests
     print("\n" + "=" * 50)
-    print("📊 RÉSUMÉ DES TESTS")
+    print(" RÉSUMÉ DES TESTS")
     print("=" * 50)
     
     passed = 0
     total = len(results)
     
     for test_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
+        status = " PASS" if result else " FAIL"
         print(f"{status} {test_name}")
         if result:
             passed += 1
@@ -202,7 +202,7 @@ def main():
     
     if passed == total:
         print("\n🎉 TOUS LES TESTS SONT PASSÉS !")
-        print("🚀 Le système de scraping est prêt à être utilisé !")
+        print(" Le système de scraping est prêt à être utilisé !")
         
         print("\n💡 PROCHAINES ÉTAPES:")
         print("   1. Lancez l'API: python launch_api.py")
@@ -211,7 +211,7 @@ def main():
         print("   4. Statistiques via: /api/scraping_stats/overview")
         
     else:
-        print(f"\n⚠️  {total - passed} test(s) ont échoué")
+        print(f"\n  {total - passed} test(s) ont échoué")
         print("🔧 Vérifiez les erreurs ci-dessus")
 
 if __name__ == "__main__":

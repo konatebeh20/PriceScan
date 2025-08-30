@@ -2,7 +2,7 @@
 
 Ce document explique le fonctionnement du système de scraping automatique intégré dans l'API PriceScan.
 
-## 🚀 Fonctionnalités
+##  Fonctionnalités
 
 - **Scraping automatique** au démarrage de l'API
 - **Intervalles configurables** : 5 jours en production, 1-2 heures en développement
@@ -45,7 +45,7 @@ SCRAPING_JUMIA_INTERVAL=432000          # 5 jours
 - `config/scraping_config.py` - Configuration principale
 - `config/production.env` - Variables d'environnement production
 
-## 🚀 Lancement
+##  Lancement
 
 ### Mode Développement
 
@@ -80,7 +80,7 @@ python test_simple_scraping.py
 python test_auto_scraping.py
 ```
 
-## 📊 Monitoring
+##  Monitoring
 
 ### Logs
 

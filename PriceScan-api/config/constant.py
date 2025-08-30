@@ -12,7 +12,7 @@ load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV', 'development')
 FLASK_DEBUG = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
 SECRET_KEY = os.getenv('SECRET_KEY', 'votre_cle_secrete_tres_longue_et_complexe_ici')
-BASE_URL = os.getenv('BASE_URL', '/api/v1')
+BASE_URL = os.getenv('BASE_URL', '/api')
 
 # ============================
 # CONFIGURATION DE LA BASE DE DONNÉES

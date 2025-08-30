@@ -1,6 +1,6 @@
 # 🧾 Fonctionnalités des Reçus - TicketScan Dashboard
 
-## 📋 Vue d'ensemble
+##  Vue d'ensemble
 
 Ce document décrit les nouvelles fonctionnalités implémentées dans la page "Mes Reçus" du dashboard TicketScan, notamment le formulaire de création de nouveau reçu avec scanner de code-barres intégré.
 
@@ -19,30 +19,30 @@ Ce document décrit les nouvelles fonctionnalités implémentées dans la page "
 - Ces informations sont accessibles via le navigateur et stockées en session
 
 **Champs concernés :**
-- ✅ Nom du magasin * (récupéré automatiquement)
-- ✅ Adresse du magasin (récupérée automatiquement)
+-  Nom du magasin * (récupéré automatiquement)
+-  Adresse du magasin (récupérée automatiquement)
 
 ### 2. 🕐 Date et Heure Automatiques
 
 **Fonctionnalité :** La date et l'heure actuelles sont automatiquement remplies lors de l'ouverture du formulaire.
 
 **Champs concernés :**
-- ✅ Date * : Remplie automatiquement avec la date actuelle
-- ✅ Heure : Remplie automatiquement avec l'heure actuelle
+-  Date * : Remplie automatiquement avec la date actuelle
+-  Heure : Remplie automatiquement avec l'heure actuelle
 
 **Format :**
 - Date : Format ISO (YYYY-MM-DD)
 - Heure : Format 24h (HH:MM)
 
-### 3. 🔍 Scanner de Code-Barres Intégré
+### 3.  Scanner de Code-Barres Intégré
 
 **Fonctionnalité :** Scanner de code-barres fonctionnel qui permet de pré-remplir automatiquement les produits.
 
 **Caractéristiques :**
-- ✅ Détection automatique des lecteurs de code-barres connectés
-- ✅ Scan et récupération automatique des informations produit
-- ✅ Arrêt automatique du scanner après chaque scan réussi
-- ✅ Gestion dynamique des quantités (incrémentation automatique)
+-  Détection automatique des lecteurs de code-barres connectés
+-  Scan et récupération automatique des informations produit
+-  Arrêt automatique du scanner après chaque scan réussi
+-  Gestion dynamique des quantités (incrémentation automatique)
 
 **Informations récupérées :**
 - 📦 Nom du produit
@@ -67,7 +67,7 @@ Ce document décrit les nouvelles fonctionnalités implémentées dans la page "
 - Possibilité d'ajouter manuellement des produits
 - Suppression de produits individuels
 
-## 🚀 Utilisation
+##  Utilisation
 
 ### Étape 1 : Accéder au Formulaire
 1. Aller dans la page "Mes Reçus"
@@ -112,16 +112,16 @@ Ce document décrit les nouvelles fonctionnalités implémentées dans la page "
 ## 📱 Compatibilité
 
 ### Navigateurs Supportés
-- ✅ Chrome (recommandé)
-- ✅ Firefox
-- ✅ Safari
-- ✅ Edge
+-  Chrome (recommandé)
+-  Firefox
+-  Safari
+-  Edge
 
 ### Lecteurs de Code-Barres
-- ✅ Lecteurs USB connectés
-- ✅ Lecteurs Bluetooth
-- ✅ Lecteurs intégrés aux smartphones
-- ✅ Scanners de caisse enregistreuse
+-  Lecteurs USB connectés
+-  Lecteurs Bluetooth
+-  Lecteurs intégrés aux smartphones
+-  Scanners de caisse enregistreuse
 
 ## 🧪 Test et Démonstration
 

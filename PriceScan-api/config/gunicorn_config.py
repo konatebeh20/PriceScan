@@ -136,37 +136,37 @@ reload = os.getenv('GUNICORN_RELOAD', 'false').lower() == 'true'
 
 def when_ready(server):
     """Appelé quand le serveur est prêt"""
-    server.log.info(f"🚀 {app_name} démarré sur {bind}")
-    server.log.info(f"📊 {workers} workers démarrés")
+    server.log.info(f" {app_name} démarré sur {bind}")
+    server.log.info(f" {workers} workers démarrés")
     server.log.info(f"⚙️ Mode: {'Production' if not reload else 'Développement'}")
 
 def on_starting(server):
     """Appelé au démarrage du serveur"""
-    server.log.info(f"🔄 Démarrage de {app_name}...")
+    server.log.info(f" Démarrage de {app_name}...")
 
 def on_reload(server):
     """Appelé lors du rechargement"""
-    server.log.info("🔄 Rechargement de l'application...")
+    server.log.info(" Rechargement de l'application...")
 
 def worker_int(worker):
     """Appelé quand un worker est interrompu"""
-    worker.log.info("⚠️ Worker interrompu")
+    worker.log.info(" Worker interrompu")
 
 def pre_fork(server, worker):
     """Appelé avant la création d'un worker"""
-    server.log.info(f"🔄 Création du worker {worker.pid}")
+    server.log.info(f" Création du worker {worker.pid}")
 
 def post_fork(server, worker):
     """Appelé après la création d'un worker"""
-    server.log.info(f"✅ Worker {worker.pid} créé")
+    server.log.info(f" Worker {worker.pid} créé")
 
 def pre_exec(server):
     """Appelé avant l'exécution du serveur"""
-    server.log.info("🚀 Exécution du serveur...")
+    server.log.info(" Exécution du serveur...")
 
 def when_worker_abort(worker):
     """Appelé quand un worker est interrompu de manière anormale"""
-    worker.log.warning(f"⚠️ Worker {worker.pid} interrompu de manière anormale")
+    worker.log.warning(f" Worker {worker.pid} interrompu de manière anormale")
 
 # ========================================
 # CONFIGURATION DES ENVIRONNEMENTS

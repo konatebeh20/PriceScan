@@ -1,0 +1,101 @@
+<!-- Stores Achive Component -->
+<div class="stores-achive-content">
+  <div class="achive-header">
+    <h2 class="section-title">
+      <i class="fas fa-archive"></i> Magasins Archivés
+    </h2>
+    <div class="achive-count">
+      {{ archivedStores.length }} magasin{{ archivedStores.length > 1 ? 's' : '' }} archivé{{ archivedStores.length > 1 ? 's' : '' }}
+    </div>
+  </div>
+
+  <!-- Archived Stores List -->
+  <div class="archived-stores-list" *ngIf="archivedStores.length > 0">
+    <div class="archived-store-item" *ngFor="let store of archivedStores">
+      <div class="store-item-header">
+        <div class="store-logo archived" [class]="'logo-' + store.type">
+          <i class="fas" [class]="getStoreTypeIcon(store.type)"></i>
+        </div>
+        <div class="store-info">
+          <h3 class="store-name">{{ store.name }}</h3>
+          <div class="store-meta">
+            <span class="type-badge" [class]="'type-' + store.type">
+              {{ getStoreTypeLabel(store.type) }}
+            </span>
+            <span class="archive-date">
+              Archivé il y a {{ getArchiveDuration(store) }}
+            </span>
+          </div>
+        </div>
+        <div class="store-actions">
+          <button class="btn-restore" 
+                  (click)="restoreStore(store)"
+                  title="Restaurer le magasin">
+            <i class="fas fa-undo"></i> Restaurer
+          </button>
+          <button class="btn-delete-permanent" 
+                  (click)="deletePermanently(store)"
+                  title="Supprimer définitivement">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="store-item-body">
+        <div class="store-description">
+          {{ store.description || 'Aucune description disponible' }}
+        </div>
+        
+        <div class="store-details">
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ store.address }}, {{ store.city }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="store.phone">
+            <i class="fas fa-phone"></i>
+            <span>{{ store.phone }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="store.email">
+            <i class="fas fa-envelope"></i>
+            <span>{{ store.email }}</span>
+          </div>
+        </div>
+        
+        <div class="store-stats">
+          <div class="stat-item">
+            <span class="stat-label">Reçus totaux:</span>
+            <span class="stat-value">{{ store.receiptsCount }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total dépensé:</span>
+            <span class="stat-value">{{ store.totalSpent | number }} F CFA</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dernière visite:</span>
+            <span class="stat-value">{{ store.lastVisit | date:'shortDate' }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Créé le:</span>
+            <span class="stat-value">{{ store.createdAt | date:'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="store-item-footer">
+        <button class="btn-secondary" (click)="viewStoreDetails(store)">
+          <i class="fas fa-eye"></i> Voir détails
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="archivedStores.length === 0">
+    <i class="fas fa-archive"></i>
+    <h3>Aucun magasin archivé</h3>
+    <p>Vous n'avez pas encore archivé de magasins.</p>
+    <p>Les magasins archivés apparaîtront ici pour une gestion à long terme.</p>
+  </div>
+</div>

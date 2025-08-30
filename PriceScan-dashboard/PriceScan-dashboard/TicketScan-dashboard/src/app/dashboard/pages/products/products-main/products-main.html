@@ -1,0 +1,69 @@
+<!-- Products Main Component -->
+<div class="products-main-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="fas fa-box"></i>
+      Gestion des Produits
+    </h1>
+    <p class="page-description">
+      Gérez votre catalogue de produits, ajoutez de nouveaux articles et organisez vos favoris
+    </p>
+  </div>
+
+  <!-- Products Tabs -->
+  <div class="products-tabs-container">
+    <div class="products-tabs">
+      <button class="products-tab" 
+              [class.active]="activeTab === 'list'"
+              (click)="setActiveTab('list')">
+        <i class="fas fa-list"></i>
+        Liste des Produits
+      </button>
+      
+      <button class="products-tab" 
+              [class.active]="activeTab === 'add'"
+              (click)="setActiveTab('add')">
+        <i class="fas fa-plus"></i>
+        Ajout de Produits
+      </button>
+      
+      <button class="products-tab" 
+              [class.active]="activeTab === 'favorites'"
+              (click)="setActiveTab('favorites')">
+        <i class="fas fa-heart"></i>
+        Favoris
+      </button>
+      
+      <button class="products-tab" 
+              [class.active]="activeTab === 'archive'"
+              (click)="setActiveTab('archive')">
+        <i class="fas fa-archive"></i>
+        Archive
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Liste des Produits -->
+    <div class="tab-pane" [class.active]="activeTab === 'list'">
+      <app-products-list></app-products-list>
+    </div>
+
+    <!-- Ajout de Produits -->
+    <div class="tab-pane" [class.active]="activeTab === 'add'">
+      <app-products-add></app-products-add>
+    </div>
+
+    <!-- Produits Favoris -->
+    <div class="tab-pane" [class.active]="activeTab === 'favorites'">
+      <app-products-favorites></app-products-favorites>
+    </div>
+
+    <!-- Produits Archivés -->
+    <div class="tab-pane" [class.active]="activeTab === 'archive'">
+      <app-products-archive></app-products-archive>
+    </div>
+  </div>
+</div>

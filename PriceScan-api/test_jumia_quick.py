@@ -20,25 +20,25 @@ def test_jumia():
         from helpers.scrapper.jumia import scraper_jumia
         
         # Test avec un produit simple
-        print("🔍 Recherche de 'smartphone'...")
+        print(" Recherche de 'smartphone'...")
         results = scraper_jumia("smartphone")
         
         if results:
-            print(f"✅ Succès! {len(results)} produits trouvés")
+            print(f" Succès! {len(results)} produits trouvés")
             print(f"📱 Premier produit: {results[0]}")
             return True
         else:
-            print("⚠️  Aucun produit trouvé")
+            print("  Aucun produit trouvé")
             return False
             
     except Exception as e:
-        print(f"❌ Erreur: {e}")
+        print(f" Erreur: {e}")
         import traceback
         traceback.print_exc()
         return False
 
 if __name__ == "__main__":
-    print("🚀 TEST RAPIDE JUMIA")
+    print(" TEST RAPIDE JUMIA")
     print("=" * 30)
     
     success = test_jumia()
@@ -46,4 +46,4 @@ if __name__ == "__main__":
     if success:
         print("\n🎉 Test réussi !")
     else:
-        print("\n❌ Test échoué !")
+        print("\n Test échoué !")

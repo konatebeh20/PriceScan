@@ -1,5 +1,6 @@
 import csv
 import json
+import uuid
 # libraries to be imported
 import smtplib
 import string
@@ -24,35 +25,31 @@ from werkzeug.exceptions import BadRequest
 from config.constant import *
 from config.db import db
 from helpers.mailer import *
-from model.PriceScan_db import ps_users
+from model.PriceScan_db import ps_users, UserStatus
 
 
 def login():
     response = {}
-    identifier = request.json.get('identifier')
+    username = request.json.get('username')
     password = request.json.get('password')
     try:
         rs = {}
 
-        user = ps_users.query.filter((ps_users.u_username == identifier) | (ps_users.u_email == identifier),ps_users.u_password == password,ps_users.u_status == 1,ps_users.is_active == True ).first()
+        user = ps_users.query.filter(
+            (ps_users.u_username == username) | (ps_users.u_email == username),
+            ps_users.u_password == password,
+            ps_users.u_status == UserStatus.ACTIVE
+        ).first()
 
         if not user:
             raise ValueError("Invalid credentials or inactive user")
 
         rs['u_uid'] = user.u_uid
-        rs['u_name'] = user.u_name
         rs['u_firstname'] = user.u_firstname
         rs['u_lastname'] = user.u_lastname
         rs['u_username'] = user.u_username
-        rs['u_mobile'] = user.u_mobile
-        rs['u_address'] = user.u_address
-        rs['u_country'] = user.u_country
-        rs['u_state'] = user.u_state
-        rs['u_city'] = user.u_city
         rs['u_email'] = user.u_email
-        rs['u_image_link'] = user.u_image_link
-        rs['u_status'] = user.u_status
-        rs['u_password'] = user.u_password
+        rs['u_status'] = user.u_status.value if hasattr(user.u_status, 'value') else str(user.u_status)
         rs['u_first_login'] = user.u_first_login
 
         response['response'] = 'success'
@@ -143,6 +140,70 @@ def CreateUsersSocial():
         response['error_code'] = 'GOU01'
         response['error_description'] = str(e.__dict__['orig'])
         c = BadRequest(str(e.__dict__['orig']))
+        c.data = response
+        raise c
+        
+    return response
+
+
+def register():
+    response = {}
+    try:
+        username = request.json.get('username')
+        email = request.json.get('email')
+        password = request.json.get('password')
+        firstname = request.json.get('firstname', '')
+        lastname = request.json.get('lastname', '')
+        account_type = request.json.get('accountType', 'particulier')
+        
+        # Vérifier si l'utilisateur existe déjà
+        existing_user = ps_users.query.filter(
+            (ps_users.u_username == username) | (ps_users.u_email == email)
+        ).first()
+        
+        if existing_user:
+            response['response'] = 'error'
+            response['error'] = 'User already exists'
+            response['error_code'] = 'GOU04'
+            response['error_description'] = 'Username or email already registered'
+            return response, 400
+        
+        # Créer un nouvel utilisateur
+        new_user = ps_users()
+        new_user.u_uid = str(uuid.uuid4())
+        new_user.u_username = username
+        new_user.u_email = email
+        new_user.u_password = password
+        new_user.u_firstname = firstname
+        new_user.u_lastname = lastname
+        new_user.u_status = UserStatus.ACTIVE
+        new_user.u_first_login = True
+        new_user.u_account_type = account_type
+        
+        db.session.add(new_user)
+        db.session.commit()
+        
+        # Retourner les informations de l'utilisateur créé
+        rs = {}
+        rs['u_uid'] = new_user.u_uid
+        rs['u_firstname'] = new_user.u_firstname
+        rs['u_lastname'] = new_user.u_lastname
+        rs['u_username'] = new_user.u_username
+        rs['u_email'] = new_user.u_email
+        rs['u_status'] = new_user.u_status.value if hasattr(new_user.u_status, 'value') else str(new_user.u_status)
+        rs['u_first_login'] = new_user.u_first_login
+        
+        response['response'] = 'success'
+        response['admin_infos'] = rs
+        
+    except Exception as e:
+        response['response'] = 'error'
+        response['error'] = 'Unavailable'
+        response['error_code'] = 'GOU05'
+        response['error_description'] = str(e)
+        if 'db' in locals():
+            db.session.rollback()
+        c = BadRequest(str(e))
         c.data = response
         raise c
         

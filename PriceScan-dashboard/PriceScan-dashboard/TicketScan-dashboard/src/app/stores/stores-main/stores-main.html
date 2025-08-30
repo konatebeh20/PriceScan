@@ -1,0 +1,43 @@
+<!-- Stores Main Component -->
+<div class="stores-main-page">
+  <h1 class="page-title">Gestion des Magasins</h1>
+  
+  <!-- Stores Tabs -->
+  <div class="stores-tabs-container">
+    <div class="stores-tabs">
+      <button class="stores-tab" 
+              [class.active]="getTabClass('list') === 'active'"
+              (click)="setActiveTab('list')">
+        <i class="fas fa-list"></i> Liste Magasins
+      </button>
+      <button class="stores-tab" 
+              [class.active]="getTabClass('favorie') === 'active'"
+              (click)="setActiveTab('favorie')">
+        <i class="fas fa-heart"></i> Favoris
+      </button>
+      <button class="stores-tab" 
+              [class.active]="getTabClass('achive') === 'active'"
+              (click)="setActiveTab('achive')">
+        <i class="fas fa-archive"></i> Archivés
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Liste Magasins Tab -->
+    <div class="tab-pane" [class.active]="activeTab === 'list'">
+      <app-stores-list></app-stores-list>
+    </div>
+
+    <!-- Favoris Tab -->
+    <div class="tab-pane" [class.active]="activeTab === 'favorie'">
+      <app-stores-favorie></app-stores-favorie>
+    </div>
+
+    <!-- Archivés Tab -->
+    <div class="tab-pane" [class.active]="activeTab === 'achive'">
+      <app-stores-achive></app-stores-achive>
+    </div>
+  </div>
+</div>

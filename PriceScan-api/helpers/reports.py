@@ -473,7 +473,7 @@ def send_weekly_report_notifications():
             # Calculer les économies de l'utilisateur cette semaine
             user_savings = calculate_user_weekly_savings(user.user_id)
             
-            message = f"📊 Votre rapport PriceScan: {user_savings}€ économisés cette semaine ! Découvrez vos meilleures affaires."
+            message = f" Votre rapport PriceScan: {user_savings}€ économisés cette semaine ! Découvrez vos meilleures affaires."
             
             send_ios_push_notification(
                 user.push_token,

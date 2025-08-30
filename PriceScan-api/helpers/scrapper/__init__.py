@@ -4,16 +4,18 @@ Package de scraping pour PriceScan
 """
 
 from .carrefour import scrape_carrefour
-from .abidjanmall import scrape_abidjanmall
-from .prosuma import scrape_prosuma
-from .playce import scrape_playce
+from .kedjenou import scrape_kedjenou
+from .afrikmall import scrape_afrikmall
+from .bazart import scrape_bazart
+from .jumia import scrape_jumia
 from .utils import fetch_page, clean_price
 
 __all__ = [
     'scrape_carrefour',
-    'scrape_abidjanmall', 
-    'scrape_prosuma',
-    'scrape_playce',
+    'scrape_kedjenou',
+    'scrape_afrikmall',
+    'scrape_bazart',
+    'scrape_jumia',
     'fetch_page',
     'clean_price'
 ]

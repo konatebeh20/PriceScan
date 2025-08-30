@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, catchError, tap, retry, BehaviorSubject } from 'rxjs';
+import { Observable, of, catchError, tap, retry, BehaviorSubject, map } from 'rxjs';
 import { API_CONFIG } from '../api/api.config';
 import { ErrorHandlerService } from '../error-handler/error-handler.service';
 import { ValidationService } from '../validation/validation.service';
@@ -93,15 +93,54 @@ export class AuthService {
       });
     }
 
-    return this.http.post<AuthResponse>(`${API_CONFIG.USERS.LOGIN}`, credentials).pipe(
+    console.log(' Tentative de connexion avec:', credentials);
+    
+    // L'API PriceScan accepte soit username soit email
+    // On envoie les deux pour être sûr
+    const loginData = {
+      username: credentials.email,
+      password: credentials.password
+    };
+    
+    return this.http.post<any>(`${API_CONFIG.USERS.LOGIN}`, loginData).pipe(
       retry(2),
-      tap(response => {
-        if (response.success && response.token && response.user) {
-          this.handleSuccessfulLogin(response.token, response.user);
+      map(response => {
+        console.log('📡 Réponse brute de l\'API (login):', response);
+        // Adapter la réponse de l'API PriceScan au format attendu
+        if (response.response === 'success' && response.admin_infos) {
+          const user = response.admin_infos;
+          const authResponse: AuthResponse = {
+            success: true,
+            message: 'Connexion réussie',
+            token: user.u_uid, // Utiliser l'UID comme token temporaire
+            user: {
+              id: user.u_uid,
+              username: user.u_username,
+              email: user.u_email,
+              firstname: user.u_firstname,
+              lastname: user.u_lastname,
+              accountType: 'particulier',
+              createdAt: new Date(),
+              lastLogin: new Date(),
+              isActive: true
+            }
+          };
+          
+                    // Gérer la connexion réussie
+          if (authResponse.token && authResponse.user) {
+            this.handleSuccessfulLogin(authResponse.token, authResponse.user);
+          }
+          return authResponse;
+        } else {
+          return {
+            success: false,
+            message: 'Identifiants invalides',
+            errors: ['Email ou mot de passe incorrect']
+          };
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur de connexion:', error);
+        console.error(' Erreur de connexion:', error);
         return of({
           success: false,
           message: 'Erreur de connexion',
@@ -133,15 +172,46 @@ export class AuthService {
       });
     }
 
-    return this.http.post<AuthResponse>(`${API_CONFIG.USERS.REGISTER}`, data).pipe(
+    console.log(' Tentative d\'inscription avec:', data);
+    return this.http.post<any>(`${API_CONFIG.USERS.REGISTER}`, data).pipe(
       retry(2),
-      tap(response => {
-        if (response.success && response.token && response.user) {
-          this.handleSuccessfulLogin(response.token, response.user);
+      map(response => {
+        console.log('📡 Réponse brute de l\'API (register):', response);
+        // Adapter la réponse de l'API PriceScan au format attendu
+        if (response.response === 'success' && response.admin_infos) {
+          const user = response.admin_infos;
+          const authResponse: AuthResponse = {
+            success: true,
+            message: 'Inscription réussie',
+            token: user.u_uid, // Utiliser l'UID comme token temporaire
+            user: {
+              id: user.u_uid,
+              username: user.u_username,
+              email: user.u_email,
+              firstname: user.u_firstname,
+              lastname: user.u_lastname,
+              accountType: 'particulier',
+              createdAt: new Date(),
+              lastLogin: new Date(),
+              isActive: true
+            }
+          };
+          
+          // Gérer la connexion réussie
+          if (authResponse.token && authResponse.user) {
+            this.handleSuccessfulLogin(authResponse.token, authResponse.user);
+          }
+          return authResponse;
+        } else {
+          return {
+            success: false,
+            message: 'Erreur d\'inscription',
+            errors: ['Impossible de créer le compte']
+          };
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur d\'inscription:', error);
+        console.error(' Erreur d\'inscription:', error);
         return of({
           success: false,
           message: 'Erreur d\'inscription',
@@ -164,7 +234,7 @@ export class AuthService {
     // Mettre à jour la dernière connexion
     user.lastLogin = new Date();
     
-    console.log('✅ Connexion réussie pour:', user.username);
+    console.log(' Connexion réussie pour:', user.username);
   }
 
   // Déconnexion
@@ -233,11 +303,11 @@ export class AuthService {
         if (profile) {
           this.currentUserSubject.next(profile);
           sessionStorage.setItem('ticketscan_current_user', JSON.stringify(profile));
-          console.log('✅ Profil utilisateur rafraîchi');
+          console.log(' Profil utilisateur rafraîchi');
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur rafraîchissement profil:', error);
+        console.error(' Erreur rafraîchissement profil:', error);
         return of(this.getCurrentUser());
       })
     );
@@ -259,11 +329,11 @@ export class AuthService {
         if (response.success && response.user) {
           this.currentUserSubject.next(response.user);
           sessionStorage.setItem('ticketscan_current_user', JSON.stringify(response.user));
-          console.log('✅ Profil utilisateur mis à jour');
+          console.log(' Profil utilisateur mis à jour');
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur mise à jour profil:', error);
+        console.error(' Erreur mise à jour profil:', error);
         return of({
           success: false,
           message: 'Erreur lors de la mise à jour du profil',
@@ -300,11 +370,11 @@ export class AuthService {
       retry(2),
       tap(response => {
         if (response.success) {
-          console.log('✅ Mot de passe changé avec succès');
+          console.log(' Mot de passe changé avec succès');
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur changement mot de passe:', error);
+        console.error(' Erreur changement mot de passe:', error);
         return of({
           success: false,
           message: 'Erreur lors du changement de mot de passe',
@@ -328,11 +398,11 @@ export class AuthService {
       retry(2),
       tap(response => {
         if (response.success) {
-          console.log('✅ Demande de réinitialisation envoyée');
+          console.log(' Demande de réinitialisation envoyée');
         }
       }),
       catchError(error => {
-        console.error('❌ Erreur demande réinitialisation:', error);
+        console.error(' Erreur demande réinitialisation:', error);
         return of({
           success: false,
           message: 'Erreur lors de la demande de réinitialisation',

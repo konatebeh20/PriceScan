@@ -16,9 +16,9 @@ def test_import(module_name, package_name=None):
             importlib.import_module(package_name)
         else:
             importlib.import_module(module_name)
-        return True, f"✅ {module_name}"
+        return True, f" {module_name}"
     except ImportError as e:
-        return False, f"❌ {module_name}: {e}"
+        return False, f" {module_name}: {e}"
 
 def test_dependencies():
     """Teste toutes les dépendances principales"""
@@ -106,21 +106,21 @@ def test_dependencies():
             success_count += 1
     
     print("\n" + "=" * 60)
-    print(f"📊 RÉSULTATS: {success_count}/{total_count} dépendances installées")
+    print(f" RÉSULTATS: {success_count}/{total_count} dépendances installées")
     print("=" * 60)
     
     if success_count == total_count:
         print("🎉 Toutes les dépendances sont installées avec succès !")
-        print("✅ L'API PriceScan est prête à être lancée.")
+        print(" L'API PriceScan est prête à être lancée.")
         return True
     else:
-        print("⚠️  Certaines dépendances sont manquantes.")
+        print("  Certaines dépendances sont manquantes.")
         print("🔧 Exécutez: pip install -r requirements.txt")
         return False
 
 def test_optional_dependencies():
     """Teste les dépendances optionnelles"""
-    print("\n🔍 Test des dépendances optionnelles...")
+    print("\n Test des dépendances optionnelles...")
     print("-" * 40)
     
     optional_deps = [
@@ -133,9 +133,9 @@ def test_optional_dependencies():
     for name, module in optional_deps:
         success, message = test_import(name, module)
         if success:
-            print(f"✅ {name} (optionnel)")
+            print(f" {name} (optionnel)")
         else:
-            print(f"⚠️  {name} (optionnel) - non installé")
+            print(f"  {name} (optionnel) - non installé")
 
 def main():
     """Fonction principale"""
@@ -148,7 +148,7 @@ def main():
         
         print("\n" + "=" * 60)
         if main_success:
-            print("🚀 PRÊT À LANCER L'API !")
+            print(" PRÊT À LANCER L'API !")
             print("   python app.py")
         else:
             print("🔧 INSTALLATION INCOMPLÈTE")
@@ -156,7 +156,7 @@ def main():
         print("=" * 60)
         
     except Exception as e:
-        print(f"❌ Erreur lors du test: {e}")
+        print(f" Erreur lors du test: {e}")
         return False
     
     return main_success

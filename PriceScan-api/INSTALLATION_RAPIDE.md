@@ -1,6 +1,6 @@
-# 🚀 INSTALLATION RAPIDE - PRICESCAN-API
+#  INSTALLATION RAPIDE - PRICESCAN-API
 
-## 📋 Prérequis
+##  Prérequis
 
 - **Python 3.8+** installé et dans le PATH
 - **Git** pour cloner le projet
@@ -50,7 +50,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 🚀 Lancement de l'API
+##  Lancement de l'API
 
 ### **Windows**
 ```cmd

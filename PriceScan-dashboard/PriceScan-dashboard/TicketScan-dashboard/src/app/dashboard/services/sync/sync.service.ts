@@ -90,10 +90,10 @@ export class DataSyncService {
       tap(data => {
         this.saveToSessionStorage(data);
         this.updateSyncStatus(false, new Date(), []);
-        console.log('✅ Synchronisation complète réussie');
+        console.log(' Synchronisation complète réussie');
       }),
       catchError(error => {
-        console.error('❌ Erreur de synchronisation:', error);
+        console.error(' Erreur de synchronisation:', error);
         this.updateSyncStatus(false, null, [error.message]);
         return of(this.getDataFromSessionStorage());
       })
@@ -106,10 +106,10 @@ export class DataSyncService {
       retry(2),
       tap(profile => {
         sessionStorage.setItem('ticketscan_user_profile', JSON.stringify(profile));
-        console.log('✅ Profil utilisateur synchronisé');
+        console.log(' Profil utilisateur synchronisé');
       }),
       catchError(error => {
-        console.error('❌ Erreur synchronisation profil:', error);
+        console.error(' Erreur synchronisation profil:', error);
         return of(this.getUserProfileFromStorage());
       })
     );
@@ -121,10 +121,10 @@ export class DataSyncService {
       retry(2),
       tap(stats => {
         sessionStorage.setItem('ticketscan_dashboard_stats', JSON.stringify(stats));
-        console.log('✅ Statistiques dashboard synchronisées');
+        console.log(' Statistiques dashboard synchronisées');
       }),
       catchError(error => {
-        console.error('❌ Erreur synchronisation stats:', error);
+        console.error(' Erreur synchronisation stats:', error);
         return of(this.getDashboardStatsFromStorage());
       })
     );
@@ -136,10 +136,10 @@ export class DataSyncService {
       retry(2),
       tap(promotions => {
         sessionStorage.setItem('ticketscan_promotions', JSON.stringify(promotions));
-        console.log('✅ Promotions synchronisées');
+        console.log(' Promotions synchronisées');
       }),
       catchError(error => {
-        console.error('❌ Erreur synchronisation promotions:', error);
+        console.error(' Erreur synchronisation promotions:', error);
         return of(this.getPromotionsFromStorage());
       })
     );
@@ -151,10 +151,10 @@ export class DataSyncService {
       retry(2),
       tap(history => {
         sessionStorage.setItem('ticketscan_scan_history', JSON.stringify(history));
-        console.log('✅ Historique des scans synchronisé');
+        console.log(' Historique des scans synchronisé');
       }),
       catchError(error => {
-        console.error('❌ Erreur synchronisation historique:', error);
+        console.error(' Erreur synchronisation historique:', error);
         return of(this.getScanHistoryFromStorage());
       })
     );
@@ -233,7 +233,7 @@ export class DataSyncService {
 
   // Forcer une synchronisation manuelle
   forceSync(): Observable<SyncData> {
-    console.log('🔄 Synchronisation manuelle déclenchée');
+    console.log(' Synchronisation manuelle déclenchée');
     return this.syncAllData();
   }
 

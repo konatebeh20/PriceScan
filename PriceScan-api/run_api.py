@@ -14,12 +14,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 def main():
     """Lance l'API PriceScan"""
     try:
-        print("🚀 Lancement de l'API PriceScan...")
+        print(" Lancement de l'API PriceScan...")
         
         # Import de l'application
         from app import app
         
-        print("✅ Application importée avec succès")
+        print(" Application importée avec succès")
         print("🌐 Démarrage du serveur sur http://localhost:5000")
         
         # Lancer l'application
@@ -31,7 +31,7 @@ def main():
         )
         
     except Exception as e:
-        print(f"❌ Erreur lors du lancement : {e}")
+        print(f" Erreur lors du lancement : {e}")
         import traceback
         traceback.print_exc()
         return False

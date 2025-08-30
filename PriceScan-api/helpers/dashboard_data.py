@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-📊 Helper pour les données du dashboard
+ Helper pour les données du dashboard
 Gère l'agrégation et la récupération des statistiques utilisateur
 """
 

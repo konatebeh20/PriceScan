@@ -64,6 +64,72 @@
         </div>
     </div>
 
+    <!-- Products & Stores Stats -->
+    <div class="content-section">
+        <h3 class="section-title">Gestion des Produits & Magasins</h3>
+        <div class="stats-grid">
+            <!-- Produits -->
+            <div class="stat-card products">
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number">{{ totalProducts }}</div>
+                        <div class="stat-label">Total Produits</div>
+                    </div>
+                    <i class="fas fa-box stat-icon"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-detail-item">
+                        <span class="detail-label">Actifs:</span>
+                        <span class="detail-value">{{ activeProducts }}</span>
+                    </div>
+                    <div class="stat-detail-item">
+                        <span class="detail-label">Archivés:</span>
+                        <span class="detail-value">{{ archivedProducts }}</span>
+                    </div>
+                    <div class="stat-detail-item">
+                        <span class="detail-label">Favoris:</span>
+                        <span class="detail-value">{{ favoriteProducts }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Magasins -->
+            <div class="stat-card stores">
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number">{{ totalStores }}</div>
+                        <div class="stat-label">Total Magasins</div>
+                    </div>
+                    <i class="fas fa-store stat-icon"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-detail-item">
+                        <span class="detail-label">Actifs:</span>
+                        <span class="detail-value">{{ activeStores }}</span>
+                    </div>
+                    <div class="stat-detail-item">
+                        <span class="detail-label">Archivés:</span>
+                        <span class="detail-value">{{ archivedStores }}</span>
+                    </div>
+                    <div class="stat-detail-item">
+                        <span class="detail-label">Favoris:</span>
+                        <span class="detail-value">{{ favoriteStores }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions for Products & Stores -->
+        <div class="quick-actions-row">
+            <button class="btn-primary" (click)="showPage('products')">
+                <i class="fas fa-box"></i> Gérer les Produits
+            </button>
+            <button class="btn-primary" (click)="showPage('stores')">
+                <i class="fas fa-store"></i> Gérer les Magasins
+            </button>
+        </div>
+    </div>
+
     <!-- Recent Activity -->
     <div class="content-section mt-3">
         <div class="recent-activity-header">

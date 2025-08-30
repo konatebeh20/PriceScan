@@ -1,0 +1,161 @@
+<!-- Products Archive Component -->
+<div class="products-archive-content">
+  <!-- Header -->
+  <div class="archive-header">
+    <h2 class="archive-title">
+      <i class="fas fa-archive"></i>
+      Produits Archivés
+    </h2>
+    <p class="archive-description">
+      Gérez vos produits archivés et restaurez-les si nécessaire
+    </p>
+  </div>
+
+  <!-- Filters -->
+  <div class="archive-filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label class="filter-label">Rechercher</label>
+        <input type="text" class="filter-input" 
+               [(ngModel)]="searchTerm" 
+               (input)="filterProducts()"
+               placeholder="Nom, description ou code barres...">
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Catégorie</label>
+        <select class="filter-select" 
+                [(ngModel)]="selectedCategory" 
+                (change)="filterProducts()">
+          <option value="">Toutes les catégories</option>
+          <option value="1">Alimentation</option>
+          <option value="2">Électronique</option>
+          <option value="3">Vêtements</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Magasin</label>
+        <select class="filter-select" 
+                [(ngModel)]="selectedStore" 
+                (change)="filterProducts()">
+          <option value="">Tous les magasins</option>
+          <option value="1">Carrefour</option>
+          <option value="2">Pharmacie</option>
+          <option value="3">Boutique</option>
+        </select>
+      </div>
+      
+      <button class="btn-reset" (click)="resetFilters()">
+        <i class="fas fa-sync-alt"></i>
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement des produits archivés...</p>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="archive-grid" *ngIf="!isLoading">
+    <div class="archive-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ archivedProducts.length }}</span>
+        <span class="stat-label">Produits archivés</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ filteredProducts.length }}</span>
+        <span class="stat-label">Affichés</span>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="products-grid" *ngIf="filteredProducts.length > 0">
+      <div class="product-card archived" *ngFor="let product of filteredProducts">
+        <div class="product-image">
+          <img [src]="product.product_image || 'assets/images/placeholder-product.jpg'" 
+               [alt]="product.product_name"
+               class="product-img">
+          <div class="product-overlay">
+            <button class="btn-view" (click)="viewProductDetails(product)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn-restore" (click)="restoreProduct(product)">
+              <i class="fas fa-undo"></i>
+            </button>
+          </div>
+          <div class="archive-badge">
+            <i class="fas fa-archive"></i>
+            Archivé
+          </div>
+        </div>
+        
+        <div class="product-info">
+          <h3 class="product-name">{{ product.product_name }}</h3>
+          <p class="product-description" *ngIf="product.product_description">
+            {{ product.product_description }}
+          </p>
+          
+          <div class="product-meta">
+            <span class="product-category">
+              <i class="fas fa-tag"></i>
+              {{ getCategoryName(product.category_id) }}
+            </span>
+            <span class="product-store">
+              <i class="fas fa-store"></i>
+              {{ getStoreName(product.store_id) }}
+            </span>
+          </div>
+          
+          <div class="product-price">
+            <span class="price-amount">{{ getPriceDisplay(product) }}</span>
+            <span class="price-unit" *ngIf="product.product_unit">
+              / {{ product.product_unit }}
+            </span>
+          </div>
+          
+          <div class="archive-info">
+            <span class="archive-duration">
+              <i class="fas fa-clock"></i>
+              Archivé depuis {{ getArchiveDuration(product) }}
+            </span>
+          </div>
+          
+          <div class="product-actions">
+            <button class="btn-action btn-restore" 
+                    (click)="restoreProduct(product)"
+                    title="Restaurer">
+              <i class="fas fa-undo"></i>
+            </button>
+            <button class="btn-action btn-delete" 
+                    (click)="deletePermanently(product)"
+                    title="Supprimer définitivement">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredProducts.length === 0 && archivedProducts.length > 0">
+      <i class="fas fa-search"></i>
+      <h3>Aucun produit trouvé</h3>
+      <p>Aucun produit ne correspond à vos critères de recherche.</p>
+      <button class="btn-reset" (click)="resetFilters()">
+        Réinitialiser les filtres
+      </button>
+    </div>
+
+    <!-- No Archived Products -->
+    <div class="empty-state" *ngIf="archivedProducts.length === 0">
+      <i class="fas fa-archive"></i>
+      <h3>Aucun produit archivé</h3>
+      <p>Vous n'avez pas encore archivé de produits.</p>
+      <p>Les produits archivés apparaîtront ici pour une gestion ultérieure.</p>
+    </div>
+  </div>
+</div>

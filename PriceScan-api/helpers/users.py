@@ -598,7 +598,7 @@ def send_verification_success_email(email, first_name):
     Envoyer email de confirmation de vérification
     """
     try:
-        subject = "Email vérifié avec succès! ✅"
+        subject = "Email vérifié avec succès! "
         
         body = f"""
         Félicitations {first_name} !

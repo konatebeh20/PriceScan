@@ -1,13 +1,13 @@
-# 🚀 Intégration Dashboard ↔ API PriceScan
+#  Intégration Dashboard ↔ API PriceScan
 
 Ce guide explique comment configurer et tester la communication entre le dashboard Angular et l'API PriceScan.
 
-## 📋 Prérequis
+##  Prérequis
 
-- ✅ API PriceScan configurée et fonctionnelle
-- ✅ Base de données MySQL (XAMPP) accessible
-- ✅ Dashboard Angular compilé et accessible
-- ✅ Python 3.7+ avec les dépendances installées
+-  API PriceScan configurée et fonctionnelle
+-  Base de données MySQL (XAMPP) accessible
+-  Dashboard Angular compilé et accessible
+-  Python 3.7+ avec les dépendances installées
 
 ## 🗄️ Configuration de la Base de Données
 
@@ -62,12 +62,12 @@ python test_dashboard_communication.py
 ```
 
 Ce script teste :
-- ✅ Connexion à l'API
-- ✅ Endpoints des promotions
-- ✅ Endpoints du dashboard
-- ✅ Endpoints des reçus, produits, magasins
-- ✅ Création et récupération de données
-- ✅ Intégration complète
+-  Connexion à l'API
+-  Endpoints des promotions
+-  Endpoints du dashboard
+-  Endpoints des reçus, produits, magasins
+-  Création et récupération de données
+-  Intégration complète
 
 ### 2. Test Manuel des Endpoints
 
@@ -86,7 +86,7 @@ curl http://localhost:5000/api/dashboard/stats/test-user-123
 curl http://localhost:5000/api/dashboard/profile/test-user-123
 ```
 
-## 📊 Endpoints Disponibles
+##  Endpoints Disponibles
 
 ### 🎯 Promotions
 - `GET /api/promotions/active` - Promotions actives
@@ -98,7 +98,7 @@ curl http://localhost:5000/api/dashboard/profile/test-user-123
 - `PATCH /api/promotions/update/{id}` - Mettre à jour une promotion
 - `DELETE /api/promotions/delete/{id}` - Supprimer une promotion
 
-### 📊 Dashboard
+###  Dashboard
 - `GET /api/dashboard/stats/{user_uid}` - Statistiques utilisateur
 - `GET /api/dashboard/profile/{user_uid}` - Profil utilisateur
 - `GET /api/dashboard/activity/{user_uid}` - Activité récente
@@ -138,7 +138,7 @@ Le dashboard Angular est configuré pour rediriger les appels API vers `http://l
 ### 2. Services Angular
 
 Les services du dashboard utilisent ces endpoints pour :
-- 📊 Récupérer les statistiques utilisateur
+-  Récupérer les statistiques utilisateur
 - 🎯 Afficher les promotions actives
 - 🧾 Gérer les reçus scannés
 - 📦 Gérer les produits
@@ -148,17 +148,17 @@ Les services du dashboard utilisent ces endpoints pour :
 ### 3. Communication en Temps Réel
 
 Le dashboard peut :
-- ✅ Enregistrer de nouveaux reçus
-- ✅ Mettre à jour les profils utilisateur
-- ✅ Créer des produits et magasins
-- ✅ Récupérer les statistiques en temps réel
-- ✅ Afficher les promotions actives
+-  Enregistrer de nouveaux reçus
+-  Mettre à jour les profils utilisateur
+-  Créer des produits et magasins
+-  Récupérer les statistiques en temps réel
+-  Afficher les promotions actives
 
-## 🚀 Démarrage Complet
+##  Démarrage Complet
 
 ### 1. Démarrer XAMPP
-- Apache : ✅
-- MySQL : ✅
+- Apache : 
+- MySQL : 
 
 ### 2. Créer les Tables
 ```bash
@@ -182,7 +182,7 @@ cd ../PriceScan-dashboard/PriceScan-dashboard/TicketScan-dashboard
 ng serve
 ```
 
-## 🔍 Dépannage
+##  Dépannage
 
 ### Problème de Connexion à la Base
 - Vérifiez que XAMPP est démarré
@@ -205,7 +205,7 @@ ng serve
 - Gestion des dates de validité
 - Filtrage par magasin/produit/catégorie
 
-### 📊 Statistiques en Temps Réel
+###  Statistiques en Temps Réel
 - Agrégation automatique des données
 - Calcul des tendances mensuelles
 - Historique des achats
@@ -218,12 +218,12 @@ ng serve
 ## 🎉 Résultat
 
 Une fois configuré, vous aurez :
-- ✅ Dashboard Angular fonctionnel
-- ✅ API backend complète
-- ✅ Base de données avec toutes les tables
-- ✅ Communication bidirectionnelle
-- ✅ Gestion complète des données utilisateur
-- ✅ Système de promotions
-- ✅ Statistiques en temps réel
+-  Dashboard Angular fonctionnel
+-  API backend complète
+-  Base de données avec toutes les tables
+-  Communication bidirectionnelle
+-  Gestion complète des données utilisateur
+-  Système de promotions
+-  Statistiques en temps réel
 
-Le dashboard peut maintenant enregistrer, récupérer et afficher toutes les données nécessaires ! 🚀
+Le dashboard peut maintenant enregistrer, récupérer et afficher toutes les données nécessaires ! 

@@ -56,7 +56,7 @@ src/app/dashboard/
             └── settings-page.scss
 ```
 
-## 🚀 Technologies Utilisées
+##  Technologies Utilisées
 
 - **Angular 17** - Framework principal avec composants standalone
 - **TypeScript** - Langage de programmation
@@ -164,7 +164,7 @@ Tous les composants sont créés en tant que composants standalone Angular 17, c
 - Meilleure tree-shaking
 - Configuration simplifiée
 
-## 🔄 Communication entre Composants
+##  Communication entre Composants
 
 La communication entre composants se fait via :
 - **@Input()** : Passage de données du parent vers l'enfant

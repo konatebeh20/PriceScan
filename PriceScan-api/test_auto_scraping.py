@@ -24,8 +24,8 @@ def test_database_connection():
         from config.db import db
         from model.PriceScan_db import ps_products, ps_prices, ps_stores
         
-        print("✅ Connexion à la base de données réussie")
-        print(f"   📊 Tables disponibles: ps_products, ps_prices, ps_stores")
+        print(" Connexion à la base de données réussie")
+        print(f"    Tables disponibles: ps_products, ps_prices, ps_stores")
         
         # Vérifier le nombre d'enregistrements
         try:
@@ -38,12 +38,12 @@ def test_database_connection():
             print(f"   🏪 Magasins: {stores_count}")
             
         except Exception as e:
-            print(f"   ⚠️  Impossible de compter les enregistrements: {e}")
+            print(f"     Impossible de compter les enregistrements: {e}")
         
         return True
         
     except Exception as e:
-        print(f"❌ Erreur de connexion à la base: {e}")
+        print(f" Erreur de connexion à la base: {e}")
         return False
 
 def test_scraping_modules():
@@ -56,7 +56,7 @@ def test_scraping_modules():
         print("\n1️⃣ Test Carrefour...")
         from helpers.scrapper.carrefour import scrape_carrefour
         results = scrape_carrefour("smartphone")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   📱 Premier produit: {results[0]}")
         
@@ -64,7 +64,7 @@ def test_scraping_modules():
         print("\n2️⃣ Test Abidjan Mall...")
         from helpers.scrapper.abidjanmall import scrape_abidjanmall
         results = scrape_abidjanmall("laptop")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   💻 Premier produit: {results[0]}")
         
@@ -72,7 +72,7 @@ def test_scraping_modules():
         print("\n3️⃣ Test Prosuma...")
         from helpers.scrapper.prosuma import scrape_prosuma
         results = scrape_prosuma("écran")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   🖥️ Premier produit: {results[0]}")
         
@@ -80,15 +80,15 @@ def test_scraping_modules():
         print("\n4️⃣ Test Playce...")
         from helpers.scrapper.playce import scrape_playce
         results = scrape_playce("clavier")
-        print(f"   ✅ Résultats: {len(results)} produits trouvés")
+        print(f"    Résultats: {len(results)} produits trouvés")
         if results:
             print(f"   ⌨️ Premier produit: {results[0]}")
         
-        print("\n✅ Tous les modules de scraping fonctionnent !")
+        print("\n Tous les modules de scraping fonctionnent !")
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test des modules: {e}")
+        print(f"\n Erreur lors du test des modules: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -103,11 +103,11 @@ def test_auto_scraper():
         
         # Créer une instance de test
         scraper = AutoScraper()
-        print("   ✅ Instance AutoScraper créée")
+        print("    Instance AutoScraper créée")
         
         # Vérifier la configuration
         status = scraper.get_status()
-        print(f"   📊 Statut: {status['is_running']}")
+        print(f"    Statut: {status['is_running']}")
         print(f"   🏪 Magasins configurés: {len(status['stores'])}")
         print(f"   📦 Produits populaires: {status['popular_products_count']}")
         
@@ -120,11 +120,11 @@ def test_auto_scraper():
         result = scraper.manual_scrape("smartphone")
         print(f"   📝 Résultat: {result}")
         
-        print("\n✅ AutoScraper fonctionne correctement !")
+        print("\n AutoScraper fonctionne correctement !")
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test AutoScraper: {e}")
+        print(f"\n Erreur lors du test AutoScraper: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -164,7 +164,7 @@ def test_scraping_save():
         db.session.add(test_product)
         db.session.flush()  # Pour obtenir l'ID
         
-        print(f"   ✅ Produit de test créé avec ID: {test_product.id}")
+        print(f"    Produit de test créé avec ID: {test_product.id}")
         
         # Créer un magasin de test
         test_store = ps_stores()
@@ -177,7 +177,7 @@ def test_scraping_save():
         db.session.add(test_store)
         db.session.flush()
         
-        print(f"   ✅ Magasin de test créé avec ID: {test_store.id}")
+        print(f"    Magasin de test créé avec ID: {test_store.id}")
         
         # Créer un prix de test
         test_price = ps_prices()
@@ -193,12 +193,12 @@ def test_scraping_save():
         
         # Sauvegarder en base
         db.session.commit()
-        print("   ✅ Données de test sauvegardées en base")
+        print("    Données de test sauvegardées en base")
         
         # Vérifier la sauvegarde
         saved_price = ps_prices.query.filter_by(product_id=test_product.id).first()
         if saved_price:
-            print(f"   ✅ Prix vérifié en base: {saved_price.price_amount} {saved_price.currency}")
+            print(f"    Prix vérifié en base: {saved_price.price_amount} {saved_price.currency}")
         
         # Nettoyer les données de test
         db.session.delete(test_price)
@@ -207,11 +207,11 @@ def test_scraping_save():
         db.session.commit()
         print("   🧹 Données de test nettoyées")
         
-        print("\n✅ Test de sauvegarde réussi !")
+        print("\n Test de sauvegarde réussi !")
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test de sauvegarde: {e}")
+        print(f"\n Erreur lors du test de sauvegarde: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -236,7 +236,7 @@ def test_scraping_schedule():
             print(f"      🏪 {store_info['name']}: {interval_hours:.1f} heures")
         
         # Vérifier si le scraping est configuré pour s'exécuter
-        print(f"\n   🔄 Scraping automatique: {'✅ Activé' if status['is_running'] else '❌ Désactivé'}")
+        print(f"\n    Scraping automatique: {' Activé' if status['is_running'] else ' Désactivé'}")
         
         # Calculer la prochaine exécution
         if status['stores']:
@@ -245,18 +245,18 @@ def test_scraping_schedule():
             print(f"   ⏱️  Prochaine exécution dans: {min_interval/3600:.1f} heures")
             print(f"   📅 Heure estimée: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
         
-        print("\n✅ Configuration de planification vérifiée !")
+        print("\n Configuration de planification vérifiée !")
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test de planification: {e}")
+        print(f"\n Erreur lors du test de planification: {e}")
         import traceback
         traceback.print_exc()
         return False
 
 def main():
     """Fonction principale"""
-    print("🚀 TEST COMPLET DU SCRAPING AUTOMATIQUE")
+    print(" TEST COMPLET DU SCRAPING AUTOMATIQUE")
     print("=" * 60)
     
     tests = [
@@ -275,19 +275,19 @@ def main():
             result = test_func()
             results.append((test_name, result))
         except Exception as e:
-            print(f"\n❌ Erreur lors du test {test_name}: {e}")
+            print(f"\n Erreur lors du test {test_name}: {e}")
             results.append((test_name, False))
     
     # Résumé des tests
     print("\n" + "=" * 60)
-    print("📊 RÉSUMÉ DES TESTS")
+    print(" RÉSUMÉ DES TESTS")
     print("=" * 60)
     
     passed = 0
     total = len(results)
     
     for test_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
+        status = " PASS" if result else " FAIL"
         print(f"{status} {test_name}")
         if result:
             passed += 1
@@ -296,7 +296,7 @@ def main():
     
     if passed == total:
         print("\n🎉 TOUS LES TESTS SONT PASSÉS !")
-        print("🚀 Le système de scraping automatique est prêt !")
+        print(" Le système de scraping automatique est prêt !")
         
         print("\n💡 INFORMATIONS IMPORTANTES:")
         print("   • Le scraping se lance automatiquement au démarrage de l'API")
@@ -310,7 +310,7 @@ def main():
         print("   3. Redémarrez l'API")
         
     else:
-        print(f"\n⚠️  {total - passed} test(s) ont échoué")
+        print(f"\n  {total - passed} test(s) ont échoué")
         print("🔧 Vérifiez les erreurs ci-dessus")
 
 if __name__ == "__main__":

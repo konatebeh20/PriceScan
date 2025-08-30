@@ -205,13 +205,13 @@ def send_receipt_processed_email(email, username, receipt_id, items_count, total
         items_count (int): Nombre d'articles
         total_amount (float): Montant total
     """
-    subject = f"✅ Reçu traité : {items_count} articles"
+    subject = f" Reçu traité : {items_count} articles"
     
     body = f"""
     <html>
     <body>
         <h2>Bonjour {username} !</h2>
-        <p>✅ Votre reçu a été traité avec succès !</p>
+        <p> Votre reçu a été traité avec succès !</p>
         <br>
         <p><strong>Détails du reçu :</strong></p>
         <p>ID : {receipt_id}</p>
@@ -238,13 +238,13 @@ def send_weekly_summary_email(email, username, stats):
         username (str): Nom d'utilisateur
         stats (dict): Statistiques de la semaine
     """
-    subject = "📊 Votre résumé hebdomadaire PriceScan"
+    subject = " Votre résumé hebdomadaire PriceScan"
     
     body = f"""
     <html>
     <body>
         <h2>Bonjour {username} !</h2>
-        <p>📊 Voici votre résumé de la semaine :</p>
+        <p> Voici votre résumé de la semaine :</p>
         <br>
         <p><strong>Reçus scannés :</strong> {stats.get('receipts_scanned', 0)}</p>
         <p><strong>Articles traités :</strong> {stats.get('items_processed', 0)}</p>

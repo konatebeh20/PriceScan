@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def test_complete_system():
     """Test complet du système"""
-    print("🚀 TEST COMPLET DU SYSTÈME DE SCRAPING")
+    print(" TEST COMPLET DU SYSTÈME DE SCRAPING")
     print("=" * 60)
     
     try:
@@ -23,8 +23,8 @@ def test_complete_system():
         print("\n1️⃣ Test de la configuration...")
         from config.scraping_config import SCRAPING_INTERVALS, STORE_CONFIG
         
-        print("✅ Configuration chargée")
-        print(f"📊 Intervalles configurés: {len(SCRAPING_INTERVALS)} magasins")
+        print(" Configuration chargée")
+        print(f" Intervalles configurés: {len(SCRAPING_INTERVALS)} magasins")
         
         # Afficher les intervalles
         for store_id, interval in SCRAPING_INTERVALS.items():
@@ -37,29 +37,29 @@ def test_complete_system():
         from helpers.auto_scraper import AutoScraper
         
         scraper = AutoScraper()
-        print("✅ Instance AutoScraper créée")
+        print(" Instance AutoScraper créée")
         
         # Vérifier le statut
         status = scraper.get_status()
-        print(f"📊 Statut: {'🟢 En cours' if status['is_running'] else '🔴 Arrêté'}")
+        print(f" Statut: {'🟢 En cours' if status['is_running'] else '🔴 Arrêté'}")
         print(f"🏪 Magasins configurés: {len(status['stores'])}")
         
         # 3. Test du scraping manuel
         print("\n3️⃣ Test du scraping manuel...")
         
         # Test avec Jumia
-        print("   🔍 Test Jumia...")
+        print("    Test Jumia...")
         from helpers.scrapper.jumia import scraper_jumia
         jumia_results = scraper_jumia("smartphone")
-        print(f"   ✅ Jumia: {len(jumia_results)} produits trouvés")
+        print(f"    Jumia: {len(jumia_results)} produits trouvés")
         
         # Test avec un autre magasin si disponible
         try:
             from helpers.scrapper.carrefour import scrape_carrefour
             carrefour_results = scrape_carrefour("smartphone")
-            print(f"   ✅ Carrefour: {len(carrefour_results)} produits trouvés")
+            print(f"    Carrefour: {len(carrefour_results)} produits trouvés")
         except Exception as e:
-            print(f"   ⚠️  Carrefour: {e}")
+            print(f"     Carrefour: {e}")
         
         # 4. Test de la base de données
         print("\n4️⃣ Test de la base de données...")
@@ -67,7 +67,7 @@ def test_complete_system():
             from config.db import db
             from model.PriceScan_db import ps_products, ps_prices, ps_stores
             
-            print("✅ Connexion à la base de données réussie")
+            print(" Connexion à la base de données réussie")
             
             # Compter les enregistrements existants
             products_count = ps_products.query.count()
@@ -79,30 +79,30 @@ def test_complete_system():
             print(f"   🏪 Magasins en base: {stores_count}")
             
         except Exception as e:
-            print(f"❌ Erreur base de données: {e}")
+            print(f" Erreur base de données: {e}")
             return False
         
         # 5. Test de démarrage du scraping automatique
         print("\n5️⃣ Test de démarrage du scraping automatique...")
         
         if not status['is_running']:
-            print("   🚀 Démarrage du scraping automatique...")
+            print("    Démarrage du scraping automatique...")
             scraper.start()
             time.sleep(2)  # Attendre un peu
             
             # Vérifier le nouveau statut
             new_status = scraper.get_status()
-            print(f"   📊 Nouveau statut: {'🟢 En cours' if new_status['is_running'] else '🔴 Arrêté'}")
+            print(f"    Nouveau statut: {'🟢 En cours' if new_status['is_running'] else '🔴 Arrêté'}")
             
             if new_status['is_running']:
-                print("   ✅ Scraping automatique démarré avec succès !")
+                print("    Scraping automatique démarré avec succès !")
             else:
-                print("   ⚠️  Scraping automatique n'a pas démarré")
+                print("     Scraping automatique n'a pas démarré")
         else:
-            print("   ✅ Scraping automatique déjà en cours")
+            print("    Scraping automatique déjà en cours")
         
         print("\n🎉 TOUS LES TESTS SONT PASSÉS !")
-        print("🚀 Le système de scraping automatique est opérationnel !")
+        print(" Le système de scraping automatique est opérationnel !")
         
         # Afficher les informations importantes
         print("\n💡 INFORMATIONS IMPORTANTES:")
@@ -120,7 +120,7 @@ def test_complete_system():
         return True
         
     except Exception as e:
-        print(f"\n❌ Erreur lors du test: {e}")
+        print(f"\n Erreur lors du test: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -131,7 +131,7 @@ def main():
     
     if success:
         print("\n🎯 RÉSULTAT: SUCCÈS COMPLET")
-        print("🚀 Le système est prêt pour la production !")
+        print(" Le système est prêt pour la production !")
     else:
         print("\n🎯 RÉSULTAT: ÉCHEC")
         print("🔧 Vérifiez les erreurs ci-dessus")

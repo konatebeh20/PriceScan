@@ -1,0 +1,149 @@
+<!-- Products Favorites Component -->
+<div class="products-favorites-content">
+  <!-- Header -->
+  <div class="favorites-header">
+    <h2 class="favorites-title">
+      <i class="fas fa-heart"></i>
+      Mes Produits Favoris
+    </h2>
+    <p class="favorites-description">
+      Retrouvez tous vos produits favoris dans cette section
+    </p>
+  </div>
+
+  <!-- Filters -->
+  <div class="favorites-filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label class="filter-label">Rechercher</label>
+        <input type="text" class="filter-input" 
+               [(ngModel)]="searchTerm" 
+               (input)="filterProducts()"
+               placeholder="Nom, description ou code barres...">
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Catégorie</label>
+        <select class="filter-select" 
+                [(ngModel)]="selectedCategory" 
+                (change)="filterProducts()">
+          <option value="">Toutes les catégories</option>
+          <option value="1">Alimentation</option>
+          <option value="2">Électronique</option>
+          <option value="3">Vêtements</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Magasin</label>
+        <select class="filter-select" 
+                [(ngModel)]="selectedStore" 
+                (change)="filterProducts()">
+          <option value="">Tous les magasins</option>
+          <option value="1">Carrefour</option>
+          <option value="2">Pharmacie</option>
+          <option value="3">Boutique</option>
+        </select>
+      </div>
+      
+      <button class="btn-reset" (click)="resetFilters()">
+        <i class="fas fa-sync-alt"></i>
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement des produits favoris...</p>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="favorites-grid" *ngIf="!isLoading">
+    <div class="favorites-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ favoriteProducts.length }}</span>
+        <span class="stat-label">Produits favoris</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ filteredProducts.length }}</span>
+        <span class="stat-label">Affichés</span>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="products-grid" *ngIf="filteredProducts.length > 0">
+      <div class="product-card" *ngFor="let product of filteredProducts">
+        <div class="product-image">
+          <img [src]="product.product_image || 'assets/images/placeholder-product.jpg'" 
+               [alt]="product.product_name"
+               class="product-img">
+          <div class="product-overlay">
+            <button class="btn-view" (click)="viewProductDetails(product)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn-remove-favorite" (click)="removeFromFavorites(product)">
+              <i class="fas fa-heart-broken"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="product-info">
+          <h3 class="product-name">{{ product.product_name }}</h3>
+          <p class="product-description" *ngIf="product.product_description">
+            {{ product.product_description }}
+          </p>
+          
+          <div class="product-meta">
+            <span class="product-category">
+              <i class="fas fa-tag"></i>
+              {{ getCategoryName(product.category_id) }}
+            </span>
+            <span class="product-store">
+              <i class="fas fa-store"></i>
+              {{ getStoreName(product.store_id) }}
+            </span>
+          </div>
+          
+          <div class="product-price">
+            <span class="price-amount">{{ getPriceDisplay(product) }}</span>
+            <span class="price-unit" *ngIf="product.product_unit">
+              / {{ product.product_unit }}
+            </span>
+          </div>
+          
+          <div class="product-actions">
+            <button class="btn-action btn-edit" title="Modifier">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-action btn-archive" title="Archiver">
+              <i class="fas fa-archive"></i>
+            </button>
+            <button class="btn-action btn-delete" title="Supprimer">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredProducts.length === 0 && favoriteProducts.length > 0">
+      <i class="fas fa-search"></i>
+      <h3>Aucun produit trouvé</h3>
+      <p>Aucun produit ne correspond à vos critères de recherche.</p>
+      <button class="btn-reset" (click)="resetFilters()">
+        Réinitialiser les filtres
+      </button>
+    </div>
+
+    <!-- No Favorites -->
+    <div class="empty-state" *ngIf="favoriteProducts.length === 0">
+      <i class="fas fa-heart-broken"></i>
+      <h3>Aucun produit favori</h3>
+      <p>Vous n'avez pas encore ajouté de produits à vos favoris.</p>
+      <p>Naviguez vers la liste des produits et cliquez sur l'icône cœur pour ajouter des favoris !</p>
+    </div>
+  </div>
+</div>
